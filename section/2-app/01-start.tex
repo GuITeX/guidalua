@@ -1,0 +1,157 @@
+
+
+\chapter{Sul sistema \TeX{} e Lua}
+\label{iichExplain}
+
+Questo capitolo ancora introduttivo fornisce informazioni sulla differenza tra
+motore di composizione e formato, e sulla procedura per l'esecuzione di codice
+Lua all'interno di un sorgente \TeX.
+
+
+\section{Motori di composizione e formati}
+
+Un sorgente \TeX{} contiene testo e macro. Il testo formerà i capoversi, i
+titoli eccetera del documento, mentre le macro ne stabiliscono aspetto e
+struttura. I \emph{motori di composizione} dispongono di particolari macro dette
+\emph{primitive} implementate direttamente in essi, e la possibilità di definire
+nuove macro per svolgere più facilmente compiti ripetitivi.
+
+Queste nuove macro il cui codice è generalmente scritto da esperti offrono
+funzionalità di più alto livello molto utili per l'utente. I motori di
+composizione caricano sempre nella fase iniziale della compilazione, un insieme
+di macro di alto livello chiamate \emph{formato} perché per esse sono state
+stabilite anche nuove regole di sintassi.
+
+Se si avvia un qualsiasi motore di composizione della famiglia \TeX{} verrà
+caricato il formato più semplice chiamato \emph{plain}. Se si vuole invece
+utilizzare un diverso formato, per esempio il più diffuso \LaTeX{}, occorre
+specificarne il nome con l'opzione \texttt{-{}-fmt} quando si scrive il comando
+di compilazione al terminale.
+
+Tuttavia data l'importanza per gli utenti dei formati ad alto livello, sono
+stati predisposti comandi scorciatoia. Per esempio il programma
+\prog{pdflatex}, rimanda all'effettivo motore di composizione, il tradizionale
+\prog{pdftex}, con l'istruzione di caricare il formato \LaTeX.
+
+Riassumendo, i motori di composizione sono programmi tipografici mentre i
+formati sono insiemi coerenti di macro basate sulle primitive di sistema. I nomi
+dei programmi disponibili nel sistema \TeX{} possono quindi confondere se non si
+conosce questa importante distinzione: alcuni di essi sono comandi scorciatoia
+per identificare sia il motore sia il formato e non un motore di composizione a
+se stante.
+
+
+\subsection{Compositori Lua-powered}
+
+\LuaTeX{} è un programma che elabora un file di testo contenente codice \TeX{}
+per comporne il corrispondente file PDF, quindi è un motore di composizione.
+Nella famiglia \TeX{} ci sono almeno altri due compositori dotati
+dell'interprete Lua, LuaHB\TeX{} e Luajit\TeX{}.
+
+Tutti e tre questi compositori possono eseguire il formato \LaTeX. Come detto in
+apertura di sezione, esiste il programma \prog{lualatex} scorciatoia a un
+compositore che carica il formato \LaTeX.
+
+Nella TeX Live 2020 questo compositore è \prog{luahbtex}. Per rendercene conto
+basta scrivere in un terminale il nome del programma, leggere l'output e premere
+CTRL + C per chiuderne l'esecuzione di prova:
+\begin{Verbatim}
+> lualatex
+This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/W32TeX)
+ restricted system commands enabled.
+**
+\end{Verbatim}
+
+Per ulteriore informazione, \prog{luahbtex} è il motore di composizione
+\prog{luatex} in cui è stato sostituito il componente per il calcolo della forma
+dei font con il modulo HarfBuzz, mentre \prog{luajittex} è un'altra variante di
+\prog{luatex} in cui l'interprete Lua è stato sostituito con LuaJIT
+un'implementazione indipendente che sfrutta le tecniche di compilazione
+denominate \emph{Just In Time}.
+
+In generale un sorgente \TeX{} che contiene codice Lua viene correttamente
+compilato da qualsiasi dei tre compositori grazie al mantenimento della
+compatibilità.
+
+
+\subsection{Lua in \LuaTeX}
+
+Per illustrare l'esecuzione di codice Lua all'interno di un sorgente \LuaTeX,
+consideriamo la stampa di un semplice testo nell'output di console con il
+seguente sorgente completo, dove il codice Lua va inserito come argomento della
+primitiva \cs{directlua}:
+\begin{Verbatim}
+% !TeX program = LuaTeX
+\directlua{
+    print("Hello World!")
+}
+\bye
+\end{Verbatim}
+il testo uscirà tra gli altri messaggi di output senza che sia prodotto un file
+PDF. Ciò significa che \cs{directlua} è una macro espandibile con risultato
+vuoto.
+
+La prima riga di commento è una \emph{riga magica}, comodissima nel dare
+istruzione allo shell editor su quale motore di composizione e formato
+utilizzare per compilare il documento. In questo caso essa è scritta nella
+sintassi prevista da TeX Works. Per la comprensione del codice le righe magiche
+sono inutili ma aiutano il lettore a stabilire il contesto di esecuzione, perciò
+le troverete nei listati della guida se pertinenti.
+
+Se il sorgente è memorizzato nel file \texttt{primo.tex}, possiamo verificare
+quanto previsto in un terminale lanciando il comando:
+\begin{Verbatim}
+$ luatex primo
+\end{Verbatim}
+per il sistema operativo Windows e la distribuzione TeX Live 2020, l'output
+della console è:
+\begin{Verbatim}
+This is LuaTeX, Version 1.12.0 (TeX Live 2020/W32TeX) 
+    restricted system commands enabled.
+(./primo.texHello World!
+)
+warning  (pdf backend): no pages of output.
+Transcript written on primo.log.
+\end{Verbatim}
+
+
+\subsection{Lua in Lua\LaTeX}
+
+Con Lua\LaTeX{} si ottiene lo stesso risultato ma con il sorgente scritto nella
+sintassi \LaTeX, ovvero:
+\begin{Verbatim}
+% !TeX program = LuaLaTeX
+\documentclass{article}
+\directlua{
+    print("Hello World!")
+}
+\begin{document}
+\end{document}
+\end{Verbatim}
+e questa volta il comando di compilazione è:
+\begin{Verbatim}
+$ lualatex primo
+\end{Verbatim}
+
+Avremo potuto inserire la macro all'interno dell'ambiente \amb{document} anziché
+nel preambolo. Quando \TeX{} incontra \cs{directlua} ne \emph{espande}
+l'argomento e passa a Lua il controllo che esegue immediatamente il
+codice restituendo di nuovo il controllo dell'esecuzione a \TeX{} al termine.
+
+
+\section{Passaggio di dati}
+
+Da \TeX{} verso Lua i dati possono arrivare tramite espansione. Nella direzione
+opposta tramite la scrittura di token con le funzioni della famiglia
+\fn{tex.print}.
+
+
+
+\section{Sovrapposizione di significati}
+
+Alcuni simboli hanno un diverso significato per \TeX{} e per Lua, dando luogo a
+errori o a comportamenti imprevisti.
+
+
+
+% end of file

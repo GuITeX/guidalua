@@ -1,0 +1,167 @@
+
+
+\chapter{Assegnazione e tipi predefiniti}
+\label{chAssignment}
+
+\section{L'assegnamento}
+
+Ci occupiamo ora di uno degli elementi di base dei linguaggi informatici:
+l'istruzione di \emph{assegnamento}. Con questa operazione viene introdotto un
+\emph{simbolo} nel programma associandolo a un valore che apparterrà a uno
+dei possibili \emph{tipi} di dato.
+
+La sintassi di Lua non sorprende: a sinistra compare il nome della variabile e
+a destra l'espressione che fornirà il valore da assegnare al simbolo. Il
+carattere di `\texttt{=}' funge da separatore:
+\sourcecode{from_array{[[a = 123]]}}
+
+Durante l'esecuzione di questo codice, Lua determina dinamicamente il tipo del
+valore letterale `123' --- un numero --- creandolo in memoria col nome di
+`\texttt{a}'.
+
+L'istruzione di assegnamento omette il tipo di dato non essendone prevista una
+dichiarazione esplicita. In altre parole, i dati hanno un tipo, ma ciò entra in
+gioco solamente a tempo di esecuzione.
+
+Altro concetto importante di Lua è che le variabili sono tutte globali a meno
+che non si dichiari il contrario.
+
+
+\subsection{Locale o globale?}
+
+Una proprietà dell'assegnamento è che se non diversamente specificato Lua
+istanzia i simboli nell'ambiente globale del codice in esecuzione. Se si
+desidera creare una variabile locale rispetto al blocco di codice in cui è
+definita, occorre premettere alla definizione la parola chiave \key{local}.
+
+Le variabili locali evitano alcuni errori di programmazione e in Lua rendono il
+codice più veloce. Le useremo \emph{sempre} quando un simbolo appartiene in modo
+semantico a un blocco, per esempio al corpo di una funzione\footnote{Da notare
+che in sessione interattiva, ovvero in modo REPL dell'interprete Lua, ogni riga
+è un blocco quindi le variabili locali non sopravvivono alla riga successiva.
+Perciò in questa modalità useremo solo le variabili globali.}.
+
+Se si crea una variabile locale con lo stesso nome di una variabile globale
+quest'ultima viene \emph{oscurata} e il suo valore sarà protetto da modifiche
+fino a che il blocco in cui è definita la variabile locale non termina.
+
+
+\subsection{Assegnazioni multiple}
+
+In Lua possono essere assegnate più variabili alla volta nella stessa
+istruzione. Questo significa che l'assegnamento è in realtà più complesso di
+quello presentato fino a ora perché è possibile scrivere una lista di variabili
+separate da virgole che assumeranno i valori corrispondenti della lista di
+espressioni, sempre separate da virgole che compare dopo il segno di uguale:
+\lines
+local a, b = 0.45 + 0.23, "text"
+\endlines
+\sourcecode{from_lines()}
+
+Quando il numero delle variabili non corrispondono a quello delle espressioni,
+Lua assegnerà automaticamente valori \texttt{nil} o ignorerà le espressioni in
+eccesso. Per esempio:
+\lines
+local a, b, c = 0.45, "text"    -- 'c' vale nil
+print(a, b, c)
+local x, y = "op", "qw", "lo"   -- "lo" è un dato ignorato
+print(x, y)
+\endlines
+\sourcecode{from_lines()}
+
+Nell'assegnazione Lua prima valuta le espressioni a destra e solo
+successivamente crea le rispettive variabili secondo l'ordine della lista.
+Perciò per scambiare il valore di due variabili, operazione chiamata
+\emph{switch}, è possibile scrivere semplicemente:
+\lines
+x, y = y, x
+\endlines
+\sourcecode{from_lines()}
+
+Un ulteriore esempio di assegnazione multipla è il seguente, a dimostrazione
+che le espressioni della lista a destra vengono prima valutate e solo dopo
+assegnate alle corrispondenti variabili nella lista di sinistra:
+\lines
+local pi = 3.14159
+local r = 10.8 -- raggio del cerchio
+-- grandezze cerchio
+local diam, circ, area = 2*r, 2*pi*r, pi*r^2
+-- stampa grandezze
+print("Diametro:", diam)
+print("Circonferenza:", circ)
+print("Area:", area)
+\endlines
+\sourcecode{from_lines():add_output()}
+
+Le assegnazioni multiple sono interessanti ma sembra non siano così importanti,
+possiamo infatti ricorrere ad assegnazioni singole. Diverranno invece molto
+utili con le funzioni e con gli iteratori di cui ci occuperemo in seguito.
+
+
+\section{Una manciata di tipi}
+
+In Lua esistono una manciata di tipi. Essenzialmente, omettendone due, sono solo
+questi:
+\begin{compactitemize}
+\item \key{number} il tipo numerico\footnote{Solamente dalla versione 5.3 di Lua
+vengono internamente distinti gli interi e i numeri in virgola mobile};
+\item \key{string} il tipo stringa;
+\item \key{boolean} il tipo booleano;
+\item \key{table} il tipo tabella;
+\item \key{nil} il tipo nullo;
+\item \key{function} il tipo funzione.
+\end{compactitemize}
+
+Il breve elenco suscita due osservazioni: tranne la tabella non esistono
+tipi strutturati mentre le funzioni hanno il rango di tipo.
+
+Questo fa capire molto bene il carattere di Lua: da un lato l'essenzialità ha
+ridotto all'indispensabile i tipi predefiniti nel linguaggio, ma dall'altro ha
+spinto all'inclusione di concetti intelligenti e potenti.
+
+
+\subsection{Il tipo \key{nil}}
+
+Uno dei concetti più importanti che caratterizzano un linguaggio di
+programmazione è la presenza o meno del tipo nullo. In Lua esiste e viene
+chiamato \key{nil}. Il tipo nullo ha un solo valore possibile, anch'esso
+chiamato \key{nil}. Il nome è così sia l'unico valore possibile che il tipo.
+
+Leggere una variabile non istanziata non è un errore perché Lua restituisce
+semplicemente \key{nil}, mentre assegnare il valore nullo a una variabile la
+distrugge:
+\lines
+print(z)      --> stampa nil, la variabile 'z' non esiste
+local z = 123 --> assegnamento di un tipo numerico
+print(z)      --> stampa 123
+z = nil       --> distruzione della variabile
+\endlines
+\sourcecode{from_lines()}
+
+I dati non più utili come quelli la cui variabile è stata riassegnata a
+\key{nil} oppure quelli locali nel momento in cui escono di scopo, vengono
+automaticamente eliminati dal \emph{garbage collector} di Lua. Questo componente
+solleva l'utente dalla gestione diretta della memoria al prezzo di una piccola
+diminuzione delle prestazioni.
+
+Certamente se è un garbage collector a liberare dietro le quinte la memoria non
+più utilizzata, il programma non conterrà gli errori tipici della gestione
+manuale, ma sarà un po' più lento a runtime.
+
+
+\section{Esercizi}
+
+\begin{Exercise}[label=fond-01]
+Scrivere il codice Lua che instanzi due variabili \key{x} e \key{y} al valore
+12.34. Si assegni alle altre due variabili \key{sum} e \key{prod} la somma e il
+loro prodotto delle prime. Si stampi in console i risultati.
+\end{Exercise}
+
+\begin{Exercise}[label=fond-02]
+Scrivere il codice Lua che dimostri che modificare una variabile locale non
+modifica il valore della variabile globale con lo stesso nome. Suggerimento:
+utilizzare la coppia \key{do}/\key{end} per creare un blocco di codice con le
+proprie variabili locali.
+\end{Exercise}
+
+% end of file

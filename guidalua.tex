@@ -1,0 +1,88 @@
+% !TeX program = lualatex--shell-escape
+
+\documentclass[b5paper,11pt,openany]{guidatematica}
+\ProvidesFile{guidalua.tex}[2020/05/22 v0.2 Guida a Lua per LuaTeX]
+\GetFileInfo{guidalua.tex}
+
+\usepackage{sourcecode}
+
+\usepackage[
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor = blue,
+    urlcolor = blue,
+    pdftitle={Guida al linguaggio Lua per LuaTeX},
+    pdfauthor={Roberto Giacomelli},
+    pdfsubject={Guida tematica del GuIT},
+    pdfkeywords={Lua, LuaTeX, guida, programming}
+]{hyperref}
+\usepackage{exercise}
+\renewcounter{Exercise}[chapter]
+\renewcommand{\ExerciseHeader}{\noindent\textsc{esercizio \ExerciseHeaderNB}}
+
+\frenchspacing
+
+\newcommand\tcmd[1]{\normalfont\texttt{#1}}
+\newcommand\key[1]{\normalfont\texttt{#1}}
+\newcommand\fn[1]{\normalfont\texttt{#1()}}
+
+\begin{document}
+\author{Roberto Giacomelli}
+\date{\filedate{} --- \fileversion}
+\title{Guida al linguaggio Lua per \LuaTeX}
+\subtitle{
+\begin{tikzpicture}[scale=0.82]
+\node at (-2.31-0.72, 0) {};
+\draw[fill,verdeguit] (0,0) circle (2.2);
+\draw[fill,verdeguit] (2.31, 2.31) circle (0.72);
+\draw[fill, white] (0.8,0.8) circle (0.72);
+\end{tikzpicture}
+\vspace*{8.5ex}
+}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\input{section/intro}
+
+\mainmatter*
+
+\part{Fondamenti}
+
+\input{section/1-basic/02-fondamenti}
+
+\input{section/1-basic/03-tabella}
+
+\input{section/1-basic/04-costrutti-base}
+
+\input{section/1-basic/05-oplogic}
+
+\input{section/1-basic/06-stringhe}
+
+\input{section/1-basic/07-funzioni}
+
+\input{section/1-basic/08-libreria-standard}
+
+\input{section/1-basic/09-iteratori}
+
+\input{section/1-basic/10-oop}
+
+\part{Applicazioni Lua in \LuaTeX}
+\label{partLuaTeX}
+
+\input{section/2-app/01-start}
+
+\input{section/2-app/02-primi-esempi}
+
+\appendix
+
+%\input{section/__-install.tex}
+
+\backmatter
+
+\input{section/notefinali}
+
+% bibliografia
+\end{document}
+

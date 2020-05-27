@@ -1,0 +1,133 @@
+
+% presentazione della guida e informazioni di base per eseguire gli esempi
+
+\chapter{Introduzione}
+
+\section{Presentazione della guida}
+
+Questa guida tematica è dedicata alla programmazione in Lua all'interno dei
+motori di composizione del sistema \TeX. Quel che occorre conoscere è l'ambito
+in cui ci troviamo per poter avvalerci di funzionalità ben più semplici da
+codificare che non con gli strumenti tradizionali messi a disposizione dal solo
+\TeX{} o dalle macro del formato.
+
+Elaborare dati, effettuare calcoli numerici, eseguire compiti in pratica
+impossibili con il compositore tradizionale come connettersi a database
+relazionali o avvalersi di avanzati sistemi esterni, sono funzionalità
+possibili con la nuova generazione di compositori, in scenari applicativi
+notevolmente ampliati.
+
+Se da un lato è auspicabile che queste potenzialità diventino disponibili per
+gli utenti finali per mezzo di moduli e pacchetti tali da minimizzare la
+necessità di programmare, dall'altro è utile fornire dettagli ed esempi per
+implementare proprie soluzioni e collaborare condividendo idee di sviluppo.
+
+Sono certamente molte le cose da conoscere: un nuovo linguaggio molto diverso da
+\TeX{}, numerosi dettagli sul funzionamento interno dei compositori Lua-powered,
+nuovi problemi di organizzazione del codice. Per questo, ho pensato di
+contribuire con questa guida tentando di illustrare la cresciuta complessità del
+sistema.
+
+Tra gli argomenti della guida ci sono:
+\begin{compactitemize}
+\item basi del linguaggio Lua, dal capitolo \ref{chAssignment},
+\item la differenza tra motore e formato di composizione, capitolo \ref{iichExplain},
+\item tecniche di programmazione e di rappresentazione dei dati,
+\item l'interazione con lo stato interno del motore di composizione.
+\end{compactitemize}
+
+A mio parere se si vuole puntare sullo sviluppo razionale di progetti
+documentali non bisogna mai dimenticare \TeX{}, anzi occorre conoscerlo più a
+fondo per riuscire ad equilibrarne le componenti in azione per la costruzione di
+documenti di qualità.
+
+Auguro perciò ai lettori Happy LuaTeXing!
+
+
+\section{Lua, proprio un bel nome}
+
+Lua è un linguaggio semplice ma non banale. Il suo ambito di applicazione è
+quello dei linguaggi di scripting: text processing, manutenzione del sistema,
+elaborazioni su file dati, eccetera e lo si può anche trovare come linguaggio
+embedded di programmi complessi come i videogiochi o altri applicativi
+che danno la possibilità di essere programmati con esso dall'utente.
+
+Lua è stato ideato da un gruppo di programmatori esperti
+dell'\href{http://www.puc-rio.br/index.html}{Università Cattolica di Rio de
+Janeiro} in Brasile. ``Lua'' si pronuncia LOO-ah e significa ``Luna'' in
+portoghese!
+
+
+\section{Piano della guida}
+
+La guida è divisa in due parti: la prima tratta delle basi del linguaggio Lua e
+la seconda le applica in esempi concreti con l'uso delle librerie interne del
+compositore.
+
+La risorsa principale per imparare Lua a cui si rimanda per tutti gli
+approfondimenti è certamente il PIL acronimo del titolo del libro
+\emph{Programming In Lua} di Roberto Ierusalimschy, principale Autore
+di Lua. Questo testo non solo è completo e autorevole ma è anche ben scritto e
+composto\footnote{Tra l'altro il libro ufficiale su Lua viene composto in
+\LaTeX{} e commercializzato per contribuire allo sviluppo del linguaggio
+stesso.}.
+
+Quanto a \LuaTeX{} il riferimento è il suo manuale che, come quasi tutta la
+documentazione nel sistema \TeX{}, può essere visualizzato a video con il
+comando da terminale:
+\begin{Verbatim}
+$ texdoc luatex
+\end{Verbatim}
+
+
+\section{Contribuire alla guida}
+
+Spero che i lettori vorranno contribuire al testo inviando le propri soluzioni o
+nuovi contributi anche piccoli. Lo si può fare attraverso lo strumento che
+preferite, scrivendomi un messaggio email, oppure utilizzando il repository
+\texttt{git} dei sorgenti.
+
+
+\section{Origine della guida}
+
+Per illustrare i concetti del linguaggio ho preso spunto da un breve corso su
+Lua che scrissi qualche tempo fa per il blog
+\href{http://parliamodi-ubuntu.blogspot.it}{Lubit Linux} di Luigi Iannoccaro
+che mi propose di realizzare un progetto di divulgazione su Lua. Luigi ha
+acconsentito all'utilizzo di quegli appunti per produrre questa guida tematica.
+
+
+\section{Come eseguire gli esercizi}
+
+Per iniziare è certamente molto utile eseguire noi stessi esempi ed esercizi di
+programmazione. Nella guida ne trovate alcuni alla fine di ciascun capitolo
+della parte prima. 
+
+Questa sezione vi introduce brevemente al programma \prog{texlua} che già
+trovate compreso in ogni recente distribuzione \TeX{}. Si tratta dell'interprete
+Lua controparte di \texttt{luatex} nell'esecuzione del codice Lua come
+suggerisce il nome.
+
+Rispetto all'interprete \prog{lua} standard esso non comprende la modalità
+interativa detta REPL\footnote{Read–eval–print loop.} con cui si digita una
+linea di codice alla volta senza dover creare un file per fare semplici prove. 
+
+Il codice andrà memorizzato in un file con estensione \texttt{.lua}, in questo
+modo: in un file \texttt{primo.lua} digitiamo questa unica riga di codice:
+\begin{Verbatim}
+print("Hello World!")
+\end{Verbatim}
+apriamo una finestra di terminale\footnote{Maggiori dettagli per diversi sistemi
+operativi sulla linea di comando possono essere trovati nella guida tematica
+dedicata scaricabile dal sito GuIT.} e lanciamo il comando:
+\begin{Verbatim}
+$ texlua primo.lua
+\end{Verbatim}
+
+Ora che sappiamo come eseguire codice Lua, concentriamoci con i prossimi
+capitoli sulle basi del linguaggio. Torneremo nella seconda parte della guida su
+ulteriori modalità di esecuzione e a conoscere importanti dettagli
+sull'esecuzione di Lua all'interno dei motori di composizione.
+
+
+% end of file

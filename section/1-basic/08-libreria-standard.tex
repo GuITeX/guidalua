@@ -1,0 +1,240 @@
+
+\chapter{La libreria standard di Lua}
+
+In Lua sono immediatamente disponibili un folto gruppo di funzioni che ne
+formano la \emph{libreria standard}. Si tratta di una collezione di funzioni
+utili a svolgere compiti ricorrenti su stringhe, file, tabelle, eccetera, e si
+trovano precaricate in una serie di tabelle.
+
+L'elenco completo ma in ordine sparso con il nome della tabella/modulo
+contenitore e la descrizione applicativa è il seguente:
+\begin{center}
+\begin{tabular}{ll}
+\key{math} & matematica;\\
+\key{table} & utilità sulle tabelle;\\
+\key{string} & ricerca, sostituzione e pattern matching;\\
+\key{io} & input/output facility, operazioni sui file;\\
+\key{bit32} & operazioni bitwise (solo in Lua 5.2);\\
+\key{os} & date e chiamate di sistema;\\
+\key{coroutine} & creazione e controllo delle coroutine;\\
+\key{utf8} & utilità codifica Unicode UTF-8 (da Lua 5.3);\\
+\key{package} & caricamento di librerie esterne;\\
+\key{debug} & accesso alle variabili e performance assessment.\\
+\end{tabular}
+\end{center}
+La pagina web a \href{www.lua.org/manual/5.3/contents.html}{questo link}
+fornisce tutte le informazioni di dettaglio sulla libreria standard di Lua~5.3.
+
+
+\section{Libreria matematica}
+
+Nella libreria memorizzata nella tabella \key{math} ci sono le funzioni
+trigonometriche \fn{sin}, \fn{cos}, \fn{tan}, \fn{asin} eccetera --- che come
+di consueto lavorano in radianti --- le funzioni esponenziali \fn{exp},
+\fn{log}, \fn{log10}, quelle di arrotondamento \fn{ceil}, \fn{floor}, e quelle
+per la generazione pseudocasuale di numeri come \fn{random}, e \fn{randomseed}.
+Oltre a funzioni, la tabella include campi numerici come la costante \( \pi \).
+
+Un esempio introduttivo è questo dove nella funzione \fn{one} viene definita una
+funzione locale:
+\sourcecode{from_file [[code/e8-libstd.lua]]:select_lines [[one]]}
+
+
+\section{Libreria stringhe}
+
+La libreria per le stringhe è memorizzata nella tabella \key{string} ed è una
+delle più utili. Con essa si possono formattare campi e compiere operazioni di
+ricerca e sostituzione. In effetti, in Lua non è infrequente elaborare grandi
+porzioni di testo.
+
+
+\subsection{Funzione \fn{string.format}}
+
+La funzione più semplice è quella di formattazione \fn{string.format}. Essa
+restituisce una stringa prodotta con il formato definito dal primo argomento
+dei dati forniti dal secondo argomento in poi.
+
+Il formato è esso stesso specificato come una stringa contenente dei segnaposto
+creati con il simbolo percentuale e uno specificatore di tipo. Per esempio
+\key{\%d} indica il formato relativo a un numero intero, dove \key{d} sta per
+digit mentre \key{\%f} indica il segnaposto per un numero decimale --- \key{f}
+sta per float.
+
+I campi formato derivano da quelli della funzione classica di libreria
+\fn{printf} del C. Di seguito un esempio di codice:
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[fmt]]
+    :add_output {delim_run=true}
+}
+
+Come avete potuto notare nel codice, è anche possibile fornire un ulteriore
+specifica di dettaglio tra il \key{\%} e lo specificatore di tipo, per esempio
+per gestire il numero delle cifre decimali.
+
+Per elaborare il testo si utilizza di solito una libreria per le espressioni
+regolari. Lua mette a disposizione alcune funzioni di sostituzione e
+\emph{pattern matching} meno complete dell'implementazione dello standard
+POSIX per le espressioni regolari ma molto spesso più semplici da utilizzare.
+
+Esistono due strumenti di base, il primo è il \emph{pattern} e il secondo è la
+\emph{capture}.
+
+
+\subsection{Pattern}
+
+Il pattern è una stringa che può contenere campi chiamati \emph{classi} simili
+a quelli per la funzione di formato visti in precedenza, che stavolta però si
+riferiscono al singolo carattere, e questa differenza è essenziale.
+
+La funzione di base che accetta pattern è \fn{string.match} che restituisce
+la prima corrispondenza trovata in una stringa primo argomento corrispondente
+al pattern dato come secondo argomento.
+
+Per esempio, possiamo ricercare in un numero di tre cifre intere all'interno di
+un testo con il pattern \key{\%d\%d\%d}:
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[pattern_one]]
+    :add_output {delim_run=true}
+}
+
+Le classi carattere possibili sono le seguenti:
+\begin{compactdescription}
+  \item[\key{.}] un carattere qualsiasi;
+  \item[\key{\%a}] una lettera;
+  \item[\key{\%c}] un carattere di controllo;
+  \item[\key{\%d}] una cifra;
+  \item[\key{\%l}] una lettera minuscola;
+  \item[\key{\%u}] una lettera maiuscola;
+  \item[\key{\%p}] un carattere di interpunzione;
+  \item[\key{\%s}] un carattere spazio;
+  \item[\key{\%w}] un carattere alfanumerico;
+  \item[\key{\%x}] un carattere esadecimale;
+  \item[\key{\%z}] il carattere rappresentato con il codice 0.
+\end{compactdescription}
+
+Le classi ammettono quattro modificatori per esprimere le ripetizioni dei
+caratteri:
+\begin{compactdescription}
+  \item[\key{+}] indica 1 o più ripetizioni;
+  \item[\key{*}] indica 0 o più ripetizioni;
+  \item[\key{-}] come \key{*} ma nella sequenza più breve;
+  \item[\key{?}] indica 0 o 1 occorrenza;
+\end{compactdescription}
+
+Esempio:
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[pattern_two]]
+    :add_output {delim_run=true}
+}
+
+\section{Capture}
+
+Il pattern può essere arricchito non solo per trovare corrispondenze ma anche
+per restituirne parti componenti. Questa funzionalità viene chiamata
+\emph{capture} e consiste semplicemente nel racchiudere tra parentesi tonde le
+classi.
+
+Per esempio per estrarre l'anno di una data nel formato \key{dd/mm/yyyy}
+possiamo usare il pattern con la capture seguente
+\key{\%d\%d/\%d\%d/(\%d\%d\%d\%d)}:
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[capture_one]]
+    :add_output {delim_run=true}
+}
+
+Più capture ci sono nel pattern e altrettanti argomenti multipli di uscita
+saranno restituiti:
+
+\sourcecode{from_file [[code/e8-libstd.lua]]
+   :select_lines [[capture_two]]
+   :add_output {delim_run=true}
+}
+
+
+\subsection{La funzione string.gsub()}
+
+Abbiamo appena cominciato a scoprire le funzionalità dedicate al testo
+disponibili nella libreria standard di Lua precaricata a runtime.
+
+Diamo solo un altro sguardo alla libreria presentando la funzione
+\fn{string.gsub}. Il suo nome sta per \emph{global substitution}, ovvero
+la sostituzione di tutte le occorrenze in un testo.
+
+Intanto per individuare le occorrenze è naturale pensare di utilizzare un
+pattern e che sia possibile utilizzare le capture nel testo di sostituzione,
+per esempio:
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[gsub]]
+    :add_output {delim_run=true}
+}
+
+Il primo argomento è la stringa da ricercare, il secondo è il pattern e il
+terzo è il testo di sostituzione dell'occorrenza, ma può anche essere una
+tabella dove le chiavi corrispondenti al pattern saranno sostituite con
+i rispettivi valori, oppure anche una funzione che riceverà le catture e
+calcolerà il testo da sostituire.
+
+Una funzione quindi assai flessibile. Mi viene in mente questo esercizio:
+moltiplicare per 12 tutti gli interi in una stringa, ed ecco il codice:
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[gsubfn]]
+    :add_output {delim_run=true}
+}
+
+A questo punto degli esempi avrete certamente capito che \fn{gsub} restituisce
+anche il numero delle sostituzioni effettuate.
+
+Tutte queste funzioni restituiscono una stringa costruita ex-novo e non
+modificano la stringa originale di ricerca. In Lua le stringhe sono dati
+immutabili.
+
+
+
+\section{Esercizi}
+
+\begin{Exercise}[label=libstd-01]
+Qual è la differenza tra i campi di formato della funzione \fn{string.format} e
+le classi dei pattern? Quali le somiglianze?
+\end{Exercise}
+
+\begin{Exercise}[label=libstd-02]
+Stampare una data nel formato \key{dd/mm/yyyy} a partire dagli interi contenuti
+nelle variabili \key{d}, \key{m} e \key{y}.
+\end{Exercise}
+
+\begin{Exercise}[label=libstd-03]
+Cosa restituisce l'esecuzione della seguente funzione?
+\sourcecode{
+    from_file [[code/e8-libstd.lua]]
+    :select_lines [[esercizio3]]
+}
+Quale pattern corrisponde a un numero decimale la cui parte intera può essere
+omessa?
+\end{Exercise}
+
+\begin{Exercise}[label=libstd-04]
+Come estrarre dal nome di un file l'estensione?
+\end{Exercise}
+
+\begin{Exercise}[label=libstd-05]
+Come eliminare da un testo eventuali caratteri spazio iniziali e/o finali?
+\end{Exercise}
+
+\begin{Exercise}[label=libstd-06]
+Il pattern \key{(\%d+)/(\%d+)/(\%d+)} è adatto per catturare giorno, mese e
+anno di una data presente in una stringa nel formato \key{dd/mm/yyyy}?
+\end{Exercise}
+
+\begin{Exercise}[label=libstd-07]
+Creare un esempio che utilizzi \fn{string.gsub} con una funzione in sintassi
+anonima a due argomenti corrispondenti a due capture nel pattern di ricerca.
+\end{Exercise}
+
+
+% end of file

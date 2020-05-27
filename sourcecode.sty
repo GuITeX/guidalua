@@ -1,0 +1,65 @@
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+\ProvidesPackage{sourcecode}
+    [2017/12/04 v0.1 Sourcecode Lua script]
+
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+\RequirePackage{luacode}
+
+\lstdefinestyle{lua}{
+    language=[5.3]Lua,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{blue},
+    stringstyle=\color{magenta},
+    commentstyle=\color{black!80}
+}
+
+\lstdefinestyle{out}{
+    frame=tb,
+    basicstyle=\small\ttfamily
+}
+
+\directlua{
+sourcecodelib = require [[sourcecode]]
+sourcecodelib.tkprint = tex.print
+}
+
+\newcommand\setupcode[1]{\directlua{
+sourcecodelib:_set_parameters{#1}
+}}
+
+\newcommand\sourcecode[1]{\directlua{
+    local from_file = sourcecodelib._from_file;
+    local from_array = sourcecodelib._from_lines;
+    local from_lines = sourcecodelib._from_string;
+    local res = #1;
+    res:_typeset()
+}}
+
+\def\mkchar#1{\catcode`#1=12 }
+\def\lines{%
+\directlua{
+    sourcecodelib.lines = {}
+    sourcecodelib.l = 0
+}\begingroup
+\let\do=\mkchar \dospecials
+\endlinechar`\^^M \catcode`\^^M=12 \xlines}
+
+{\catcode`\^^M=12 \endlinechar=-1 %
+ \gdef\xlines#1^^M{%
+ \def\test{#1}
+ \ifx\test\endlines
+    \let\next\endgroup
+ \else
+    \directlua{
+        sourcecodelib.l = sourcecodelib.l + 1;
+        sourcecodelib.lines[sourcecodelib.l] = [==[#1]==]
+    }%
+    \let\next\xlines \fi \next}
+}
+
+{\escapechar=-1
+\xdef\endlines{\string\\endlines}
+}
+
+\endinput

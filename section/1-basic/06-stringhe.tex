@@ -1,0 +1,186 @@
+
+\chapter{Il tipo stringa}
+
+In Lua le stringhe rappresentano uno dei tipi di base del linguaggio.
+Per rappresentare valori stringa letterali ci sono tre diversi delimitatori:
+\begin{compactitemize}
+\item doppi apici: carattere \key{"};
+\item apice semplice: carattere \key{'};
+\item doppie parentesi quadre: delimitatori \key{[[} e \key{]]} con o senza un
+numero corrispondente di caratteri \key{=}, per esempio \key{[==[} e \key{]==]}.
+\end{compactitemize}
+
+In una stringa delimitata da doppi apici possiamo inserire liberamente apici
+semplici e viceversa, e caratteri non stampabili come il ritorno a capo
+(\cs{n}) e la tabulazione (\cs{t}), tramite il carattere di escape backslash
+che quindi va inserito esso stesso come doppio backslash (\cs{\textbackslash}):
+\sourcecode{
+    from_file[[code/e1-005.lua]]
+    :add_output()
+}
+
+In Lua non esiste il tipo carattere quindi gli Autori del linguaggio hanno
+pensato di utilizzare i delimitatori normalmente destinati a rappresentarne la
+forma letterale, per consentire all'utente di creare stringhe contenenti i
+delimitatori stessi, senza utilizzare l'escaping.
+
+Sono comunque ammessi i simboli \key{\textbackslash{}"} e \key{\textbackslash '}
+che rappresentano i caratteri corrispondenti, come si vede nella variabile
+\key{s5} del codice precedente.
+
+Il terzo tipo di delimitatore per le stringhe è una coppia si parentesi quadre e
+ha la proprietà di ammettere il ritorno a capo. Si possono così introdurre nel
+sorgente interi brani di testo nel quale i caratteri di escaping non saranno
+interpretati.
+\sourcecode{
+    from_file [[code/e1-006.lua]]
+    :add_output()
+}
+
+Se per caso nel testo fossero presenti i delimitatori di chiusura è possibile
+inserire un numero qualsiasi di caratteri \key{=} tra le parentesi quadre,
+purché il numero sia lo stesso per i delimitatori di apertura e chiusura,
+esempio:
+\sourcecode{
+    from_file [[code/e1-007.lua]]
+}
+
+
+\section{Commenti multiriga}
+
+Questi delimitatori variabili con numero qualsiasi di segni \key{=} li troviamo
+anche nei commenti multiriga di Lua. Abbiamo incontrato fino a ora i commenti di
+riga che si introducono nel codice con un doppio trattino \key{--}.
+
+I commenti multiriga sono comodi quando si vuol escludere dall'esecuzione un
+intero blocco di righe: iniziano con i doppi trattini seguiti da un delimitatore
+di stringa multiriga e terminano con la corrispondente chiusura:
+\lines
+-- questo è un commento di riga
+
+--[[
+questo è un commento
+multiriga
+]]
+
+--[=[
+e anche questo è un commento
+multiriga
+]=]
+\endlines
+\sourcecode{from_lines()}
+
+Normalmente in Lua i commenti multiriga vengono chiusi premettendo i doppi
+trattini anche al gruppo delimitatore di chiusura. Questo è solo un trucco per
+riattivare rapidamente il codice eventualmente contenuto nel commento, basta uno
+spazio per far trasformare il commento multiriga in uno semplice:
+\lines
+--[[ righe di codice non attive
+local tab = {}
+--]]
+
+-- [[ notare lo spazio dopo i doppi trattini
+-- questo codice invece viene eseguito
+
+local tab = {}
+--]] -- e questo diventa una normale riga di commento
+\endlines
+\sourcecode{from_lines()}
+
+
+\section{Concatenazione stringhe e immutabilità}
+
+In Lua l'operatore \key{..} concatena due stringhe, in questo modo:
+\lines
+local s1 = "Hello" .. " " .. "world"
+local s2 = s1 .. " OK"
+s2 = s2 .. "."
+
+print(s1 .. "!")
+print(s2)
+\endlines
+\sourcecode{from_lines():add_output()}
+
+Il concetto importante riguardo alle stringhe è se queste siano o no immutabili.
+Se non lo sono la concatenazione di stringhe non comporta la creazione di una
+nuova stringa ma la modifica in memoria.
+
+In Lua, come in molti altri linguaggi, le stringhe sono invece immutabili.
+Ciò significa che una volta create, le stringhe non possono essere modificate e
+nel codice precedente, l'operazione di concatenare il carattere punto in coda
+alla stringa \key{s2}, genera una nuova stringa che è assegnata alla stessa
+variabile.
+
+Per poche operazioni di concatenazione ciò non è un problema, ma in alcuni casi
+invece si. Consideriamo il seguente codice apparentemente innocuo:
+\lines
+local s = ""
+
+for i = 1, 100 do
+    s = s .. "**"
+end
+print(#s) -- # funziona anche per le stringhe!
+\endlines
+\sourcecode{from_lines()}
+
+Ma cosa succede in dettaglio? Perché questo codice non è efficiente?
+Ad ogni concatenazione viene creata una nuova stringa. La prima volta vengono
+copiati due byte per dare la stringa \key{"**"}. La seconda iterazione la
+memoria copiata sarà di 4 byte, e alla terza di 6 byte, eccetera.
+
+A ogni iterazione la memoria copiata cresce di due byte con il risultato che per
+produrre una stringa di 200 asterischi (200 byte) avremo copiato in totale la
+memoria equivalente a 10100 byte!
+
+In Java e negli altri linguaggi con stringhe immutabili normalmente si corre ai
+ripari mettendo a disposizione una struttura dati o una funzione che risolve il
+problema, per esempio un tipo \key{StringBuffer}. In Lua la soluzione è una
+funzione della libreria \key{table} che, anticipando rispetto alle nostre
+chiaccherate è \fn{table.concat}:
+\lines
+local t = {}
+for i = 1, 100 do
+    t[#t + 1] = "**"
+end
+
+print(#table.concat(t))
+\endlines
+\sourcecode{from_lines()}
+
+Nel caso specifico avremo dovuto usare la funzione \fn{string.rep} anche se
+\fn{table.concat} è più generale.
+
+
+\section{Esercizi}
+
+\begin{Exercise}[label=string-01]
+Come fare in Lua per creare una stringa letterale contenente sia il
+carattere apice semplice che doppio?
+\end{Exercise}
+
+\begin{Exercise}[label=string-02]
+Quale sarà il risultato dell'esecuzione del seguente codice?
+\lines
+local s = "'"..'"'.."ok"..[["']]
+print(s)
+\endlines
+\sourcecode{from_lines()}
+\end{Exercise}
+
+\begin{Exercise}[label=string-03]
+Creare la stringa \key{"\textbackslash/"}.
+\end{Exercise}
+
+\begin{Exercise}[label=string-04]
+Scrivere un programma che a partire dalla stringa \key{"*"} crei e stampi la
+stringa di 64 asterischi senza utilizzare l'operatore di concatenazione o la
+funzione \fn{string.rep}.
+\end{Exercise}
+
+\begin{Exercise}[label=string-05]
+Scrivere un programma che a partire dalla stringa \key{"*"} crei e stampi
+la stringa di 64 asterischi usando l'operatore di concatenazione il minimo
+indispensabile di volte.
+\end{Exercise}
+
+% end of file

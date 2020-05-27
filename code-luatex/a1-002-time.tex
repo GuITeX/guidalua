@@ -1,0 +1,17 @@
+% !TeX program = LuaLaTeX
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+
+\setmainfont{Latin Modern Roman}
+\setmainlanguage{italian}
+
+\directlua{
+local time = \the\time
+local h = math.floor(time/60)
+local m = time - h*60
+print(h..":"..m)
+}
+
+\begin{document}
+\end{document}

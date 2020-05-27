@@ -1,0 +1,129 @@
+
+
+\chapter{Operatori logici}
+
+In Lua un'espressione è vera se essa corrisponde al valore booleano \key{true}
+oppure a un valore che non è \key{nil}.
+
+Gli operatori logici \key{and}, \key{or} e \key{not} danno luogo ad alcune
+espressioni idiomatiche di Lua. Cominciamo con \key{or}: è un operatore logico
+binario. Se il primo operando è vero lo restituisce altrimenti restituisce il
+secondo. Per esempio nel seguente codice \key{a} vale 123.
+\lines
+local a = 123 or "mai assegnato"
+\endlines
+\sourcecode{from_lines()}
+
+L'operatore \key{and} --- anche questo binario come \key{or} --- restituisce il
+primo operando se esso è falso altrimenti restituisce il secondo operando.
+
+Con \key{and} e \key{or} combinati otteniamo l'operatore ternario del C++ in
+Lua: Ecco l'espressione in un esempio: se \key{a} è vera il risultato è \key{b}
+altrimenti \key{c}:
+\lines
+local val = (a and b) or c
+\endlines
+\sourcecode{from_lines()}
+
+Poiché \key{and} ha priorità maggiore rispetto a \key{or} nell'espressione
+precedente possiamo omettere le parentesi per un codice ancor più idiomatico:
+\lines
+local val = a and b or c -- a ? b : c del C++
+\endlines
+\sourcecode{from_lines()}
+
+Il massimo tra due numeri è un'espressione condizionale:
+\lines
+local x, y = 45.69, 564.3
+local max
+if x > y then
+    max = x
+else
+    max = y
+end
+\endlines
+\sourcecode{from_lines()}
+ma con gli operatori logici è tutto più Lua:
+\lines
+local x, y = 45.69, 564.3
+local max = (x > y) and x or y
+\endlines
+\sourcecode{from_lines()}
+
+L'operatore logico \key{not} restituisce \key{true} se l'operando è \key{nil}
+oppure se è \key{false} e, viceversa, restituisce \key{false} se l'operando non
+è \key{nil} oppure è \key{true}. Alcuni esempi:
+\lines
+print(not 5)       --> 'false'
+print(not not 5)   --> 'true'
+print(not true)    --> 'false'
+print(not false)   --> 'true'
+print(not nil)     --> 'true'
+\endlines
+\sourcecode{from_lines()}
+
+L'operatore di negazione può essere usato per controllare se una variabile è
+valida oppure no. Per esempio possiamo controllare se in una tabella esiste il
+campo \key{prezzo}:
+\lines
+local t = {} -- una tabella vuota
+if not t.prezzo then -- t.prezzo è nil
+    print("assente")
+else
+    print("presente")
+end
+
+t.prezzo = 12.00
+if not t.prezzo then
+    print("assente")
+else
+    print("presente")
+end
+\endlines
+\sourcecode{from_lines()}
+
+
+\section{Esercizi}
+
+\begin{Exercise}[label=oplogic-01]
+Prevedere il risultato delle seguenti espressioni Lua:
+\lines
+local a = 1 or 2
+local b = 1 and 2
+local c = "text" or 45
+
+local d = not 12 or "ok"
+local e = not nil or "ok"
+\endlines
+\sourcecode{from_lines()}
+\end{Exercise}
+
+\begin{Exercise}[label=oplogic-02]
+Nel seguente codice, se il valore del primo condizionale è \key{true} cosa
+stamperà invece il secondo condizionale?
+\lines
+if "stringa" then print "it's not 'nil'" end
+if "stringa" == true then
+    print("it's 'true'")
+else
+    print("it's not 'true'")
+end
+\endlines
+\sourcecode{from_lines()}
+\end{Exercise}
+
+\begin{Exercise}[label=oplogic-03]
+Come distinguere se una variabile contiene il valore \key{false} o il valore
+\key{nil}?  
+\end{Exercise}
+
+\begin{Exercise}[label=oplogic-04]
+Usando gli operatori logici di Lua codificare l'espressione che restituisce
+la stringa \key{"più grande di 100"}, \key{"uguale"} o \key{"più piccolo di
+100"} a seconda del valore numerico fornito.
+\end{Exercise}
+
+
+
+% end file
+

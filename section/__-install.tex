@@ -1,0 +1,142 @@
+
+
+
+Come tutti i linguaggi di scripting non occorre compilare il codice Lua. Basta
+scrivere il programma in un file di testo --- preferibilmente assegnandogli
+l'estensione \key{.lua} --- ed eseguirlo con il comando da terminale \tcmd{\$
+lua nomefile}.
+
+Per scrivere il codice vi consiglio di utilizzare l'editor
+\href{http://www.scintilla.org/SciTE.html}{SciTE} perché è già predisposto per
+eseguire programmi Lua ed è programmabile in Lua. Tra l'altro l'output del
+programma viene visualizzato nella \emph{output tab}. Il tasto funzione F5
+esegue il programma visualizzato nella scheda attiva in quel momento e il tasto
+F8 attiva/disattiva la finestra di output, che è in pratica un terminale
+incorporato nell'editor.
+
+Prepariamoci a scrivere il primo programma in Lua, ovviamente il fatidico
+\href{http://en.wikipedia.org/wiki/%22Hello,_world!%22_program"}{Hello world!},
+salvando il seguente codice in un file chiamato \key{primo.lua} ed eseguiamolo
+direttamente in SciTE premendo il tasto funzione F5 o al terminale con il
+comando \tcmd{\$ lua primo.lua}:
+\lines
+print("Hello world!")
+\endlines
+\sourcecode{from_lines():add_output()}
+
+In ambiente Linux o Mac OS~X, come per tutti gli altri linguaggi di scripting,
+possiamo inserire come prima riga del file a cui sono stati assegnati i permessi
+di esecuzione, la
+\href{http://en.wikipedia.org/wiki/Shebang_%28Unix%29}{Sha-Bang}. In questo modo
+basterà semplicemente scriverne il nome nel terminale, e in questo caso è
+conveniente omettere l'estensione. Ecco il programma con la Sha-Bang:
+\lines
+#!/usr/bin/env lua
+print("Hello world!")
+\endlines
+\sourcecode{from_lines()}
+
+Lua è in grado di passare al programma gli argomenti che l'utente digita nel
+terminale separandoli da spazi, tramite la tabella array chiamata \key{arg} che
+conterrà all'indice 0 il nome dello script, e ai successivi indici i vari
+argomenti utente come tipo stringa. Questa proprietà assieme alla tecnica della
+sha-bang, dà all'utente la possibilità di scrivere programmi in Lua come se
+fossero comandi da terminale, almeno per gli ambienti di classe *nix.
+
+\chapter{Preparazione di un interprete Lua}
+
+Poiché l'interprete Lua non interferisce con \LuaTeX{} e occupa una quantità di
+memoria davvero piccola, è consigliabile installarlo per poter usare il modo
+interattivo REPL e per sperimentare più comodamente.
+
+Per seguire queste chiaccherate andrà benissimo una versione di Lua uguale o
+superiore alla 5.1. Tuttavia è preferibile installare la versione che
+corrisponde a quella inclusa in \LuaTeX{}, che viene riportata anche nel suo
+manuale.
+
+L'interprete Lua è scritto in Ansi~C e per questo è disponibile praticamente
+per tutte le piattaforme, eventualmente compilandone i sorgenti.
+
+Per verificare l'installazione è possibile dare il seguente comando da
+terminale per stampare la versione dell'interprete:
+\begin{Verbatim}
+    $ lua -v
+    Lua 5.2.3  Copyright (C) 1994-2013 Lua.org, PUC-Rio
+\end{Verbatim}
+
+
+
+\subsection{Linux}
+
+Per i sistemi Linux fate ricorso al package manager della vostra distribuzione,
+per esempio per le distribuzioni Debian e derivate come Ubuntu, è sufficiente
+dare il comando:
+\begin{Verbatim}
+    $ sudo apt-get install lua
+\end{Verbatim}
+
+
+
+\subsection{Windows}
+
+Per Windows fate riferimento alla pagina
+\href{http://luabinaries.sourceforge.net/index.html}{LuaBinaries}. In caso di
+problemi potete scaricare un file autoinstallante dal progetto
+\href{https://github.com/rjpcomputing/luaforwindows}{Lua for Windows} fermo
+però alla versione 5.1.5 di Lua ma completo di alcune librerie utili.
+
+
+
+\subsection{Mac OSX}
+
+Per Mac OSX andate alla pagine \href{http://rudix.org/packages/lua.html}{Rudix}
+e individuate il package adatto per la versione del vostro Mac.
+
+
+
+\section{Come eseguire il codice}
+
+Operativamente, ci sono molti modi per eseguire codice Lua. La modalità usuale
+è installarne l'interprete e questo capitolo riporta le procedure per i tre
+principali sistemi operativi.
+
+Se si dispone di una recente distribuzione del sistema \TeX{}, per esempio
+TeX~Live, uno \emph{script} in Lua può anche essere eseguito da \LuaTeX{}, per
+esempio con il comando da terminale:
+\begin{Verbatim}
+$ luatex --luaonly nomefile
+\end{Verbatim}
+
+Nella parte~\ref{partLuaTeX} vedremo come sia possibile inserire il codice Lua
+all'interno di un sorgente \texttt{.tex}. Per esempio, poiché sto componendo
+questa guida in \LuaLaTeX{} --- che altro non è che \LuaTeX{} con il formato
+\LaTeX{} precaricato --- scrivendo il codice:
+\begin{Verbatim}
+\directlua{tex.print(lua.version)}
+\end{Verbatim}
+posso dirvi che la versione di Lua inclusa è \directlua{tex.print(lua.version)}.
+
+
+\subsection{Modalità interattiva}
+
+Aprite un terminale, o console in Windows, e digitate semplicemente il comando
+\texttt{lua}. Entreremo nella modalità interattiva dove potremo
+digitare istruzioni una alla volta. Per uscire tornando al prompt, digitate la
+funzione \texttt{os.exit()} seguita da un bel tasto invio.
+
+In modalità interattiva possiamo comodamente controllare quale tipo ha un
+valore, utilizzando la funzione \texttt{type()}. Essa restituisce una stringa
+che corrisponde al nome del tipo di un'espressione, stringa che possiamo a sua
+volta stampare con la funzione \texttt{print()} in console. Digitiamo
+\footnote{Il doppio trattino inserisce un commento di riga.}:
+\lines
+a = 123
+print(type(123))    --> stampa "number"
+print(type(a))      --> stampa "number"
+print(type("123"))  --> stampa "string"
+\endlines
+\sourcecode{from_lines()}
+
+
+% end of file
+

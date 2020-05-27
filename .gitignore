@@ -1,0 +1,10 @@
+# no common auxiliary files
+*.log
+*.aux
+*.synctex.gz
+*.out
+*.toc
+*.gz
+*.zip
+# no temporary lua file needed to sourcecode.sty
+tmp.lua
