@@ -39,10 +39,12 @@ Compilazione dei sorgenti della guida
 -------------------------------------
 
 Tutto il necessario per compilare la guida con LuaLaTeX è contenuto nel
-repository. Occorrono tuttavia due accortezze:
+repository. Per farlo occorre una distribuzione TeX abbastanza recente, per
+esempio una TeX Live 2020, e il seguente comando:
 
-1. usare l'opzione `--shell-escape`,
-2. la distribuzione TeX deve essere abbastanza recente.
+```bash
+lualatex --shell-escape guidalua
+```
 
 Licenza
 -------
