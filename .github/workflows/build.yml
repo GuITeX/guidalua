@@ -28,3 +28,8 @@ jobs:
           compiler: lualatex
           args: --shell-escape
           root_file: guidalua.tex
+      - uses: actions/upload-artifact@v2
+        with:
+          name: guidalua
+          path: guidalua.pdf
+    
