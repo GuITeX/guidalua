@@ -1,0 +1,32 @@
+% !TeX program = LuaLaTeX
+% filename: app-start/E1-003-fattoriale.tex
+\documentclass{article}
+\usepackage{siunitx}
+% tabella di namespace
+\directlua{
+assert(not app)
+app = {}
+function app.fact(n)
+    local res = 1
+    for i = 1, n do
+        res = res * i
+    end
+    return res
+end
+}
+% user command
+\newcommand{\fattoriale}[1]{\num{\directlua{
+    local n = assert(tonumber(#1))
+    tex.print(tostring(app.fact(n)))
+}}}
+\begin{document}
+\noindent\( 10! = \fattoriale{10} \)\\
+\( 11! = \fattoriale{11} \)\\
+\( 12! = \fattoriale{12} \)\\
+\( 13! = \fattoriale{13} \)\\
+\( 14! = \fattoriale{14} \)\\
+\( 15! = \fattoriale{15} \)\\
+\( 16! = \fattoriale{16} \)\\
+\( 17! = \fattoriale{17} \)\\
+\( 18! = \fattoriale{18} \)
+\end{document}

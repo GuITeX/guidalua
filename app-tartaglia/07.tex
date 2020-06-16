@@ -1,0 +1,133 @@
+% !TeX program = LuaTeX
+% filename: app-tartaglia/07.tex
+\input tikz.tex
+\newbox\tartbox
+\begingroup
+\catcode`\%=12
+\gdef\percentchar{%}
+\endgroup
+\nopagenumbers
+\directlua{
+local function pack_digits(n)
+    assert(type(n) == "number")
+    assert(not (n < 0))
+    local f = font.current()
+    local ascii_0 = string.byte("0")
+    if n == 0 then
+        local g = node.new("glyph")
+        g.char = ascii_0
+        g.font = f
+        local hbox = node.hpack(g)
+        local w = node.dimensions(hbox)
+        return hbox, w
+    end
+    local list
+    while n > 0 do
+        local digit = n \percentchar 10
+        n = (n - digit)/10
+        local g = node.new("glyph")
+        g.char = digit + ascii_0
+        g.font = f
+        list = node.insert_before(list, list, g)
+    end
+    local hbox = node.hpack(list)
+    local w = node.dimensions(hbox)
+    return hbox, w
+end
+
+local function pack_level(t, diff_level, k_left, k_right)
+    local a = tex.sp "24pt"
+    local w1
+    local head, last
+    if diff_level == 0 then
+        k_left, k_right = nil, nil
+    end
+    if k_left then
+        head = node.new("glue")
+        head.width = a*diff_level*k_left
+        last = head
+    end
+    for _, n in ipairs(t) do
+        local hbox, w2 = pack_digits(n)
+        if w1 then
+            local g = node.new("glue")
+            g.width = a - (w1+w2)/2
+            w1 = w2
+            head, last = node.insert_after(head, last, g)
+            head, last = node.insert_after(head, last, hbox)
+        else
+            w1 = w2
+            head, last = node.insert_after(head, last, hbox)
+        end
+    end
+    if k_right then
+        local g = node.new("glue")
+        g.width = a*diff_level*k_right
+        head, last = node.insert_after(head, last, g)
+    end
+    return node.hpack(head)
+end
+
+local function next_level(t, row)
+    t[row+1] = 1
+    for e = row, 2, -1 do
+        t[e] = t[e] + t[e-1]
+    end
+end
+
+local function tartaglia(level, align)
+    assert(type(level)=="number")
+    local k_left, k_right; if align then
+        if type(align) == "string" then
+            if align == "center" then
+                k_left, k_right = 0.5, 0.5
+            elseif align == "right" then
+                k_right = 1
+            elseif align == "left" then
+                k_left = 1
+            end
+        elseif type(align) == "number" then
+            if align == 0 then
+                k_right = 1
+            elseif align == 1 then
+                k_left = 1
+            else
+                k_left, k_right = align, 1 - align
+            end
+        else
+            error("Unexpected alignment value")
+        end
+    else
+        k_left, k_right = 0.5, 0.5
+    end
+    local il = tex.sp "8.5pt"
+    local head, last
+    local t = {}
+    for l = 0, level do
+        next_level(t, l)
+        local hbox = pack_level(t, level - l, k_left, k_right)
+        if head then
+            local g = node.new("glue")
+            g.width = il
+            head, last = node.insert_after(head, last, g)
+            head, last = node.insert_after(head, last, hbox)
+        else
+            head, last = node.insert_after(head, last, hbox)
+        end
+    end
+    local vbox = node.vpack(head)
+    return vbox
+end
+tex.box.tartbox = tartaglia(8)
+}
+
+\tikzpicture
+\foreach \x in {-96,-72,...,96} {
+\draw[blue] (\x pt,68pt) -- (\x pt,-68pt);
+}
+\foreach \x in {-84,-60,...,84} {
+\draw[red] (\x pt,68pt) -- (\x pt,-68pt);
+}
+\node at (0, 0) {\box\tartbox};
+\endtikzpicture
+\bye

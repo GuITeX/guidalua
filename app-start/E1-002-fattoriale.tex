@@ -1,0 +1,21 @@
+% !TeX program = LuaLaTeX
+% filename app-start/E1-002-fattoriale.tex
+\documentclass{article}
+\directlua{
+function fact(n)
+    local res = 1
+    for i = 1, n do
+        res = res * i
+    end
+    return res
+end
+}
+
+\newcommand{\fattoriale}[1]{\directlua{
+    local n = assert(tonumber(#1))
+    tex.print(tostring(fact(n)))
+}}
+
+\begin{document}
+\( 5! = \fattoriale{5} \)
+\end{document}

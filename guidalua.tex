@@ -1,11 +1,11 @@
 % !TeX program = lualatex--shell-escape
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2020/05/22 v0.2.1 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2020/06/15 v0.3.1 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
-
+\setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
-
+\fvset{fontsize=\small}
 \usepackage[
     colorlinks=true,
     linkcolor=blue,
@@ -24,6 +24,7 @@
 
 \newcommand\tcmd[1]{\normalfont\texttt{#1}}
 \newcommand\key[1]{\normalfont\texttt{#1}}
+\newcommand\code[1]{\normalfont\texttt{#1}}
 \newcommand\fn[1]{\normalfont\texttt{#1()}}
 
 \begin{document}
@@ -73,7 +74,13 @@
 
 \input{section/2-app/01-start}
 
-\input{section/2-app/02-primi-esempi}
+\input{section/2-app/02-registro}
+
+\input{section/2-app/03-tartaglia-nodi}
+
+%\input{section/2-app/04-cerchio-pdfliteral}
+
+%\input{section/2-app/05-dati-esterni}
 
 \appendix
 

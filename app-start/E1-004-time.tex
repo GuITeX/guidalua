@@ -1,0 +1,11 @@
+% !TeX program = LuaTeX
+% filename: app-start/E1-004-time.tex
+\directlua{
+    local time = \the\time
+    local h = math.floor(time/60)
+    local m = time - h*60
+    local percent = string.char(37)
+    local fmt_hhmm = percent.."02d:".. percent.."02d"
+    tex.print(string.format(fmt_hhmm, h, m))
+}
+\bye

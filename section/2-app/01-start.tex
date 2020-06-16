@@ -7,6 +7,10 @@ Questo capitolo ancora introduttivo fornisce informazioni sulla differenza tra
 motore di composizione e formato, e sulla procedura per l'esecuzione di codice
 Lua all'interno di un sorgente \TeX.
 
+I listati che riportano nella seconda riga di commento il nome del file
+corrispondente, sono scaricabili dal repository del progetto della guida
+\url{https://github.com/GuITeX/guidalua}.
+
 
 \section{Motori di composizione e formati}
 
@@ -91,12 +95,15 @@ il testo uscirà tra gli altri messaggi di output senza che sia prodotto un file
 PDF. Ciò significa che \cs{directlua} è una macro espandibile con risultato
 vuoto.
 
-La prima riga di commento è una \emph{riga magica}, comodissima nel dare
-istruzione allo shell editor su quale motore di composizione e formato
-utilizzare per compilare il documento. In questo caso essa è scritta nella
-sintassi prevista da TeX Works. Per la comprensione del codice le righe magiche
-sono inutili ma aiutano il lettore a stabilire il contesto di esecuzione, perciò
-le troverete nei listati della guida se pertinenti.
+La prima riga è una \emph{riga magica}, comodissima nel dare istruzione allo
+shell editor sul programma da usare per compilare il documento ma ignorata
+durante la compilazione stessa essendo un commento. La sintassi delle righe
+magiche dipende dall'editor, in questo caso essa è scritta secondo le regole di
+TeX Works.
+
+Per la comprensione del codice le righe magiche sono inutili ma aiutano il
+lettore a stabilire il contesto di esecuzione, perciò le troverete nei listati
+della guida quando pertinenti.
 
 Se il sorgente è memorizzato nel file \texttt{primo.tex}, possiamo verificare
 quanto previsto in un terminale lanciando il comando:
@@ -135,23 +142,161 @@ $ lualatex primo
 
 Avremo potuto inserire la macro all'interno dell'ambiente \amb{document} anziché
 nel preambolo. Quando \TeX{} incontra \cs{directlua} ne \emph{espande}
-l'argomento e passa a Lua il controllo che esegue immediatamente il
-codice restituendo di nuovo il controllo dell'esecuzione a \TeX{} al termine.
+l'argomento e passa a Lua il controllo che esegue immediatamente il codice fino
+a restituire al termine il controllo dell'esecuzione di nuovo a \TeX.
 
 
 \section{Passaggio di dati}
 
-Da \TeX{} verso Lua i dati possono arrivare tramite espansione. Nella direzione
-opposta tramite la scrittura di token con le funzioni della famiglia
-\fn{tex.print}.
+La comunicazione dati bidirezionale tra \TeX{} e Lua può avvenire con la
+tecnologia dei nodi come vedremo certamente quella più avanzata e complessa ma
+non è l'unica: i dati possono arrivare a Lua tramite l'espansione, mentre nella
+direzione opposta è possibile scrivere del testo nella lista di input del
+compositore con le funzioni della famiglia \fn{tex.print}.
 
+Interrompete la lettura della guida per provare a scrivere la funzione Lua
+\fn{fact} che calcola il fattoriale di un intero. La useremo per dimostrare come
+avviene questo scambio di dati. L'idea è definire un nuovo comando che accetti
+un numero e ne stampi il fattoriale:
+\begin{Verbatim}
+\newcommand{\fattoriale}[1]{\directlua{
+    local n = #1
+    tex.print(tostring(fact(n)))
+}}
+\end{Verbatim}
+
+La definizione si basa sulla macro base \cs{newcommand} dove si indica, se
+esistono, il numero degli argomenti tra parentesi quadre e la definizione. Ogni
+argomento ha un segnaposto che inizia con il carattere \code{\#} seguito dal
+numero del gruppo\footnote{Fate riferimento ha una buona guida per \LaTeX{} per
+saperne di più sulla definizione di macro utente.}. Quando \TeX{} incontra un
+segnaposto lo sostituisce con il corrispondente testo introdotto dall'utente.
+Per questo quando scriveremo \cs{fattoriale}\code{\{5\}} il codice Lua
+effettivamente eseguito sarà:
+\begin{Verbatim}
+local n = 5
+tex.print(tostring(fact(n)))
+\end{Verbatim}
+
+La funzione \fn{tex.print} inserisce l'argomento nella lista d'ingresso del
+testo. Quando termina l'esecuzione del blocco di codice Lua i prossimi caratteri
+che si troverà il compositore saranno le cifre che compongono il fattoriale.
+
+Trovate ora il listato del sorgente completo da confrontare con la vostra
+personale soluzione:
+\VerbatimInput{app-start/E1-001-fattoriale.tex}
+
+
+\section{Globale o locale}
+
+Prendendo spunto ancora dall'esempio precedente, soffermiamoci sul comportamento
+nei diversi blocchi \cs{directlua} delle definizioni locali e globali: come
+descritto dalle specifiche di Lua, tutto quello che è locale a un blocco non è
+più disponibile al di fuori di esso. Nel contesto di \LuaTeX{} il codice
+contenuto in una macro \cs{directlua} forma un blocco.
+
+Per questo motivo se separassimo il codice che calcola il fattoriale dalla
+definizione della macro utente \cs{fattoriale}, dovremo definire la funzione
+come globale. Altrimenti riceveremmo un errore di chiamata di un valore
+\code{nil} dal secondo blocco:
+\VerbatimInput{app-start/E1-002-fattoriale.tex}
+
+Le definizioni globali tuttavia possono determinare errori dovuti alla
+collisione dei nomi essendo l'ambiente globale unico per tutto il sorgente.
+Spesso, come per gli esempi della guida, non è un problema ma è buona norma
+definire una tabella di \emph{namespace} dove memorizzare le funzioni limitando
+la collisione dei nomi solamente al nome del riferimento alla tabella.
+
+Questa buona prassi diviene \emph{obbligatoria} quando stiamo scrivendo codice
+applicativo in contesti di utilizzo reale.
+
+Come ulteriore esempio, nel listato\footnote{Questo listato è interessante
+perché è migliorabile sia per eliminare le ripetizioni di codice a cui è
+costretto l'utente sia nell'efficienza di esecuzione.} che segue è mostrato come
+si possa formattare il numero del fattoriale con il pacchetto
+\pack{siunitx}: \VerbatimInput{app-start/E1-003-fattoriale.tex}
+
+
+\section{Espansione di macro}
+
+La comunicazione di un input tra \TeX{} e Lua può avvenire anche per espansione
+di macro. Come esempio minimo consideriamo il seguente sorgente \LuaTeX{} che
+stampa l'ora di inizio della compilazione avvalendosi del contatore \cs{time}
+che indica i minuti trascorsi dall'inizio del giorno:
+\VerbatimInput{app-start/E1-004-time.tex}
+
+Al termine dell'espansione l'istruzione di assegnazione della variabile numerica
+\key{time} sarà l'effettiva e corretta sintassi Lua. Per il formato \LuaLaTeX{}
+lo stesso file potrebbe essere:
+\VerbatimInput{app-start/E1-005-time.tex}
+
+Al capitolo~\ref{iichRegistro} vedremo che anche con la libreria standard di Lua
+è possibile ottenere la data e l'ora corrente.
 
 
 \section{Sovrapposizione di significati}
 
-Alcuni simboli hanno un diverso significato per \TeX{} e per Lua, dando luogo a
-errori o a comportamenti imprevisti.
+Alcuni simboli hanno un diverso significato per \TeX{} e per Lua, per esempio il
+carattere cancelletto, la stessa backslash o il simbolo di percento. \LuaTeX{}
+non si occupa direttamente di modificare il significato dei simboli che si
+sovrappongono poiché il codice è sempre responsabilità dell'utente.
 
+Le descizioni dei conseguenti errori possono essere criptici ma ci sono almeno
+quattro diverse soluzioni:
+\begin{compactitemize}
+\item scrivere il codice Lua in file esterni,
+\item utilizzare codice \TeX{} per gestire l'espansione dei simboli o i codici
+di categoria,
+\item quando possibile usare i codici ASCII per creare stringhe che contengono
+i simboli, con la funzione \fn{string.char},
+\item utilizzare il pacchetto \pack{luacode}.
+\end{compactitemize}
+
+Come preferenza personale non utilizzo l'ottimo pacchetto \pack{luacode},
+semplicemente per evitare una dipendenza in più. Tuttavia non appena il codice
+Lua cresce in numero di linee o diventa un componente di un progetto reale,
+quasi sempre si devono utilizzare file esterni per una più agevole gestione del
+progetto.
+
+Rimando alla documentazione del pacchetto \pack{luacode} per i dettagli sulla
+collisione dei simboli. Vedrete che esso offre due comandi e due ambienti per
+poter far convivere il codice Lua in un sorgente \LaTeX.
+
+Nel codice Lua si possono usare i commenti in stile \TeX{} con il simbolo del
+percento perché il processo d'espansione li elimina \emph{prima} di passare il
+codice all'interprete, ma non si possono usare i commenti in stile Lua con il
+doppio trattino a meno che non siano all'ultima linea. Infatti, per la stessa
+espansione tutto il codice Lua nella macro \cs{directlua} è inviato
+all'interprete come un unica linea di codice perciò il commento dopo un doppio
+trattino si estenderebbe non solo a fine riga ma a tutto il codice che segue.
+
+Per fortuna la grammatica Lua a differenza di Python, consente la libera
+scrittura e identazione del codice.
+
+
+\section{Le librerie disponibili in \LuaTeX}
+
+Agli usuali moduli della libreria standard di Lua, sono stati aggiunti in
+\LuaTeX{} così come per gli altri motori di composizione estesi, speciali
+funzionalità dedicate al controllo dello stato interno e alla creazione di
+elementi tipografici.
+
+
+\section{La primitiva directlua}
+
+Abbiamo ora tutte le informazioni per svolgere alcune applicazioni fin dai
+prossimi capitoli. Non rimane che riassumere che il principale modo di eseguire
+codice Lua in \LuaTeX{} è assegnarlo come argomento alla macro \cs{directlua}.
+Quello che avviene è stabilito da queste regole:
+\begin{compactenumerate}
+\item l'argomento di \cs{directlua} viene espanso ed eseguito come blocco, può
+quindi contenere macro o argomenti macro con un testo di sostituzione;
+
+\item le variabili locali hanno validità solo all'interno del blocco mentre
+quelle globali saranno valide anche in quelli di successive \cs{directlua};
+
+\item l'espansione di \cs{directlua} è vuota;
+\end{compactenumerate}
 
 
 % end of file

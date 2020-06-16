@@ -1,0 +1,14 @@
+% filename: app-registro/historylog.sty
+\NeedsTeXFormat{LaTeX2e}[2000/06/01]
+\ProvidesPackage{historylog}[2020/06/07 Compile task logger]
+% load the Lua module
+\directlua{
+hl_register = require "mod-history"
+}
+% register a compile task line at the end of history.log text file
+\newcommand{\hl@logrun}{\directlua{
+hl_register:log()
+}}
+\AtEndDocument{\hl@logrun}
+\endinput
+

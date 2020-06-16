@@ -1,0 +1,32 @@
+% !TeX program = LuaTeX
+% filename: app-tartaglia/03.tex
+\begingroup
+\catcode`\%=12
+\gdef\percentchar{%}
+\endgroup
+\leavevmode\directlua{
+local function digit(n)
+    assert(type(n) == "number")
+    local f = font.current()
+    local ascii_0 = string.byte("0")
+    if n == 0 then
+        local g = node.new("glyph")
+        g.char = ascii_0
+        g.font = f
+        return g
+    end
+    local list
+    while n > 0 do
+        local digit = n \percentchar 10
+        n = (n - digit)/10
+        local g = node.new("glyph")
+        g.char = digit + ascii_0
+        g.font = f
+        list = node.insert_before(list, list, g)
+    end
+    return list
+end
+local list = digit(12090)
+node.write(list)
+}
+\bye

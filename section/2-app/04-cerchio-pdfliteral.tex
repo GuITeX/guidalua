@@ -1,0 +1,39 @@
+
+
+\chapter{Disegno del cerchio}
+\label{iichCerchio}
+
+In questo capitolo esploreremo un'altro tipo di nodo: il \emph{pdfliteral}.
+Con esso possono essere inserite nel file PDF figure vettoriali definite
+attraverso istruzioni grafiche. Per questi nodi il compositore non fa altro che
+inserirli direttamente e senza alcun controllo nel file di uscita perché siano
+interpretati unicamente dal programma di visualizzazione e stampa PDF.
+
+Dovremo quindi prestare attenzione alla correttezza delle istruzioni che
+definiamo seguendo la sintassi prevista dal formato PDF e contenuta nel PDF
+reference distribuito da Adobe. Un errore potrebbe invalidare l'intero
+documento.
+
+Se si è utenti del sistema \TeX{} ci sarà certamente capitato di dover
+realizzare diagrammi o figure, perciò abbiamo già utilizzato le istruzioni
+pdfliteral ma non direttamente. I pacchetti grafici come \pack{picture2e} o
+\pack{TiKz} infatti, offrono un'interfaccia di alto livello più compatta e
+sicura alle primitive grafiche PDF.
+
+Per conoscere questo tipo di tecnologia, implementeremo in Lua il disegno di
+cerchi.
+
+
+\section{Le curve di Bezier}
+
+
+\section{Cerchio a otto curve}
+
+
+\section{SVG}
+
+
+
+
+
+% end of file

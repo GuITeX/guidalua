@@ -1,0 +1,15 @@
+% !TeX program = LuaTeX
+% filename: app-tartaglia/01.tex
+\directlua{
+local nl = string.char(92).."par"
+local t = {}
+for row = 0, 8 do
+    t[row+1] = 1
+    for e = row, 2, -1 do
+       t[e] = t[e] + t[e-1]
+    end
+    tex.print(table.concat(t, " "))
+    tex.print(nl)
+end
+}
+\bye

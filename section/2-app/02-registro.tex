@@ -1,0 +1,213 @@
+
+
+\chapter{Un registro delle compilazioni}
+\label{iichRegistro}
+
+Siamo giunti al primo capitolo di taglio applicativo. Ci occuperemo di creare
+in Lua un sistema di registrazione delle compilazioni che si concretizza in un
+file posizionato nella directory principale del progetto di documento.
+
+Non è possibile reperire dati generali sulla compilazione eseguendo codice
+durante la compilazione stessa. Dovremo farlo con un tool esterno. Solo in
+questo modo è possibile ottenere il tempo di compilazione totale o accertarsi
+del nome del file sorgente. Tuttavia la registrazione in fase di compilazione è
+utile per imparare con Lua a lavorare con i file e sperimentare un processo di
+sviluppo iterativo molto più rapido che con \TeX.
+
+Chiameremo questo registro \code{history.log} verso cui invieremo una linea di
+testo con alcune informazioni per ciscuna compilazione che il compositore
+completi correttamente.
+
+
+\section{Scrivere sul registro}
+
+Iniziamo a implementare la gestione automatica del registro dalla funzionalità
+chiave: la scrittura su file di testo.
+
+Ci rivolgeremo alla libreria standard di Lua \code{io}\footnote{La completa
+documentazione della libreria \code{io} si trova alla pagina
+\url{https://www.lua.org/manual/5.3/manual.html\#6.8}.}:
+\lines
+-- write a line of text in a file
+local function append(filename, line)
+    local f = io.open(filename, "a+")
+    f:write(line.."\n")
+    f:close()
+end
+\endlines
+\sourcecode{from_lines()}
+
+La funzione \fn{io.open} restituisce un riferimento ad un oggetto che
+rappresenta un canale di input/output del sistema operativo verso un file, che
+useremo in colon notation (vedi alla sezione~\ref{secRectOop}). Lo specificatore
+\code{a+} indica di aprire il file in \emph{append} senza distruggerne il
+contenuto preesistente e se il file non esiste ne verrà creato uno vuoto. In
+ogni caso otterremo il file aperto in scrittura.
+
+La funzione \fn{append} può essere inserita in un sorgente \LuaTeX{}
+compilabile come in questo sorgente:
+\VerbatimInput{app-registro/01.tex}
+
+
+\section{Dati di compilazione}
+
+Costruite le fondamenta stabiliamo quali dati inserire nel registro: l'utente 
+mano a mano che il lavoro sul documento procede eseguirà senza dubbio delle
+compilazioni intermedie perciò registreremo le seguenti informazioni base:
+\begin{compactenumerate}
+\item nome del file sorgente,
+\item dimensione del file sorgente,
+\item data e ora della compilazione,
+\item tempo di esecuzione della composizione,
+\item nome del motore di composizione.
+\end{compactenumerate}
+
+Per formare la linea di registro, al posto della concatenazione di stringhe
+useremo quella di una tabella di stringhe, più efficiente. Riempiremo la tabella
+un dato alla volta in un blocco \cs{directlua} posizionato immediatamente prima
+del termine del sorgente. Come prima istruzione invece, inseriremo il blocco di
+codice Lua che definirà alcuni parametri come il nome del file del registro e il
+separatore di campo testuale, e la funzione \fn{append}:
+\VerbatimInput{app-registro/02.tex}
+
+
+\subsection{La variabile \code{jobname}}
+
+Il nome del file sorgente non è detto che sia contenuto nella variabile
+\code{jobname} che possiamo trovare nella macro omonima oppure nel campo omonimo
+della tabella \code{tex}, tabella Lua contiene alcune funzionalità importanti
+implementate all'interno di \LuaTeX.
+
+Il campo o la macro conterrà il nome del sorgente soltanto se l'utente non ha
+valorizzato l'opzione \code{--jobname} nel comando di compilazione con un altro
+nome.
+
+Infatti, se provassimo a compilare il listato \code{02.tex} con il seguente
+comando
+\begin{Verbatim}
+$ luatex --jobname=abc 02
+\end{Verbatim}
+otterremo un errore che blocca la compilazione. Nel secondo \cs{directlua} la
+variabile locale \key{jobname} conterrebbe infatti la stringa \code{abc.tex}
+che è un file che non esiste. Di conseguenza la funzione \fn{lfs.attributes}
+restituisce \key{nil} che ovviamente non può essere indicizzato con la chiave
+\key{size}.
+
+La tabella \code{lfs} contiene la libreria Lua File System disponibile per i
+sistemi operativi più diffusi, con alcune funzionalità sui file che non troviamo
+di base in Lua perché l'interprete ha regole stringenti di portabilità. La
+troviamo in \LuaTeX{} già compilata staticamente, mentre la documentazione
+si trova all'indirizzo web
+\url{https://keplerproject.github.io/luafilesystem/manual.html}.
+
+Se la funzione \fn{lfs.attributes} non restituisce la tabella con i dati del
+file significa dunque che nel comando di compilazione è stata attivata l'opzione
+\code{--jobname} per assegnare un diverso nome al file PDF di uscita.
+Modifichiamo dunque il codice in questo senso:
+\lines
+local jobname = tex.jobname
+local attr = lfs.attributes(jobname..".tex")
+if attr then
+    tline[1] = jobname
+    tline[2] = attr.size
+else
+    tline[1] = jobname..".pdf"
+    tline[2] = "unknow"    
+end
+tline[3] = os.date()
+tline[4] = os.clock() - register.start
+tline[5] = status.luatex_engine
+\endlines
+\sourcecode{from_lines()}
+
+Anche l'estensione \code{.tex} è un problema perché se fosse diversa ancora il
+codice non funzionerebbe, per esempio se il file sorgente avesse estensione
+\code{.TEX}.
+
+
+\subsection{Gli altri dati}
+
+Come sappiamo dal capitolo~\ref{iChLibstd} la tabella \key{os} appartiene alla
+libreria standard di Lua. La documentazione delle funzioni \fn{os.date} e
+\fn{os.clock} si trova quindi nel reference ufficiale del linguaggio alla pagina
+\url{https://www.lua.org/manual/5.3/manual.html#6.9}.
+
+Infine, maggiori informazioni sulla tabella \key{status} da cui leggiamo il nome
+del motore di composizione, possono essere reperite nel manuale di \LuaTeX{}.
+
+La misura del tempo di compilazione che registriamo più precisamente è il tempo
+che trascorre tra i due momenti in cui eseguiamo la funzione \fn{os.clock}
+perciò non comprende il tempo iniziale di avvio e caricamento del formato, né
+i tempi finali di chiusura come la composizione del materiale non ancora emesso
+sulla pagina.
+
+
+\section{Creare il modulo e il pacchetto}
+
+Sposteremo il codice Lua in un file esterno che rappresenterà un \emph{modulo},
+così che potremo con un secondo file fornire l'interfaccia utente all'interno
+di un formato, per esempio per \LaTeX.
+
+Il modulo implementa funzioni Lua di alto livello scritte sulle funzioni del
+compositore e di eventuali librerie esterne. Un \emph{pacchetto} fornisce
+l'interfaccia utente con le regole sintattiche e l'integrazione con un dato
+formato.
+
+Questa separazione non è solo utile per un buon sviluppo, ma facilita l'accesso
+alle funzionalità da parte degli utenti indipendentemente dal formato.
+
+Allo stato attuale dello sviluppo del codice, il modulo Lua è il seguente:
+\sourcecode{from_file [[app-registro/mod-history.lua]]}
+
+Tutte le funzionalità sono racchiuse in un unica tabella Lua chiamata
+\code{register}. Dall'esterno, caricando il modulo con la funzione \fn{require}
+potremo assegnarne il riferimento a una variabile locale o globale a seconda
+delle necessità.
+
+L'uso della colon notation per chiamare le funzioni non fa parte di
+un'implementazione a oggetti ma è solo un semplice modo per poter disporre di un
+riferimento alla tabella contenitore con la chiave \key{self}. Ciò rende pulito
+il codice ed elimina la necessità di creare una closure, (piccolo incremento
+delle prestazioni) per includere il riferimento.
+
+Il sorgente in plain \LuaTeX{} si semplifica in questo:
+\VerbatimInput{app-registro/03.tex}
+
+Per compilarlo correttamente il file Lua del modulo chiamato
+\code{mod-history.lua} deve essere visibile. La soluzione più semplice è
+copiarlo localmente nella directory del sorgente.
+
+A questo punto è semplice creare un pacchetto \LaTeX{} d'interfaccia. Non ci
+sarà alcuna macro utente ma un aggiunta al codice di chiusura del documento
+con la macro \cs{AtEndDocument}. Basta caricare il pacchetto e tutte le
+compilazioni del sorgente verranno registrate. Ecco il codice:
+\VerbatimInput{app-registro/historylog.sty}
+
+e un conseguente file sorgente compilabile con Lua\LaTeX{}:
+\VerbatimInput{app-registro/doc.tex}
+
+Compilatelo più volte e controllate poi il file locale \code{history.log}.
+
+
+\section{Sviluppo}
+
+Abbiamo fino a ora seguito in dettaglio la costruzione di un modulo per inserire
+in un registro alcune informazioni sulle compilazioni del documento,
+implementando la funzionalità minima.
+
+In questa sezione, proveremo a dare al modulo una nuova struttura. Ci sono molti
+modi per consentire all'utente di scegliere quali dati registrare e in quale
+formato. L'obiettivo è quello di aggiungere funzionalità in modo che sia
+semplice. Per esempio, se si vuole che la data sia trascritta nel formato ISO
+\code{yyyy-mm-dd} oppure che la dimensione del file riporti unità di misura
+che si adattano a seconda della magnitudo del valore.
+
+Elaboreremo la struttura di un \emph{framework}.
+
+
+
+
+
+
+% end of file
+

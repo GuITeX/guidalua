@@ -1,0 +1,19 @@
+% !TeX program = LuaTeX
+% filename: app-registro/01.tex
+\directlua{
+register = {}
+function register.append(filename, line)
+    local f = io.open(filename, "a+")
+    local nl = string.char(10)
+    f:write(line..nl)
+    f:close()
+end
+}
+
+Testo
+
+\directlua{
+register.append("history.log", "new run")
+}
+\bye
+

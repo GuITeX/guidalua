@@ -1,0 +1,62 @@
+
+
+\chapter{Dati esterni}
+\label{iichDati}
+
+Il tema molto vasto di questo capitolo è la tecnologia che ci permette di
+includere nei documenti dati esterni. Può capitare di voler comporre un buon
+numero di documenti che condividono un insieme di dati, oppure di comporre un
+documento che riporti tabelle con dati sperimentali residenti in file esterni.
+
+Nel primo caso, vorremmo evitare di digitare sempre gli stessi dati in ciascun
+documento con il rischio di sbagliare, mentre nel secondo cercheremo una
+procedura che carichi in automatico i dati all'interno del documento
+presentandoli con aspetto professionale.
+
+Oppure ancora, potremo trovarci in ambito aziendale dove i dati che dovremo
+includere nei documenti sono responsabilità di unità operative diverse dalla
+nostra. Cercheremo un modo per condividere le informazioni in modo efficiente e
+sicuro.
+
+Gli scenari sono quindi molto vari e di conseguenza le tecnologie utili possono
+essere le più diverse, per esempio nel fornire o meno la lettura sincrona dei
+dati da un database. Comunque sia presenterò degli esempi concreti solamente per
+contesti di gestione dati in cui è il motore di composizione a compiere le
+elaborazioni affinché i dati siano disponibili all'interno del sorgente. A
+questo ambito daremo il nome di \emph{progetti documentali}.
+
+Per esempio, non è un progetto di documento quello in cui il programma elabora i
+dati e crea il relativo file di testo che rappresenta il sorgente \TeX{}.
+Infatti, così facendo non solo sarebbe possibile compilare il sorgente con i
+compositori tradizionali come PDF\LaTeX{} o Xe\LaTeX{}, e quindi non saremo in
+tema, ma non lavoreremo scrivendo il sorgente in modo diretto, ovvero nel
+contesto ideale per comporre documenti complessi che contengono variazioni uno
+rispetto all'altro sia nel contenuto sia nella struttura.
+
+
+\section{Lua table}
+
+Il modo più semplice per includere dati esterni è quello che non richiede la
+scrittura di alcun modulo per caricare i dati. In altre parole, i dati devono
+essere scritti secondo un formato nativo del linguaggio, nel nostro caso Lua.
+
+Questo formato nativo per Lua non può che essere il costruttore di tabelle, che
+abbiamo incontrato al capitolo~\ref{iChTabella}. Applicheremo questa fantastica
+tecnica per realizzare modi diversi di presentare gli stessi dati.
+
+
+
+
+
+
+
+
+%\subsection{Lua type}
+
+
+%\subsection{SQLite3 e i quadri economici}
+
+
+%\subsection{Matematica simbolica}
+
+% end of file

@@ -1,0 +1,30 @@
+% !TeX program = LuaTeX
+% filename: app-registro/02.tex
+\directlua{
+register = {
+    start = os.clock(),
+    sep = ", ",
+    filename = "history.log",
+}
+function register:append(tline)
+    local f = io.open(self.filename, "a+")
+    local sep = self.sep
+    f:write(table.concat(tline, sep))
+    f:write(string.char(10))
+    f:close()
+end
+}
+
+Testo
+
+\directlua{
+local tline = {}
+local jobname = tex.jobname..".tex"
+tline[1] = jobname
+tline[2] = lfs.attributes(jobname).size
+tline[3] = os.date()
+tline[4] = os.clock() - register.start
+tline[5] = status.luatex_engine
+register:append(tline)
+}
+\bye

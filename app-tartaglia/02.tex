@@ -1,0 +1,9 @@
+% !TeX program = LuaTeX
+% filename: app-tartaglia/02.tex
+\leavevmode\directlua{
+local g = node.new("glyph")
+g.char = 8 + string.byte("0")
+g.font = font.current()
+node.write(g)
+}
+\bye
