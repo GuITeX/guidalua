@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build LuaLaTeX guide
+name: Compile LuaLaTeX main file
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -23,6 +23,7 @@ jobs:
           args: --shell-escape
           root_file: guidalua.tex
       - name: Compile LuaLaTeX document ii
+        id: compiled_ii
         uses: dante-ev/latex-action@master
         with:
           compiler: lualatex
@@ -32,4 +33,13 @@ jobs:
         with:
           name: guidalua
           path: guidalua.pdf
-    
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            upload_url: ${{ steps.compiled_ii.outputs.upload_url }}
+            asset_path: ./guidalua.pdf
+            asset_name: guidalua.pdf
+            asset_content_type: application/pdf
