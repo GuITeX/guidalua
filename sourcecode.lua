@@ -1,4 +1,4 @@
--- a LuaTeX small library to typeset source code
+-- a LuaTeX small library to typeset source code along with its console output
 
 local sclib = {} -- main container
 
@@ -141,7 +141,7 @@ local function get_lines(filename, delim_key)
         end
     end
     if is_open then
-        error("Not close delimiter in the source file")
+        error("Unclosed delimiter in the source file")
     else
         error("Delimiter not found in the source file")
     end

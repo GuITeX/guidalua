@@ -3,13 +3,13 @@
 \chapter{Sul sistema \TeX{} e Lua}
 \label{iichExplain}
 
-Questo capitolo ancora introduttivo fornisce informazioni sulla differenza tra
-motore di composizione e formato, e sulla procedura per l'esecuzione di codice
-Lua all'interno di un sorgente \TeX.
+Questo capitolo fornisce informazioni sulla differenza tra motore di
+composizione e formato, e sulla procedura per l'esecuzione di codice Lua
+all'interno di un sorgente \TeX.
 
 I listati che riportano nella seconda riga di commento il nome del file
-corrispondente, sono scaricabili dal repository del progetto della guida
-\url{https://github.com/GuITeX/guidalua}.
+corrispondente, sono scaricabili dal
+\href{https://github.com/GuITeX/guidalua}{repository} del progetto della guida.
 
 
 \section{Motori di composizione e formati}
@@ -56,9 +56,9 @@ Tutti e tre questi compositori possono eseguire il formato \LaTeX. Come detto in
 apertura di sezione, esiste il programma \prog{lualatex} scorciatoia a un
 compositore che carica il formato \LaTeX.
 
-Nella TeX Live 2020 questo compositore è \prog{luahbtex}. Per rendercene conto
-basta scrivere in un terminale il nome del programma, leggere l'output e premere
-CTRL + C per chiuderne l'esecuzione di prova:
+Dalla TeX Live 2020 questo compositore è \prog{luahbtex}. Per rendercene conto
+basta scrivere in un terminale il nome del programma, premere invio e leggere
+l'output e premere CTRL + C per chiuderne l'esecuzione di prova:
 \begin{Verbatim}
 > lualatex
 This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/W32TeX)
@@ -234,7 +234,7 @@ Al capitolo~\ref{iichRegistro} vedremo che anche con la libreria standard di Lua
 è possibile ottenere la data e l'ora corrente.
 
 
-\section{Sovrapposizione di significati}
+\section{Caratteri speciali}
 
 Alcuni simboli hanno un diverso significato per \TeX{} e per Lua, per esempio il
 carattere cancelletto, la stessa backslash o il simbolo di percento. \LuaTeX{}

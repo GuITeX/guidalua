@@ -1,0 +1,33 @@
+
+
+\section{Come eseguire gli esercizi}
+
+È certamente fondamentale eseguire noi stessi esempi ed esercizi di
+programmazione allo scopo di acquisire la padronanza di Lua. Nella guida ne
+trovate alcuni alla fine di ciascun capitolo della parte prima. 
+
+Questa sezione vi introduce brevemente al programma \prog{texlua} che già
+trovate compreso in ogni recente distribuzione \TeX{}. Si tratta dell'interprete
+Lua controparte di \texttt{luatex}.
+
+Rispetto all'interprete \prog{lua} standard \prog{texlua} non ha la modalità
+interativa REPL\footnote{Read–eval–print loop.} con cui si digita una linea di
+codice alla volta in un prompt interattivo, modalità utile per fare provare il
+funzionamento di funzioni.
+
+Il codice dunque, andrà memorizzato in un file con estensione \texttt{.lua}.
+Come esempio elementare, digitiamo questa unica riga di codice in un file
+di testo chiamato \texttt{primo.lua}:
+\begin{Verbatim}
+print("Hello World!")
+\end{Verbatim}
+apriamo una finestra di terminale\footnote{Maggiori dettagli per diversi sistemi
+operativi sulla linea di comando possono essere trovati nella guida tematica
+dedicata scaricabile dal sito GuIT.} e lanciamo il comando:
+\begin{Verbatim}
+$ texlua primo.lua
+\end{Verbatim}
+
+Ora che sappiamo come eseguire codice Lua, concentriamoci con i prossimi
+capitoli sulle basi del linguaggio. Torneremo nella seconda parte della guida su
+ulteriori modalità di esecuzione anche per codice Lua interno a sorgenti \TeX.

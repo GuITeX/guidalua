@@ -1,7 +1,7 @@
 % !TeX program = lualatex--shell-escape
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2020/06/15 v0.3.1 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2020/06/15 v0.3.2 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
@@ -45,50 +45,58 @@
 \tableofcontents
 \newpage
 
-\input{section/intro}
+\input{section/0-start/01-intro}
 
 \mainmatter*
 
-\part{Fondamenti}
+\part{Tutorial}
+\label{partTutorial}
 
-\input{section/1-basic/02-fondamenti}
+\input{section/1-intro/01-howto}
 
-\input{section/1-basic/03-tabella}
+\input{section/1-intro/02-go}
 
-\input{section/1-basic/04-costrutti-base}
+\part{Fondamenti del linguaggio Lua}
+\label{partFoundation}
 
-\input{section/1-basic/05-oplogic}
+\input{section/2-basic/01-fondamenti}
 
-\input{section/1-basic/06-stringhe}
+\input{section/2-basic/02-tabella}
 
-\input{section/1-basic/07-funzioni}
+\input{section/2-basic/03-costrutti-base}
 
-\input{section/1-basic/08-libreria-standard}
+\input{section/2-basic/04-oplogic}
 
-\input{section/1-basic/09-iteratori}
+\input{section/2-basic/05-stringhe}
 
-\input{section/1-basic/10-oop}
+\input{section/2-basic/06-funzioni}
+
+\input{section/2-basic/07-libreria-standard}
+
+\input{section/2-basic/08-iteratori}
+
+\input{section/2-basic/09-oop}
 
 \part{Applicazioni Lua in \LuaTeX}
-\label{partLuaTeX}
+\label{partApp}
 
-\input{section/2-app/01-start}
+\input{section/3-app/01-registro}
 
-\input{section/2-app/02-registro}
+\input{section/3-app/02-tartaglia-nodi}
 
-\input{section/2-app/03-tartaglia-nodi}
+%\input{section/2-app/03-cerchio-pdfliteral}
 
-%\input{section/2-app/04-cerchio-pdfliteral}
-
-%\input{section/2-app/05-dati-esterni}
+%\input{section/2-app/04-dati-esterni}
 
 \appendix
 
-%\input{section/__-install.tex}
+%\input{section/8-appendix/01-install}
 
 \backmatter
 
-\input{section/notefinali}
+\input{section/9-end/01-notefinali}
+
+% \input{section/9-end/02-colophone}
 
 % bibliografia
 \end{document}
