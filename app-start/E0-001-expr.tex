@@ -1,0 +1,10 @@
+% !TeX program = LuaLaTeX
+% filename: app-start/E0-001-expr.tex
+\documentclass{article}
+\newcommand\expr[1]{\directlua{
+    local result = #1
+    tex.print(tostring(result))
+}}
+\begin{document}
+Finalmente una calcolatrice: \( 1.24 (7.45 + 11.21) = \expr{1.24*(7.45 + 11.21)}\)
+\end{document}

@@ -1,0 +1,45 @@
+% !TeX program = LuaLaTeX
+% filename: app-start/E0-002-expr.tex
+\documentclass{article}
+\directlua{
+calclib = {}
+for name, object in pairs(math) do
+    calclib[name] = object
+end
+}
+\newcommand\expr[2][]{\directlua{
+do
+    local error, pairs, assert, type = error, pairs, assert, type
+    local _ENV = calclib
+    local opt = {#1}
+    local mem = opt[1]; opt[1] = nil
+    for c, val in pairs(opt) do
+        if _ENV[c] then
+            error("Duplicated key '"..c.."' for constant name")
+        else
+            _ENV[c] = val
+        end
+    end
+    ans = #2
+    if mem then
+        assert(type(mem) == "string")
+        if _ENV[mem] then
+            error("Duplicated key '"..mem.."' for memory index")
+        else
+            _ENV[mem] = ans
+        end
+    end
+end
+tex.print(tostring(calclib.ans))
+}}
+\begin{document}
+\expr{15.89 * (pi + log(2))}
+\expr[W1 = 100]{W1*(ans/4)}
+\expr{W1/10}
+
+\expr["dist"; x=5, y=10]{sqrt(x^2+y^2)}
+\expr{dist^2}
+
+\expr["s", k = log(2) + dist - ans]{k^2}
+
+\end{document}

@@ -3,7 +3,7 @@
 
 Gli iteratori offrono un approccio semplice e unificato per scorrere uno alla
 volta gli elementi di una collezione di dati. Vi dedicheremo un capitolo proprio
-perché sono molto utili per scrivere codice efficiente, pulito ed elegante.
+perché sono molto utili per scrivere codice efficiente ed elegante.
 
 Il linguaggio Lua prevede il ciclo d'iterazione \emph{generic for} che
 introduce la nuova parola chiave \key{in} secondo questa sintassi:
@@ -16,7 +16,8 @@ end
 
 Le tabelle di Lua sono oggetti che possono essere impiegati per rappresentare
 degli array oppure dei dizionari. In entrambe i casi Lua mette a disposizione
-due iteratori predefiniti tramite le funzioni \fn{ipairs} e \fn{pairs}.
+due iteratori predefiniti rispettivamente tramite le funzioni \fn{ipairs} e
+\fn{pairs}.
 
 Queste funzioni restituiscono un iteratore conforme alle specifiche del generic
 for. Mentre impareremo più tardi a scrivere iteratori personalizzati,
@@ -27,16 +28,15 @@ per le tabelle.
 \section{Funzione ipairs()}
 
 La funzione \fn{ipairs} restituisce un iteratore che a ogni ciclo genera due
-valori: l'indice dell'array e il valore corrispondente. L'iterazione
-comincincia dalla posizione 1 e termina quando il valore della posizione
-corrente à \key{nil}:
+valori: l'indice dell'array e il valore corrispondente. L'iterazione comincia
+dalla posizione di indice 1 e termina quando il valore corrente è \key{nil}:
 \lines
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
 
 -- iterazione tabella come array
-for i, n in ipairs(t) do
-    print(i, n)
+for i, v in ipairs(t) do
+    print(i, v)
 end
 \endlines
 \sourcecode{from_lines()}
@@ -75,7 +75,7 @@ Se non vogliamo incorrere in errori è molto importante ricordarsi che con
 \fn{ipairs} verranno restituiti i valori in ordine di posizione da 1 in poi e
 fino a che non verrà trovato un valore \key{nil}. Se desiderassimo raggiungere
 tutte le coppie chiave/valore dovremo far ricorso all'iteratore \fn{pairs}
-trattato alla prossima sezione.
+che tratteremo nella prossima sezione.
 
 
 \section{Funzione pairs()}
@@ -92,8 +92,8 @@ completamente da \fn{pairs}:
     :add_output{delim_run=  true}
 }
 
-Il comportamento di questi due iteratori può lasciare perplessi ma è coerente
-con le caratteristiche della tabella di Lua.
+Il comportamento di questi due iteratori potrebbe lasciare perplessi ma è
+coerente con le caratteristiche della tabella di Lua.
 
 
 \section{Generic for}

@@ -4,8 +4,8 @@
 \label{iichExplain}
 
 Questo capitolo fornisce informazioni sulla differenza tra motore di
-composizione e formato, e sulla procedura per l'esecuzione di codice Lua
-all'interno di un sorgente \TeX.
+composizione e formato, e sull'esecuzione di codice Lua all'interno di un
+sorgente \TeX.
 
 I listati che riportano nella seconda riga di commento il nome del file
 corrispondente, sono scaricabili dal
@@ -15,34 +15,39 @@ corrispondente, sono scaricabili dal
 \section{Motori di composizione e formati}
 
 Un sorgente \TeX{} contiene testo e macro. Il testo formerà i capoversi, i
-titoli eccetera del documento, mentre le macro ne stabiliscono aspetto e
-struttura. I \emph{motori di composizione} dispongono di particolari macro dette
-\emph{primitive} implementate direttamente in essi, e la possibilità di definire
-nuove macro per svolgere più facilmente compiti ripetitivi.
+titoli e il resto del documento, mentre le macro ne stabiliranno l'aspetto e
+la struttura. I \emph{motori di composizione} dispongono di particolari macro
+dette \emph{primitive} implementate direttamente in essi, e la possibilità di
+definire nuove macro per svolgere compiti specifici e ricorrenti.
 
-Queste nuove macro il cui codice è generalmente scritto da esperti offrono
-funzionalità di più alto livello molto utili per l'utente. I motori di
-composizione caricano sempre nella fase iniziale della compilazione, un insieme
-di macro di alto livello chiamate \emph{formato} perché per esse sono state
-stabilite anche nuove regole di sintassi.
+Queste nuove macro il cui codice è generalmente scritto da veri esperti,
+possono essere aggregate in una sorta di libreria di alto livello che prende
+il nome di \emph{formato}, come \LaTeX{} o Con\TeX t, perché per esse sono
+state stabilite nuove e coerenti regole di sintassi.
+
+Per esempio, nel formato \LaTeX{} è presente il concetto di \emph{ambiente}
+con la coppia di macro di delimitazione \cs{begin} e \cs{end}. I motori di
+composizione hanno l'abilità nella fase iniziale della compilazione di
+caricare il formato in forma precompilata.
 
 Se si avvia un qualsiasi motore di composizione della famiglia \TeX{} verrà
-caricato il formato più semplice chiamato \emph{plain}. Se si vuole invece
-utilizzare un diverso formato, per esempio il più diffuso \LaTeX{}, occorre
-specificarne il nome con l'opzione \texttt{-{}-fmt} quando si scrive il comando
-di compilazione al terminale.
+caricato di default il formato più semplice chiamato \emph{plain}. Se si vuole
+invece utilizzare un diverso formato, per esempio il più diffuso \LaTeX{},
+occorre passarne il nome all'opzione \texttt{-{}-fmt} nel comando di
+compilazione al terminale.
 
-Tuttavia data l'importanza per gli utenti dei formati ad alto livello, sono
-stati predisposti comandi scorciatoia. Per esempio il programma
-\prog{pdflatex}, rimanda all'effettivo motore di composizione, il tradizionale
-\prog{pdftex}, con l'istruzione di caricare il formato \LaTeX.
+Tuttavia, data l'importanza per gli utenti dei formati di alto livello, sono
+stati predisposti appositi comandi scorciatoia. Per esempio il programma
+\prog{pdflatex} rimanda all'effettivo motore di composizione, il tradizionale
+\prog{pdftex}, con l'istruzione di caricare il formato \LaTeX{}, e così anche
+per \prog{lualatex} con \prog{luatex}.
 
 Riassumendo, i motori di composizione sono programmi tipografici mentre i
-formati sono insiemi coerenti di macro basate sulle primitive di sistema. I nomi
-dei programmi disponibili nel sistema \TeX{} possono quindi confondere se non si
+formati sono insiemi coerenti di macro basate sulle primitive di sistema. I
+nomi dei programmi disponibili nel sistema \TeX{} possono confondere se non si
 conosce questa importante distinzione: alcuni di essi sono comandi scorciatoia
-per identificare sia il motore sia il formato e non un motore di composizione a
-se stante.
+per identificare sia il motore sia il formato e non un motore di composizione
+vero e proprio.
 
 
 \subsection{Compositori Lua-powered}
@@ -67,11 +72,11 @@ This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/W32TeX)
 \end{Verbatim}
 
 Per ulteriore informazione, \prog{luahbtex} è il motore di composizione
-\prog{luatex} in cui è stato sostituito il componente per il calcolo della forma
-dei font con il modulo HarfBuzz, mentre \prog{luajittex} è un'altra variante di
-\prog{luatex} in cui l'interprete Lua è stato sostituito con LuaJIT
-un'implementazione indipendente che sfrutta le tecniche di compilazione
-denominate \emph{Just In Time}.
+\prog{luatex} in cui è stato sostituito il componente per il calcolo della
+forma dei font con il modulo HarfBuzz, mentre \prog{luajittex} è un'altra
+variante di \prog{luatex} in cui l'interprete Lua è stato sostituito con
+LuaJIT un'implementazione indipendente più veloce che sfrutta le tecniche di
+compilazione denominate \emph{Just In Time}.
 
 In generale un sorgente \TeX{} che contiene codice Lua viene correttamente
 compilato da qualsiasi dei tre compositori grazie al mantenimento della
@@ -95,23 +100,20 @@ il testo uscirà tra gli altri messaggi di output senza che sia prodotto un file
 PDF. Ciò significa che \cs{directlua} è una macro espandibile con risultato
 vuoto.
 
-La prima riga è una \emph{riga magica}, comodissima nel dare istruzione allo
-shell editor sul programma da usare per compilare il documento ma ignorata
-durante la compilazione stessa essendo un commento. La sintassi delle righe
-magiche dipende dall'editor, in questo caso essa è scritta secondo le regole di
-TeX Works.
-
-Per la comprensione del codice le righe magiche sono inutili ma aiutano il
-lettore a stabilire il contesto di esecuzione, perciò le troverete nei listati
-della guida quando pertinenti.
+La prima linea di commento è una \emph{riga magica}, comodissima nel dare
+istruzione allo shell editor sul programma da usare per compilare il documento
+ma ignorata durante la compilazione stessa\footnote{La sintassi delle righe
+magiche dipende dall'editor, in questa guida essa è scritta secondo le regole
+di TeX Works.}. Qui le useremo se pertinenti per aiutare il lettore a
+stabilire il contesto di esecuzione del codice.
 
 Se il sorgente è memorizzato nel file \texttt{primo.tex}, possiamo verificare
 quanto previsto in un terminale lanciando il comando:
 \begin{Verbatim}
 $ luatex primo
 \end{Verbatim}
-per il sistema operativo Windows e la distribuzione TeX Live 2020, l'output
-della console è:
+e per il sistema operativo Windows e la distribuzione TeX Live 2020, l'output
+in console è:
 \begin{Verbatim}
 This is LuaTeX, Version 1.12.0 (TeX Live 2020/W32TeX) 
     restricted system commands enabled.
@@ -142,17 +144,17 @@ $ lualatex primo
 
 Avremo potuto inserire la macro all'interno dell'ambiente \amb{document} anziché
 nel preambolo. Quando \TeX{} incontra \cs{directlua} ne \emph{espande}
-l'argomento e passa a Lua il controllo che esegue immediatamente il codice fino
-a restituire al termine il controllo dell'esecuzione di nuovo a \TeX.
+l'argomento e passa a Lua il controllo che esegue immediatamente il codice per
+poi restituirlo di nuovo a \TeX{} al termine dell'esecuzione.
 
 
 \section{Passaggio di dati}
 
 La comunicazione dati bidirezionale tra \TeX{} e Lua può avvenire con la
-tecnologia dei nodi come vedremo certamente quella più avanzata e complessa ma
-non è l'unica: i dati possono arrivare a Lua tramite l'espansione, mentre nella
-direzione opposta è possibile scrivere del testo nella lista di input del
-compositore con le funzioni della famiglia \fn{tex.print}.
+tecnologia dei nodi, come vedremo, certamente quella più avanzata e complessa
+ma non è l'unica: i dati possono arrivare a Lua tramite l'espansione, mentre
+nella direzione opposta è possibile scrivere del testo nella lista di input
+del compositore con le funzioni della famiglia \fn{tex.print}.
 
 Interrompete la lettura della guida per provare a scrivere la funzione Lua
 \fn{fact} che calcola il fattoriale di un intero. La useremo per dimostrare come
@@ -182,8 +184,8 @@ La funzione \fn{tex.print} inserisce l'argomento nella lista d'ingresso del
 testo. Quando termina l'esecuzione del blocco di codice Lua i prossimi caratteri
 che si troverà il compositore saranno le cifre che compongono il fattoriale.
 
-Trovate ora il listato del sorgente completo da confrontare con la vostra
-personale soluzione:
+Il listato del sorgente completo da confrontare con la vostra personale
+soluzione è:
 \VerbatimInput{app-start/E1-001-fattoriale.tex}
 
 
@@ -239,23 +241,23 @@ Al capitolo~\ref{iichRegistro} vedremo che anche con la libreria standard di Lua
 Alcuni simboli hanno un diverso significato per \TeX{} e per Lua, per esempio il
 carattere cancelletto, la stessa backslash o il simbolo di percento. \LuaTeX{}
 non si occupa direttamente di modificare il significato dei simboli che si
-sovrappongono poiché il codice è sempre responsabilità dell'utente.
+sovrappongono.
 
-Le descizioni dei conseguenti errori possono essere criptici ma ci sono almeno
+Le descrizioni dei conseguenti errori possono essere criptici ma ci sono almeno
 quattro diverse soluzioni:
 \begin{compactitemize}
 \item scrivere il codice Lua in file esterni,
 \item utilizzare codice \TeX{} per gestire l'espansione dei simboli o i codici
 di categoria,
-\item quando possibile usare i codici ASCII per creare stringhe che contengono
-i simboli, con la funzione \fn{string.char},
+\item usare i codici ASCII per creare stringhe che contengono i simboli, con la
+funzione \fn{string.char},
 \item utilizzare il pacchetto \pack{luacode}.
 \end{compactitemize}
 
 Come preferenza personale non utilizzo l'ottimo pacchetto \pack{luacode},
-semplicemente per evitare una dipendenza in più. Tuttavia non appena il codice
-Lua cresce in numero di linee o diventa un componente di un progetto reale,
-quasi sempre si devono utilizzare file esterni per una più agevole gestione del
+anche per evitare una dipendenza in più. Tuttavia non appena il codice Lua
+cresce in numero di linee o diventa un componente di un progetto reale, quasi
+sempre si devono utilizzare file esterni per una più agevole gestione del
 progetto.
 
 Rimando alla documentazione del pacchetto \pack{luacode} per i dettagli sulla
@@ -277,23 +279,27 @@ scrittura e identazione del codice.
 \section{Le librerie disponibili in \LuaTeX}
 
 Agli usuali moduli della libreria standard di Lua, sono stati aggiunti in
-\LuaTeX{} così come per gli altri motori di composizione estesi, speciali
+\LuaTeX{}, così come per gli altri motori di composizione estesi, speciali
 funzionalità dedicate al controllo dello stato interno e alla creazione di
 elementi tipografici.
 
 
+
+
+
 \section{La primitiva directlua}
 
-Abbiamo ora tutte le informazioni per svolgere alcune applicazioni fin dai
-prossimi capitoli. Non rimane che riassumere che il principale modo di eseguire
-codice Lua in \LuaTeX{} è assegnarlo come argomento alla macro \cs{directlua}.
-Quello che avviene è stabilito da queste regole:
+Abbiamo ora tutte le informazioni per svolgere alcuni esercizi e applicazioni
+fin dai prossimi capitoli. Non rimane che ricordare che il principale modo di
+eseguire codice Lua in \LuaTeX{} è assegnarlo come argomento alla macro
+\cs{directlua}. Quello che avviene è stabilito da queste regole:
 \begin{compactenumerate}
 \item l'argomento di \cs{directlua} viene espanso ed eseguito come blocco, può
 quindi contenere macro o argomenti macro con un testo di sostituzione;
 
-\item le variabili locali hanno validità solo all'interno del blocco mentre
-quelle globali saranno valide anche in quelli di successive \cs{directlua};
+\item le variabili locali hanno validità solo all'interno del gruppo/blocco
+mentre quelle globali saranno valide anche in quelli di successive
+\cs{directlua};
 
 \item l'espansione di \cs{directlua} è vuota;
 \end{compactenumerate}

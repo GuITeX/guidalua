@@ -5,6 +5,7 @@
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
+
 \fvset{fontsize=\small}
 \usepackage[
     colorlinks=true,
@@ -19,6 +20,21 @@
 \usepackage{exercise}
 \renewcounter{Exercise}[chapter]
 \renewcommand{\ExerciseHeader}{\noindent\textsc{esercizio \ExerciseHeaderNB}}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbset{
+	sharp corners=all,
+	colback=verdeguit!10!white,
+	colframe=verdeguit!35!white,
+	bicolor,
+	colbacklower=white,
+	boxrule=0.3pt,
+	leftrule=2pt,
+	fonttitle=\bfseries,
+	fontupper=\small,
+	fontlower=\small
+}
 
 \frenchspacing
 
@@ -52,12 +68,14 @@
 \part{Tutorial}
 \label{partTutorial}
 
-\input{section/1-intro/01-howto}
+\input{section/1-intro/01-go}
 
-\input{section/1-intro/02-go}
+\input{section/1-intro/02-howto}
 
 \part{Fondamenti del linguaggio Lua}
 \label{partFoundation}
+
+\input{section/2-basic/00-exec}
 
 \input{section/2-basic/01-fondamenti}
 
