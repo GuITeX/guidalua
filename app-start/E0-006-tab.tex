@@ -1,0 +1,107 @@
+% !TeX program = LuaLaTeX
+% filename: app-start/E0-006-tab.tex
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{unicode-math}
+\setmathfont{Latin Modern Math}
+
+\sisetup{output-decimal-marker={,}}
+\directlua{
+Row = {}
+Row.__index = Row
+function Row:new(fn_next, start, stop, step)
+    if type(fn_next) == "function" then
+        step = step or 1
+        if not stop then
+            start, stop = 1, start
+        end
+    elseif type(fn_next) == "table" then
+        local data = fn_next
+        start, stop, step = 1, \string#data, 1
+        fn_next = function(c, r)
+            for i, v in ipairs(data[c]) do
+                r[i] = v
+            end
+        end
+    end
+    local o = {
+        fn_next = fn_next,
+        start = start,
+        stop = stop,
+        step = step,
+    }
+    setmetatable(o, self)
+    return o
+end
+
+function Row:insert(col, val, prec)
+    if prec then
+        local p = string.char(37)
+        local fmt = string.format(p..p.."0."..p.."df", prec)
+        val = string.format(fmt, val)
+    end
+    self[col] = val
+    return self
+end
+
+function Row:iter_template(tmpl)
+    local iter_fn = function(row, i)
+        if not i then
+            i = row.start
+            row.counter = 0
+        else
+            i = i + row.step
+        end
+        if i <= self.stop then
+            row.counter = row.counter + 1
+            self.fn_next(i, self)
+            local perc = string.char(37)
+            local s = tmpl:gsub("<("..perc.."d+)>", function (s)
+                local n = tonumber(s)
+                return assert(row[n])
+            end)
+            return i, s
+        end
+    end
+    return iter_fn, self, nil
+end
+}
+
+% define weight table
+\directlua{
+local function fn(diam, row)
+    local area = 0.25 * math.pi * (diam/10)^2
+    local peso = 0.785*area
+    local sup_lat = 10 * math.pi * diam
+    local c = row.counter
+    local midrule = ""
+    if c - 3*math.floor(c/3) == 0 then
+        midrule = string.char(92).."midrule"
+    end
+    row:insert(1, diam)
+       :insert(2, area, 3)
+       :insert(3, peso, 6)
+       :insert(4, sup_lat, 3)
+       :insert(0, midrule)
+end
+row_w = Row:new(fn, 6, 32, 2)
+}
+
+\newcommand{\makerow}[1]{\directlua{
+local tmpl = [=[\detokenize{#1}]=]
+for _, s in row_w:iter_template(tmpl) do
+   tex.print(s)
+end
+}}
+
+\begin{document}
+\begin{tabular}{crrr}
+\toprule
+\diameter     & Sviluppo & Sezione & Peso\\
+\small\si{mm} & \small\si{cm^2/m} & \small\si{cm^2} & \small\si{daN/m}\\
+\midrule
+\makerow{\textbf{<1>} & \num{<4>} & \num{<2>} & \num{<3>}\\<0>}
+\bottomrule
+\end{tabular}
+\end{document}

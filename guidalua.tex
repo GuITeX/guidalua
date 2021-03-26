@@ -1,7 +1,7 @@
-% !TeX program = lualatex--shell-escape
+% !TeX program = LuaLaTeX--shell-escape
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2020/06/15 v0.3.2 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2021/03/28 v0.4 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
@@ -24,17 +24,28 @@
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
 \tcbset{
-	sharp corners=all,
-	colback=verdeguit!10!white,
-	colframe=verdeguit!35!white,
-	bicolor,
-	colbacklower=white,
-	boxrule=0.3pt,
-	leftrule=2pt,
-	fonttitle=\bfseries,
-	fontupper=\small,
-	fontlower=\small
+    sharp corners=all,
+    colback=verdeguit!10!white,
+    colframe=verdeguit!35!white,
+    bicolor,
+    colbacklower=white,
+    boxrule=0.3pt,
+    leftrule=2pt,
+    fonttitle=\bfseries,
+    fontupper=\small,
+    fontlower=\small
 }
+\tcbuselibrary{documentation}
+\tcbset{doc marginnote={
+    colframe=verdeguit,
+    colback=verdeguit!5!white,
+    width=21mm,
+    enlarge left by=-7mm
+    }
+}
+
+\usepackage{siunitx}
+\sisetup{output-decimal-marker=\virgoladecimale}
 
 \frenchspacing
 
@@ -68,9 +79,11 @@
 \part{Tutorial}
 \label{partTutorial}
 
-\input{section/1-intro/01-go}
+\input{section/1-intro/01-calc}
 
-\input{section/1-intro/02-howto}
+\input{section/1-intro/02-tab}
+
+\input{section/1-intro/03-howto}
 
 \part{Fondamenti del linguaggio Lua}
 \label{partFoundation}

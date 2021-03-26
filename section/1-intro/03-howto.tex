@@ -63,7 +63,7 @@ compositore che carica il formato \LaTeX.
 
 Dalla TeX Live 2020 questo compositore è \prog{luahbtex}. Per rendercene conto
 basta scrivere in un terminale il nome del programma, premere invio e leggere
-l'output e premere CTRL + C per chiuderne l'esecuzione di prova:
+l'output poi premere CTRL+C per chiuderne l'esecuzione di prova:
 \begin{Verbatim}
 > lualatex
 This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/W32TeX)
@@ -75,8 +75,8 @@ Per ulteriore informazione, \prog{luahbtex} è il motore di composizione
 \prog{luatex} in cui è stato sostituito il componente per il calcolo della
 forma dei font con il modulo HarfBuzz, mentre \prog{luajittex} è un'altra
 variante di \prog{luatex} in cui l'interprete Lua è stato sostituito con
-LuaJIT un'implementazione indipendente più veloce che sfrutta le tecniche di
-compilazione denominate \emph{Just In Time}.
+LuaJIT un'implementazione indipendente più veloce dell'interprete ufficiale che
+sfrutta le tecniche di compilazione denominate \emph{Just In Time}.
 
 In generale un sorgente \TeX{} che contiene codice Lua viene correttamente
 compilato da qualsiasi dei tre compositori grazie al mantenimento della
@@ -125,6 +125,7 @@ Transcript written on primo.log.
 
 
 \subsection{Lua in Lua\LaTeX}
+\label{secLuaInLuaLaTeX}
 
 Con Lua\LaTeX{} si ottiene lo stesso risultato ma con il sorgente scritto nella
 sintassi \LaTeX, ovvero:

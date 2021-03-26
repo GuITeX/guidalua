@@ -1,0 +1,47 @@
+% !TeX program = LuaLaTeX
+% filename: app-start/E0-003-tab.tex
+\documentclass{article}
+\directlua{
+Row = {}
+Row.__index = Row
+function Row:new(fn_next, start, stop, step)
+    if not stop then
+        start, stop = 1, start
+    end
+    local o = {
+        fn_next = fn_next,
+        start = start,
+        stop = stop,
+        step = step or 1
+    }
+    setmetatable(o, self)
+    return o
+end
+
+function Row:next()
+    local var = self.var
+    if not var then
+        var = self.start
+    else
+        var = var + self.step
+    end
+    if var <= self.stop then
+        self.var = var
+        local fn = self.fn_next
+        fn(var, self)
+        return true
+    end
+end
+}
+
+\begin{document}
+\begin{tabular}{rr}
+\directlua{
+local row = Row:new(function (c, r) r[1] = c; r[2] = c^2 end, 10)
+local bs = string.char(92)
+while row:next() do
+tex.print(row[1].."&"..row[2]..bs..bs)
+end
+}
+\end{tabular}
+\end{document}
