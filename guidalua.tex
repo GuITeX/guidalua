@@ -1,12 +1,18 @@
 % !TeX program = LuaLaTeX--shell-escape
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2021/03/28 v0.4 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2021/03/28 v0.4.1 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
 
-\fvset{fontsize=\small}
+\fvset{
+    fontsize=\small,
+    numbers=left,
+    xleftmargin=6mm,
+    numbersep=2.25mm
+}
+
 \usepackage[
     colorlinks=true,
     linkcolor=blue,
@@ -25,12 +31,12 @@
 \tcbuselibrary{skins}
 \tcbset{
     sharp corners=all,
-    colback=verdeguit!10!white,
-    colframe=verdeguit!35!white,
+    colback=verdeguit!12!white,
+    colframe=verdeguit!70!white,
     bicolor,
     colbacklower=white,
-    boxrule=0.3pt,
-    leftrule=2pt,
+    boxrule=0.4pt,
+    leftrule=3.2pt,
     fonttitle=\bfseries,
     fontupper=\small,
     fontlower=\small
@@ -39,8 +45,9 @@
 \tcbset{doc marginnote={
     colframe=verdeguit,
     colback=verdeguit!5!white,
-    width=21mm,
-    enlarge left by=-7mm
+    width=23mm,
+    enlarge left by=-6mm,
+    enlarge right by=-3mm
     }
 }
 
@@ -53,6 +60,9 @@
 \newcommand\key[1]{\normalfont\texttt{#1}}
 \newcommand\code[1]{\normalfont\texttt{#1}}
 \newcommand\fn[1]{\normalfont\texttt{#1()}}
+
+\newlength{\margindown}
+\setlength{\margindown}{12.72mm}
 
 \begin{document}
 \author{Roberto Giacomelli}

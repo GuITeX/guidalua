@@ -70,13 +70,13 @@ end
 
 % define weight table
 \directlua{
-local function fn(diam, row)
+local function row_func(diam, row)
     local area = 0.25 * math.pi * (diam/10)^2
     local peso = 0.785*area
     local sup_lat = 10 * math.pi * diam
     local c = row.counter
     local midrule = ""
-    if c - 3*math.floor(c/3) == 0 then
+    if c - 3*math.floor(c/3) == 0 and not (diam == row.stop) then
         midrule = string.char(92).."midrule"
     end
     row:insert(1, diam)
@@ -85,10 +85,10 @@ local function fn(diam, row)
        :insert(4, sup_lat, 3)
        :insert(0, midrule)
 end
-row_w = Row:new(fn, 6, 32, 2)
+row_w = Row:new(row_func, 6, 32, 2)
 }
 
-\newcommand{\makerow}[1]{\directlua{
+\newcommand{\printrow}[1]{\directlua{
 local tmpl = [=[\detokenize{#1}]=]
 for _, s in row_w:iter_template(tmpl) do
    tex.print(s)
@@ -96,12 +96,17 @@ end
 }}
 
 \begin{document}
-\begin{tabular}{crrr}
+\begin{tabular}{
+    c
+    S[table-format=4.3]
+    S[table-format=1.3]
+    S[table-format=1.6]
+}
 \toprule
-\diameter     & Sviluppo & Sezione & Peso\\
-\small\si{mm} & \small\si{cm^2/m} & \small\si{cm^2} & \small\si{daN/m}\\
+\diameter & {Sviluppo} & {Sezione} & {Peso}\\
+{\small\si{mm}} & {\small\si{cm^2/m}} & {\small\si{cm^2}} & {\small\si{daN/m}}\\
 \midrule
-\makerow{\textbf{<1>} & \num{<4>} & \num{<2>} & \num{<3>}\\<0>}
+\printrow{\(\mathbf{<1>}\) & <4> & <2> & <3>\\<0>}
 \bottomrule
 \end{tabular}
 \end{document}

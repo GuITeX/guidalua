@@ -35,13 +35,13 @@ end
 }
 
 \begin{document}
-\begin{tabular}{rr}
-\directlua{
-local row = Row:new(function (c, r) r[1] = c; r[2] = c^2 end, 10)
-local bs = string.char(92)
+\begin{tabular}{rr}\directlua{
+local row = Row:new(
+    function (c, r) r[1] = c; r[2] = c^2 end, 10
+)
+local par = string.char(92)..string.char(92)
 while row:next() do
-tex.print(row[1].."&"..row[2]..bs..bs)
+    tex.print(row[1].."&"..row[2]..par)
 end
-}
-\end{tabular}
+}\end{tabular}
 \end{document}

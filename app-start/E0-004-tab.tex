@@ -46,24 +46,38 @@ end
 }
 
 \directlua{
-local data = {
-    {"files.txt"     ,  4710},
-    {"lib.lua"       ,   330},
+data = {
+    {"files.txt"    ,  4710},
+    {"lib.lua"      ,   330},
     {"liteparse.txt",  6451},
-    {"parse.lua"     , 50995},
-    {"path.txt"      ,  2150},
-    {"shapes.txt"    ,  4812},
-    {"signature.txt" ,  1228},
-}
-row = Row:new(data)
-}
+    {"parse.lua"    , 50995},
+    {"path.txt"     ,  2150},
+}}
 
 \begin{document}
 \begin{tabular}{lr}
 \directlua{
-local bs = string.char(92)
+local function row_func(counter, row)
+    row[1] = data[counter][1]
+    row[2] = data[counter][2]
+end
+local row = Row:new(row_func, 5)
+local p = string.char(92)..string.char(92)
 while row:next() do
-tex.print(row[1].."&"..row[2]..bs..bs)
+tex.print(row[1].."&"..row[2]..p)
+end
+}
+\end{tabular}
+
+\bigskip\textbf{Codice alternativo:}
+\medskip
+
+\begin{tabular}{lr}
+\directlua{
+local row = Row:new(data)
+local p = string.char(92)..string.char(92)
+while row:next() do
+tex.print(row[1].."&"..row[2]..p)
 end
 }
 \end{tabular}

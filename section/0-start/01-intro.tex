@@ -1,28 +1,27 @@
 
 % presentazione della guida e informazioni di base per eseguire gli esempi
 
-\chapter{Introduzione}
+\chapter{Presentazione}
 
-\section{Presentazione della guida}
+\section{Motivazione}
 
 Questa guida tematica è dedicata alla programmazione in Lua all'interno dei
-motori di composizione del sistema \TeX. Con Lua è possibile compiere sia
-elaborazioni generiche come l'interrogazione di basi di dati, sia elaborazioni
-tipografiche interagendo con il compositore interno.
+motori di composizione del sistema \TeX.
 
-Con Lua rispetto a \TeX, è più semplice ed efficiente effettuare calcoli
-numerici o avvalersi di avanzate librerie esterne. Sono funzionalità possibili
-con la nuova generazione di compositori, che ampliano notevolmente gli scenari
-applicativi.
+Con Lua è possibile compiere sia elaborazioni generiche come l'interrogazione di
+basi di dati che elaborazioni tipografiche interagendo con il compositore
+interno. Con Lua rispetto a \TeX, è più semplice ed efficiente effettuare
+calcoli numerici o avvalersi di avanzate librerie esterne.
 
-Se da un lato è auspicabile che queste potenzialità diventino disponibili per
-gli utenti finali per mezzo di moduli e pacchetti, dall'altro è utile fornire
-dettagli ed esempi per implementare proprie soluzioni o poter scrivere nuovi
-moduli condividendo idee di sviluppo.
+La nuova generazione di compositori amplia così notevolmente gli scenari
+applicativi. Se da un lato è auspicabile che queste potenzialità diventino
+disponibili per gli utenti finali per mezzo di moduli e pacchetti, dall'altro è
+utile fornire dettagli ed esempi per implementare proprie soluzioni o per poter
+scrivere nuovi moduli condividendone lo sviluppo con la community.
 
 Sono certamente molte le cose da conoscere: un nuovo linguaggio molto diverso da
 \TeX{}, numerosi dettagli sul funzionamento interno dei compositori Lua-powered,
-nuovi problemi di organizzazione del codice, il bilanciamento tra Lua e \TeX,
+nuovi problemi di organizzazione del codice, di bilanciamento tra Lua e \TeX,
 eccetera. Per questo, ho pensato di contribuire con questa guida cercando di
 presentare il quadro della crescente complessità del sistema.
 
@@ -30,10 +29,11 @@ presentare il quadro della crescente complessità del sistema.
 \section{Piano della guida}
 
 La guida è divisa in tre parti: la prima offre una panoramica rapida per
-iniziare subito con Lua (parte \ref{partTutorial}), la seconda tratta delle basi
-del linguaggio Lua (parte \ref{partFoundation}) e la terza tratta di esempi
-applicativi con l'uso delle librerie interne di composizione (parte
-\ref{partApp}).
+iniziare subito con Lua seguendo i passi di un ipotetico utente alle prese con
+la risoluzione di problemi compositivi raggruppati in \emph{tutorial} (parte
+\ref{partTutorial}), la seconda tratta delle basi del linguaggio Lua (parte
+\ref{partFoundation}) e la terza tratta di esempi applicativi con l'uso delle
+librerie interne di composizione (parte \ref{partApp}).
 
 Tra gli argomenti ci sono:
 \begin{compactitemize}
@@ -54,15 +54,16 @@ che mi propose di realizzare un progetto di divulgazione su Lua. Luigi ha
 acconsentito all'utilizzo di quegli appunti per produrre questa guida tematica.
 
 
-\section{Contribuire, collaborare}
+\section{Contribuire e collaborare}
 
-Spero che i lettori vorranno contribuire al testo inviando le propri soluzioni o
+Spero che i lettori vorranno contribuire al testo inviando proprie soluzioni o
 nuovi contributi piccoli o grandi. Lo si può fare attraverso lo strumento che
-preferite, scrivendomi un messaggio email all'indirizzo
-\href{mailto:giaconet.mailbox@gmail.com}{giaconet.mailbox@gmail.com}, oppure
-utilizzando il repository
-\href{https://github.com/GuITeX/guidalua}{\texttt{git}} dei sorgenti della
-guida, eseguendo un Pull Request o aprendo una discussione.
+preferite, scrivendomi un messaggio di posta elettronica all'indirizzo
+\href{mailto:giaconet.mailbox@gmail.com}{\texttt{giaconet.mailbox@gmail.com}},
+oppure utilizzando il
+\href{https://github.com/GuITeX/guidalua}{\texttt{repository git}} dei sorgenti
+della guida, eseguendo un Pull Request o aprendo una discussione premendo il
+pulsante Issues.
 
 
 \section{Altre risorse}
@@ -78,8 +79,29 @@ stesso.}.
 Quanto a \LuaTeX{} il riferimento è il suo manuale che, come quasi tutta la
 documentazione nel sistema \TeX{}, può essere visualizzato a video con il
 comando da terminale:
-\begin{Verbatim}
+\begin{Verbatim}[numbers=none]
 $ texdoc luatex
 \end{Verbatim}
+
+
+\section{Note di lettura}
+
+Nei listati compilabili riportati nelle pagine della guida compare alla prima
+linea la \emph{riga magica}, un commento utile per dare istruzioni all'editor
+sul compilatore da usare, ma che qui informerà il lettore aiutandolo a stabilire
+il contesto del codice.
+
+Se presente nel progetto, alla seconda riga dei listati si troverà invece il
+nome del file che il lettore potrà scaricare ed eseguire per i propri
+esperimenti.
+
+Nella parte \ref{partFoundation} ho cercato di non dare per scontati i concetti
+fondamentali della programmazione. Ovviamente il lettore già preparato procederà
+più velocemente nel prendere dimestichezza con Lua. Ho invece escluso dalla
+guida \TeX{}, per esempio non spiegando come si definisce una macro utente o
+come si lavora con il formato \LaTeX3. Rimando senza indugio alla copiosa
+documentazione disponibile a cominciare da quella scaricabile dal sito \GuIT.
+
+Diamo quindi inizio a questa nuova avventura lunare.
 
 % end of file
