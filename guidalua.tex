@@ -1,10 +1,22 @@
 % !TeX program = LuaLaTeX--shell-escape
+%
+% "Guida Tematica alla programmazione Lua in LuaTeX"
+% Copyright (C) 2020-2021 Roberto Giacomelli,
+% Gruppo utilizzatori Italiani di TeX e LaTeX
+% All rights reserved
+%
+% https://www.guitex.org
+% 
+% License information see LICENSE text file
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2021/03/28 v0.4.1 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2021/04/30 v0.4.2 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
+
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{guidalua.bib}
 
 \fvset{
     fontsize=\small,
@@ -13,16 +25,20 @@
     numbersep=2.25mm
 }
 
+\lstset{
+    numbers=left,
+    numberstyle=\tiny,
+    xleftmargin=6mm,
+    numbersep=2.25mm
+}
+
 \usepackage[
-    colorlinks=true,
-    linkcolor=blue,
-    citecolor = blue,
-    urlcolor = blue,
     pdftitle={Guida al linguaggio Lua per LuaTeX},
     pdfauthor={Roberto Giacomelli},
     pdfsubject={Guida tematica del GuIT},
     pdfkeywords={Lua, LuaTeX, guida, programming}
 ]{hyperref}
+
 \usepackage{exercise}
 \renewcounter{Exercise}[chapter]
 \renewcommand{\ExerciseHeader}{\noindent\textsc{esercizio \ExerciseHeaderNB}}
@@ -45,9 +61,10 @@
 \tcbset{doc marginnote={
     colframe=verdeguit,
     colback=verdeguit!5!white,
-    width=23mm,
-    enlarge left by=-6mm,
-    enlarge right by=-3mm
+    width=21.5mm,
+    enlarge right by=-2mm,
+    enlarge left by=-5mm,
+    halign=flush left
     }
 }
 
@@ -60,11 +77,18 @@
 \newcommand\key[1]{\normalfont\texttt{#1}}
 \newcommand\code[1]{\normalfont\texttt{#1}}
 \newcommand\fn[1]{\normalfont\texttt{#1()}}
+\newcommand\gotosec{\textcolor{verdeguit}{\tiny\S}}
 
 \newlength{\margindown}
-\setlength{\margindown}{12.72mm}
+\setlength{\margindown}{10mm}
 
 \begin{document}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=verdeguit,
+    citecolor=verdeguit,
+    urlcolor=verdeguit!80!red
+}
 \author{Roberto Giacomelli}
 \date{\filedate{} --- \fileversion}
 \title{Guida al linguaggio Lua per \LuaTeX}
@@ -140,5 +164,6 @@
 % \input{section/9-end/02-colophone}
 
 % bibliografia
+\input{section/9-end/90-biblio.tex}
 \end{document}
 

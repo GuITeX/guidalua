@@ -2,10 +2,9 @@
 
 \section{Tabella dei pesi}
 
-Dopo la calcolatrice si presenta un'altro problema compositivo: una tabella che
+Dopo la calcolatrice si presenta un altro problema compositivo: una tabella che
 riporta per vari diametri, area e peso della barra d'acciaio di lunghezza
-unitaria. I diametri variano da 6 a 32 millimetri con passo di 2 per i soli
-numeri pari. 
+unitaria. I diametri variano da 6 a 32 millimetri con passo 2.
 
 L'idea è definire una sorta di iteratore a due componenti. Per esempio, se
 volessimo una tabella con due colonne, la prima con gli interi da 1 a 10 e la
@@ -105,6 +104,15 @@ All'interno dell'ambiente \amb{tabular} c'è solo codice Lua: costruito l'oggett
 \key{row} un ciclo \key{while} esegue l'iterazione con il metodo \fn{next}. Come
 si può verificare dall'implementazione con il paradigma a oggetti che segue, è
 \fn{next} a chiamare a ogni passo la funzione di generazione di riga:
+%
+\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+Metametodo \key{\_\_index}\\
+\gotosec{} \ref{secFondMetaIndex}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+12mm\relax]{%
+Costruttore\\
+\gotosec{} \ref{secFondCostruttore}}
+%
 \begin{Verbatim}
 Row = {}
 Row.__index = Row
@@ -149,9 +157,10 @@ Lua è all'interno del sorgente \TeX{} e che per questo ci potrebbero essere
 problemi dovuti all'espansione dell'argomento della primitiva \cs{directlua}. Un
 esempio? Riceveremmo un errore con il blocco della compilazione se usassimo i
 delimitatori delle stringhe doppi apici se nel preambolo si caricasse il
-pacchetto \pack{polyglossia} con l'opzione \opz{babelshorthands} che rende
-attivo proprio il doppio apice. Per fortuna ci sono altri modi più sicuri di
-delimitare i valori letterali delle stringhe in Lua.
+pacchetto \pack{polyglossia} con l'opzione \opz{babelshorthands} per la lingua
+italiana, che rende attivo proprio il doppio apice. Per fortuna ci sono altri
+modi più sicuri di delimitare i valori letterali delle stringhe in Lua in questi
+casi, proprie del linguaggio.
 
 Ogni tipo di dati potrà essere rappresentato in forma tabellare, anche dati non
 calcolati come nomi di file con relativa dimensione in byte, dati come i
@@ -166,8 +175,8 @@ local data = {
 }
 \end{Verbatim}
 
-Come dovremo definire il componente variabile, ovvero la funzione \fn{row\_func}
-per costruire la tabella a due colonne nome file, e dimensione?
+Come dovremo definire il componente variabile, ovvero la funzione
+\fn{row\_func}, per costruire la tabella a due colonne nome file, e dimensione?
 \begin{tcolorbox}[sidebyside,righthand width=32mm]
 \begin{Verbatim}[numbers=none,xleftmargin=0pt]
 % !TeX program = LuaLaTeX
@@ -218,7 +227,7 @@ end
 
 In questo esempio incontriamo una ridondanza perché dobbiamo specificare il
 numero di righe nel costruttore \fn{new} quando questo dato è invece
-calcolabile. 
+derivabile dai dati. 
 
 In Lua è normale chiamare una funzione passando per lo stesso argomento una
 variabile di un tipo di dato oppure un'altra variabile di un tipo diverso. Se
@@ -228,14 +237,17 @@ funzione \fn{row\_func} che il numero totale di righe al posto dell'utente. In
 effetti nel codice del file \file{E0-004-tab.tex} si trova un'implementazione
 che fa proprio questo.
 
-A questo punto potremo sperimentare il punto di vista per colonne anziché quello
-per righe mantenendone la stessa generalità. Proseguiremo invece migliorando
-il modo in cui generare il codice di riga nell'ambiente \key{tabular}.
+Tuttavia potremo optare per implementare altri costruttori della classe, per
+esempio con il nome di \fn{from\_data} o \fn{from\_file}, specifici per un tipo
+di sorgente dati, e indubbiamente è la soluzione da preferire. Potremo anche
+sperimentare il punto di vista per colonne anziché quello per righe mantenendo
+la generalità della classe.
 
-Stiamo infatti usando la concatenazione di stringhe, un modo non molto
-efficiente ne comodo. Potrebbe essere più conveniente specificare una sorta di
-template con segnaposto come la stringa seguente per un'ipotetica tabella a due
-colonne:
+Proseguiamo adesso migliorando il modo in cui generare il codice di riga
+nell'ambiente \key{tabular}. Stiamo infatti usando la concatenazione di
+stringhe, un modo non molto efficiente e nemmeno comodo. Potrebbe essere più
+conveniente specificare una sorta di template con segnaposto come la stringa
+seguente per un'ipotetica tabella a due colonne:
 \begin{Verbatim}[numbers=none]
 template = [[\textbf{<1>} & <2>\\]]
 \end{Verbatim}
@@ -246,6 +258,19 @@ riga così come definito nelle funzioni \fn{row\_func}.
 Per far questo, basta aggiungere alla classe \code{Row} un metodo d'iterazione
 che a ogni passo ritorni la stringa risultato, e che segua le specifiche perché
 possa essere usato in un ciclo \key{for}:
+%
+\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\fn{string.gsub}\\
+\gotosec{} \ref{secFondGsub}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
+Pattern\\
+\gotosec{} \ref{secFondPattern}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
+Capture\\
+\gotosec{} \ref{secFondCapture}}
+%
 \begin{Verbatim}
 function Row:iter_template(tmpl)
     local iter_fn = function(row, i)
@@ -360,7 +385,7 @@ end
 \end{Verbatim}
 
 Il nuovo metodo restituisce l'oggetto stesso così che possiamo concatenare più
-inserimenti di cella. Ecco come la funzione di generazione può semplicarsi:
+inserimenti di cella. Ecco come la funzione di generazione può semplificarsi:
 \begin{Verbatim}
 local function row_func(diam, row)
     local area = math.pi * (diam/20)^2
@@ -447,7 +472,19 @@ unità di misura e tabelle, con questo ambiente \amb{tabular} ridisegnato:
 
 Il progetto completo si trova nel file \file{app-star/E0-006-tab.tex}, dove ho
 aggiunto alla tabella la colonna con il calcolo della superficie laterale delle
-barre mentre sotto se ne trova il risultato.
+barre.
+
+
+\subsection{Conclusioni}
+
+La nostra classe \code{Row} ci permette di costruire tabelle iterative in Lua in
+modo del tutto generale, compiendo calcoli numerici e ogni sorta di possibili
+elaborazioni. Molti altri affinamenti sono possibili come il caricamento di dati
+esterni oppure l'uso di pipeline di operatori all'interno dei segnaposto dei
+template. Anche questo tutorial si chiude perciò con una lista di nuove idee da
+implementare con Lua.
+
+La tabella sottostante mostra il risultato finale.
 
 \directlua{
 function Row:insert(col, val, prec)
@@ -500,15 +537,5 @@ end
 \bottomrule
 \end{tabular}
 \end{center}
-
-
-\subsection{Conclusioni}
-
-La nostra classe \code{Row} ci permette di costruire tabelle iterative in Lua in
-modo del tutto generale, compiendo calcoli numerici e ogni sorta di possibili
-elaborazioni. Molti altri affinamenti sono possibili come il caricamento di dati
-esterni oppure l'uso di pipeline di operatori all'interno dei segnaposto dei
-template. Anche questo tutorial si chiude perciò con una lista di nuove idee da
-implementare con Lua.
 
 % end of file

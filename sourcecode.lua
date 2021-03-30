@@ -92,7 +92,6 @@ local function filter_lines(tlines, delim_key)
     if type(delim_key) ~= "string" or delim_key == "" then
         return i, j
     end
-
     local is_open = false
     for c, line in ipairs(tlines) do
         if is_open then
@@ -109,7 +108,7 @@ local function filter_lines(tlines, delim_key)
         end
     end
     if is_open then
-        error("Not close delimiter in the source lines")
+        error("Unclosed delimiter in the source lines")
     else
         error("Delimiter not found in the source lines")
     end
@@ -194,7 +193,7 @@ function sclib._parameters:_typeset()
         tkprint([=[\end{lstlisting}]=])
         if self.run then
             local tout = run(source, i, j)
-            tkprint([=[\vspace*{-1.5ex}\begin{lstlisting}[style=out]]=])
+            tkprint([=[\vspace*{-1.5ex}\begin{lstlisting}[style=out,numbers=none]]=])
             for _, l in ipairs(tout) do
                 tkprint(self.prompt.. l)
             end

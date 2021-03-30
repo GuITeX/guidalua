@@ -52,8 +52,9 @@ sourcecodelib:_set_parameters{#1}
     \let\next\endgroup
  \else
     \directlua{
-        sourcecodelib.l = sourcecodelib.l + 1;
-        sourcecodelib.lines[sourcecodelib.l] = [==[#1]==]
+        if sourcecodelib.l == 0 then sourcecodelib.l = 1 else
+        ;sourcecodelib.lines[sourcecodelib.l] = [==[#1]==];
+        sourcecodelib.l = sourcecodelib.l + 1; end
     }%
     \let\next\xlines \fi \next}
 }

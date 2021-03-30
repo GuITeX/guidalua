@@ -8,3 +8,14 @@
 *.zip
 # no temporary lua file needed to sourcecode.sty
 tmp.lua
+# no PDF artifact except guidatematica documentation files
+*.pdf
+!guidatematica-doc.pdf
+!guidatematica.pdf
+# maintain all the image pdf files
+!image/*.pdf
+# no secondary file emitted by biber
+guidalua.bbl
+guidalua.bcf
+guidalua.blg
+guidalua.run.xml

@@ -463,7 +463,8 @@ intermedi tra un numero e l'altro, ma anche per gli eventuali spazi di
 allineamento citati, in questo modo:
 \lines
 -- filename app-tartaglia/09.tex
-local function add_distance(hbox, d, k_left, k_right, level, totlevel)
+local
+function add_distance(hbox, d, k_left, k_right, level, totlevel)
     assert(hbox and hbox.id == 0)
     local glue = hbox.head
     local tdist = d*(totlevel - level)

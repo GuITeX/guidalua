@@ -7,55 +7,76 @@ Questo capitolo fornisce informazioni sulla differenza tra motore di
 composizione e formato, e sull'esecuzione di codice Lua all'interno di un
 sorgente \TeX.
 
-I listati che riportano nella seconda riga di commento il nome del file
-corrispondente, sono scaricabili dal
-\href{https://github.com/GuITeX/guidalua}{repository} del progetto della guida.
-
 
 \section{Motori di composizione e formati}
 
 Un sorgente \TeX{} contiene testo e macro. Il testo formerà i capoversi, i
-titoli e il resto del documento, mentre le macro ne stabiliranno l'aspetto e
-la struttura. I \emph{motori di composizione} dispongono di particolari macro
-dette \emph{primitive} implementate direttamente in essi, e la possibilità di
-definire nuove macro per svolgere compiti specifici e ricorrenti.
+titoli e il resto del documento, mentre le macro ne stabiliranno l'aspetto e la
+struttura. I \emph{motori di composizione} costruiscono il documento disponendo
+sia delle macro dette \emph{primitive} implementate direttamente in essi, sia
+delle macro utente definite per svolgere compiti specifici e ricorrenti.
 
 Queste nuove macro il cui codice è generalmente scritto da veri esperti,
 possono essere aggregate in una sorta di libreria di alto livello che prende
 il nome di \emph{formato}, come \LaTeX{} o Con\TeX t, perché per esse sono
 state stabilite nuove e coerenti regole di sintassi.
 
-Per esempio, nel formato \LaTeX{} è presente il concetto di \emph{ambiente}
-con la coppia di macro di delimitazione \cs{begin} e \cs{end}. I motori di
-composizione hanno l'abilità nella fase iniziale della compilazione di
-caricare il formato in forma precompilata.
+Per esempio, nel formato \LaTeX{} è presente il concetto di \emph{ambiente} con
+la coppia di macro di delimitazione \cs{begin\{\}} e \cs{end\{\}}. I motori di
+composizione hanno l'abilità nella fase iniziale della compilazione di caricare
+il formato in forma precompilata.
 
 Se si avvia un qualsiasi motore di composizione della famiglia \TeX{} verrà
 caricato di default il formato più semplice chiamato \emph{plain}. Se si vuole
 invece utilizzare un diverso formato, per esempio il più diffuso \LaTeX{},
-occorre passarne il nome all'opzione \texttt{-{}-fmt} nel comando di
-compilazione al terminale.
+occorre passarne il nome al compilatore con l'opzione \texttt{-{}-fmt} nel
+comando al terminale.
 
 Tuttavia, data l'importanza per gli utenti dei formati di alto livello, sono
 stati predisposti appositi comandi scorciatoia. Per esempio il programma
-\prog{pdflatex} rimanda all'effettivo motore di composizione, il tradizionale
-\prog{pdftex}, con l'istruzione di caricare il formato \LaTeX{}, e così anche
-per \prog{lualatex} con \prog{luatex}.
+\prog{pdflatex} rimanda all'effettivo motore di composizione \prog{pdftex} con
+l'istruzione di caricare il formato \LaTeX{}, e così anche per \prog{lualatex}
+con \prog{luatex}.
+
+I due comandi seguenti sono del tutto equivalenti, nel primo si invoca
+direttamente il motore di composizione mentre nel secondo lo si fa
+indirettamente:
+\begin{Verbatim}[numbers=none]
+$ pdftex --fmt=pdflatex mydoc
+$ pdflatex mydoc
+\end{Verbatim}
+
+Se utilizzassimo il formato \code{latex} con il compositore \prog{pdftex} avremo
+in uscita non un PDF ma un DVI, il formato nativo di \TeX{}. In questo caso,
+nelle moderne distribuzioni il nome del programma scorciatoia è proprio
+\prog{latex} perché l'originale \prog{tex} è stato sostituito da \prog{pdftex},
+quindi questi due comandi di compilazione sono equivalenti:
+\begin{Verbatim}[numbers=none]
+$ pdftex --fmt=latex mydoc
+$ latex mydoc
+\end{Verbatim}
+
+Quando il nome del formato corrisponde al nome del programma scorciatoia, non li
+si deve confondere: sono due oggetti molto diversi. I file dei formati sono
+usualmente generati o rigenerati in automatico dalle utility della distribuzione
+nel momento dell'installazione o quando l'utente esegue un aggiornamento del
+sistema che contiene modifiche al formato, perciò è molto raro che ci si trovi
+nella situazione di doverne generare uno.
 
 Riassumendo, i motori di composizione sono programmi tipografici mentre i
-formati sono insiemi coerenti di macro basate sulle primitive di sistema. I
+formati sono insiemi coerenti di macro basate sulle primitive del compositore. I
 nomi dei programmi disponibili nel sistema \TeX{} possono confondere se non si
 conosce questa importante distinzione: alcuni di essi sono comandi scorciatoia
-per identificare sia il motore sia il formato e non un motore di composizione
-vero e proprio.
+per identificare sia il motore sia il formato e non un vero e proprio motore di
+composizione.
 
 
 \subsection{Compositori Lua-powered}
 
 \LuaTeX{} è un programma che elabora un file di testo contenente codice \TeX{}
-per comporne il corrispondente file PDF, quindi è un motore di composizione.
-Nella famiglia \TeX{} ci sono almeno altri due compositori dotati
-dell'interprete Lua, LuaHB\TeX{} e Luajit\TeX{}.
+per comporne il corrispondente file PDF, il formato di uscita di default, quindi
+è un motore di composizione. Nella famiglia \TeX{} ci sono almeno altri due
+compositori dotati dell'interprete Lua, LuaHB\TeX{} e Luajit\TeX{}.
 
 Tutti e tre questi compositori possono eseguire il formato \LaTeX. Come detto in
 apertura di sezione, esiste il programma \prog{lualatex} scorciatoia a un
@@ -64,11 +85,18 @@ compositore che carica il formato \LaTeX.
 Dalla TeX Live 2020 questo compositore è \prog{luahbtex}. Per rendercene conto
 basta scrivere in un terminale il nome del programma, premere invio e leggere
 l'output poi premere CTRL+C per chiuderne l'esecuzione di prova:
-\begin{Verbatim}
+\begin{Verbatim}[numbers=none]
 > lualatex
 This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/W32TeX)
  restricted system commands enabled.
 **
+\end{Verbatim}
+
+E in definitiva per compilare un sorgente \LaTeX{} con \LuaLaTeX{}, con la TeX
+Live 2020 i due comandi equivalenti sono:
+\begin{Verbatim}[numbers=none]
+$ luahbtex --fmt=lualatex mydoc
+$ lualatex mydoc
 \end{Verbatim}
 
 Per ulteriore informazione, \prog{luahbtex} è il motore di composizione
@@ -83,7 +111,62 @@ compilato da qualsiasi dei tre compositori grazie al mantenimento della
 compatibilità.
 
 
-\subsection{Lua in \LuaTeX}
+\subsection{\LaTeX{} con \code{pdflatex} o \code{lualatex}}
+
+I sorgenti \LaTeX{} possono essere compilati sia con il tradizionale motore
+\code{pdftex} che con il compositore \code{luahbtex} con minime modifiche.
+Vediamo quali sono.
+
+Nel preambolo di un sorgente scritto per \code{pdflatex} si caricano tre
+pacchetti fondamentali, come in questo frammento di codice:
+\begin{Verbatim}
+% !TeX program = pdfLaTeX
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\end{Verbatim}
+
+Oggi la stragrande maggioranza degli utenti, e se non siete tra loro fatelo
+subito, codificano i file sorgenti con la codifica UTF-8. Il testo in Unicode
+infatti elimina ogni incoveniente quando si condividono i file o li si apre in
+un sistema operativo diversi\footnote{Per informazioni dettagliate sulle
+codifiche rimando alla guida tematica \GuIT{}
+\href{http://www.guitex.org/home/images/doc/GuideGuIT/introcodifiche.pdf}{%
+Introduzione alle codifiche in entrata e uscita} di Claudio Beccari e Tommaso
+Gordini.}.
+
+Per \LuaTeX{} è obbligatorio la codifica UTF-8 perciò la prima modifica al
+sorgente è semplicemente eliminare il caricamento del pacchetto \pack{inputenc}.
+Se il vostro file non è codificato Unicode, e oggi l'eventualità dovrebbe essere
+rara, si può utilizzare un tool come \code{iconv} come spiegato nella guida
+tematica menzionata in nota.
+
+Per i font invece è necessario eliminare il pacchetto \pack{fontenc} ed
+eventualmente specificare quelli da usare nel documento con il pacchetto
+\pack{fontspec} e le sue macro \cs{setmainfont}, \cs{setmonofont} eccetera. I
+font matematici vanno invece gestiti con il pacchetto \pack{unicode-math} con la
+macro \cs{setmathfont}.
+
+Da quel che abbiamo detto il preambolo cambia così:
+\begin{Verbatim}
+% !TeX program = LuaLaTeX
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage[italian]{babel}
+\end{Verbatim}
+
+L'immediato vantaggio di passare da pdf\LaTeX{} a \LuaLaTeX{} è proprio nel
+poter comporre il documento con i font Open Type. Inoltre non si usa un
+programma che il cui sviluppo è cessato da tempo. Per la mia esperienza la
+compatibilità con i numerosi pacchetti \LaTeX{} è ottima mentre è possibile
+utilizzare i pacchetti scritti in Lua ormai numerosi.
+
+Ulteriori informazioni dove viene incluso anche il compositore \XeLaTeX{} si
+possono trovare nel documento \texttt{lualatex-doc}, al solito disponibile a
+video con l'utility \code{texdoc}.
+
+\subsection{Codice Lua in \LuaTeX}
 
 Per illustrare l'esecuzione di codice Lua all'interno di un sorgente \LuaTeX,
 consideriamo la stampa di un semplice testo nell'output di console con il
@@ -109,7 +192,7 @@ stabilire il contesto di esecuzione del codice.
 
 Se il sorgente è memorizzato nel file \texttt{primo.tex}, possiamo verificare
 quanto previsto in un terminale lanciando il comando:
-\begin{Verbatim}
+\begin{Verbatim}[numbers=none]
 $ luatex primo
 \end{Verbatim}
 e per il sistema operativo Windows e la distribuzione TeX Live 2020, l'output
@@ -124,7 +207,7 @@ Transcript written on primo.log.
 \end{Verbatim}
 
 
-\subsection{Lua in Lua\LaTeX}
+\subsection{Codice Lua in Lua\LaTeX}
 \label{secLuaInLuaLaTeX}
 
 Con Lua\LaTeX{} si ottiene lo stesso risultato ma con il sorgente scritto nella
@@ -139,7 +222,7 @@ sintassi \LaTeX, ovvero:
 \end{document}
 \end{Verbatim}
 e questa volta il comando di compilazione è:
-\begin{Verbatim}
+\begin{Verbatim}[numbers=none]
 $ lualatex primo
 \end{Verbatim}
 
@@ -150,6 +233,7 @@ poi restituirlo di nuovo a \TeX{} al termine dell'esecuzione.
 
 
 \section{Passaggio di dati}
+\label{secPassaggioDati}
 
 La comunicazione dati bidirezionale tra \TeX{} e Lua può avvenire con la
 tecnologia dei nodi, come vedremo, certamente quella più avanzata e complessa
@@ -159,8 +243,7 @@ del compositore con le funzioni della famiglia \fn{tex.print}.
 
 Interrompete la lettura della guida per provare a scrivere la funzione Lua
 \fn{fact} che calcola il fattoriale di un intero. La useremo per dimostrare come
-avviene questo scambio di dati. L'idea è definire un nuovo comando che accetti
-un numero e ne stampi il fattoriale:
+avviene questo scambio di dati. L'idea è definire un nuovo comando che usando la funzione stampi il fattoriale del numero argomento:
 \begin{Verbatim}
 \newcommand{\fattoriale}[1]{\directlua{
     local n = #1
@@ -168,29 +251,33 @@ un numero e ne stampi il fattoriale:
 }}
 \end{Verbatim}
 
-La definizione si basa sulla macro base \cs{newcommand} dove si indica, se
-esistono, il numero degli argomenti tra parentesi quadre e la definizione. Ogni
-argomento ha un segnaposto che inizia con il carattere \code{\#} seguito dal
-numero del gruppo\footnote{Fate riferimento ha una buona guida per \LaTeX{} per
-saperne di più sulla definizione di macro utente.}. Quando \TeX{} incontra un
-segnaposto lo sostituisce con il corrispondente testo introdotto dall'utente.
-Per questo quando scriveremo \cs{fattoriale}\code{\{5\}} il codice Lua
-effettivamente eseguito sarà:
+Quando \TeX{} incontra una macro utente con un segnaposto\footnote{Fate
+riferimento ha una buona guida per \LaTeX{} per saperne di più sulla definizione
+di macro utente.} lo sostituisce con i dati corrispondenti token singolo o
+gruppo di token tra parentesi graffe. Per questo quando nel sorgente scriviamo
+\cs{fattoriale}\code{\{5\}}, dopo la sostituzione il codice Lua effettivamente
+eseguito sarà:
 \begin{Verbatim}
 local n = 5
 tex.print(tostring(fact(n)))
 \end{Verbatim}
 
-La funzione \fn{tex.print} inserisce l'argomento nella lista d'ingresso del
-testo. Quando termina l'esecuzione del blocco di codice Lua i prossimi caratteri
-che si troverà il compositore saranno le cifre che compongono il fattoriale.
+La funzione \fn{tex.print} inserisce l'argomento stringa nell'input d'ingresso
+come se fossero stati letti dal sorgente. Quando a termine l'esecuzione del
+blocco di codice Lua della macro \cs{fattoriale} i successivi caratteri che si
+troverà a elaborare il compositore saranno le cifre 120 e l'espansione della
+macro sarà stata vuota.
 
-Il listato del sorgente completo da confrontare con la vostra personale
-soluzione è:
+Per documentarsi nel dettaglio esiste un'ottima risorsa su Overleaf, la popolare
+piattaforma di compilazione e gestione progetti \LaTeX{} online,
+\href{https://cs.overleaf.com/learn/latex/Articles/An_Introduction_to_LuaTeX_(Part_2):_Understanding_%5Cdirectlua}{questo indirizzo web}.
+
+Il listato del sorgente completo dell'esercizio proposto da confrontare con la vostra personale soluzione è:
 \VerbatimInput{app-start/E1-001-fattoriale.tex}
 
 
 \section{Globale o locale}
+\label{secGlobaleLocale}
 
 Prendendo spunto ancora dall'esempio precedente, soffermiamoci sul comportamento
 nei diversi blocchi \cs{directlua} delle definizioni locali e globali: come
@@ -199,16 +286,17 @@ più disponibile al di fuori di esso. Nel contesto di \LuaTeX{} il codice
 contenuto in una macro \cs{directlua} forma un blocco.
 
 Per questo motivo se separassimo il codice che calcola il fattoriale dalla
-definizione della macro utente \cs{fattoriale}, dovremo definire la funzione
-come globale. Altrimenti riceveremmo un errore di chiamata di un valore
-\code{nil} dal secondo blocco:
+definizione della macro utente \cs{fattoriale}, per non ricevere un errore di
+chiamata di un valore \code{nil} dal secondo blocco dovremo definire la funzione
+come globale come in:
 \VerbatimInput{app-start/E1-002-fattoriale.tex}
 
 Le definizioni globali tuttavia possono determinare errori dovuti alla
-collisione dei nomi essendo l'ambiente globale unico per tutto il sorgente.
-Spesso, come per gli esempi della guida, non è un problema ma è buona norma
-definire una tabella di \emph{namespace} dove memorizzare le funzioni limitando
-la collisione dei nomi solamente al nome del riferimento alla tabella.
+collisione dei nomi definiti in altre parti del sorgente essendo l'ambiente
+appunto globale e quindi unico. Spesso, come per gli esempi della guida, non è
+un problema ma è buona norma definire una tabella di \emph{namespace} dove
+memorizzare le funzioni limitando la collisione dei nomi solamente al nome del
+riferimento alla tabella.
 
 Questa buona prassi diviene \emph{obbligatoria} quando stiamo scrivendo codice
 applicativo in contesti di utilizzo reale.
@@ -222,7 +310,7 @@ si possa formattare il numero del fattoriale con il pacchetto
 
 \section{Espansione di macro}
 
-La comunicazione di un input tra \TeX{} e Lua può avvenire anche per espansione
+La comunicazione di un dato tra \TeX{} e Lua può avvenire anche per espansione
 di macro. Come esempio minimo consideriamo il seguente sorgente \LuaTeX{} che
 stampa l'ora di inizio della compilazione avvalendosi del contatore \cs{time}
 che indica i minuti trascorsi dall'inizio del giorno:
@@ -233,8 +321,8 @@ Al termine dell'espansione l'istruzione di assegnazione della variabile numerica
 lo stesso file potrebbe essere:
 \VerbatimInput{app-start/E1-005-time.tex}
 
-Al capitolo~\ref{iichRegistro} vedremo che anche con la libreria standard di Lua
-è possibile ottenere la data e l'ora corrente.
+Nel capitolo~\ref{iichRegistro} vedremo che anche con la libreria standard di
+Lua è possibile ottenere la data e l'ora corrente.
 
 
 \section{Caratteri speciali}
@@ -263,7 +351,8 @@ progetto.
 
 Rimando alla documentazione del pacchetto \pack{luacode} per i dettagli sulla
 collisione dei simboli. Vedrete che esso offre due comandi e due ambienti per
-poter far convivere il codice Lua in un sorgente \LaTeX.
+poter far inserire codice Lua in un sorgente \LaTeX{} con varie impostazioni di
+caratteri.
 
 Nel codice Lua si possono usare i commenti in stile \TeX{} con il simbolo del
 percento perché il processo d'espansione li elimina \emph{prima} di passare il
@@ -274,7 +363,8 @@ all'interprete come un unica linea di codice perciò il commento dopo un doppio
 trattino si estenderebbe non solo a fine riga ma a tutto il codice che segue.
 
 Per fortuna la grammatica Lua a differenza di Python, consente la libera
-scrittura e identazione del codice.
+scrittura e identazione del codice altrimenti questo meccanismo non potrebbe
+funzionare.
 
 
 \section{Le librerie disponibili in \LuaTeX}

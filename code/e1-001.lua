@@ -1,4 +1,5 @@
--- costruttore (l'ultima virgola è opzionale)
+-- filename: code/e1-001.lua
+-- costruttore tabella (l'ultima virgola è opzionale)
 -- i doppi trattini rappresentano un commento
 -- come // lo sono per il C
 local t = {

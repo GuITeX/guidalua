@@ -12,9 +12,9 @@ In Lua ne è previsto quindi un uso molteplice: se le chiavi sono numeri interi
 la tabella sarà un array, se le chiavi sono di altro tipo, per esempio stringhe,
 avremo un dizionario.
 
-Le chiavi possono essere di tutti i tipi previsti da Lua tranne che \key{nil}. I
-valori possono appartenere a qualsiasi tipo. Nulla vieta che in una stessa
-tabella coesistano chiavi di tipo diverso.
+Le chiavi possono essere di tutti i tipi previsti da Lua tranne che \key{nil},
+mentre i valori possono appartenere a qualsiasi tipo. Nulla vieta che in una
+stessa tabella coesistano chiavi di tipo diverso.
 
 Dal punto di vista sintattico, una tabella di Lua è un oggetto racchiuso tra
 parentesi graffe e, la più semplice quella vuota, si crea così:
@@ -87,9 +87,9 @@ sufficientemente efficiente. Può essere usata in moltissime diverse situazioni
 ed è ancora più utile grazie all'efficacia del suo \emph{costruttore}.
 
 Ispirato al formato di dati bibliografici di BibTeX, uno dei programmi storici
-del sistema \TeX{} per la gestione delle bibliografie nei documenti \LaTeX, il
-costruttore di Lua può creare tabelle da una sequenza di chiavi/valori inserite
-tra le parentesi graffe:
+del sistema \TeX{} usato per la gestione delle bibliografie nei documenti
+\LaTeX, il costruttore di Lua può creare tabelle da una sequenza di
+chiavi/valori inserite tra parentesi graffe:
 \lines
 local t = { a = 123, b = 456, c = "valore"}
 \endlines
@@ -163,7 +163,7 @@ associato alla chiave corrispondente alla stringa del nome.
 
 \begin{Exercise}[label={tab-01}]
 Scrivere il codice Lua che memorizzi in una tabella i primi 10 numeri primi
-usando il costruttore.
+usandone il costruttore.
 \end{Exercise}
 
 \begin{Exercise}[label={tab-02}]

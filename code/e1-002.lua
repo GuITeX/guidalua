@@ -1,3 +1,4 @@
+-- filename: code/e1-002.lua
 local factors = {}
 local n = 123456789
 

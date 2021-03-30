@@ -11,10 +11,9 @@ composizione \TeX{}, questa prima parte della guida è in forma di
 utente \LuaLaTeX{} indaffarato nel risolvere alcuni problemi con i suoi
 documenti: fare calcoli con una calcolatrice o comporre una tabella ripetitiva.
 
-Nel margine di pagina il lettore troverà i rimandi di approfondimento alle altre
-parti della guida dei nuovi concetti che a mano a mano si incontrano nel codice
-o nella procedura. I tutorial infatti non hanno l'obiettivo di spiegare la
-programmazione Lua ma di introdurne l'utilità.
+Nel margine di pagina il lettore troverà i rimandi di approfondimento. I
+tutorial infatti non hanno l'obiettivo di spiegare la programmazione Lua ma di
+introdurne l'utilità.
 
 
 \section{La calcolatrice}
@@ -24,20 +23,21 @@ ne stampi il risultato. Sarebbe davvero utile non dover più calcolare a
 parte il risultato e riportarlo nel sorgente del documento \LaTeX{} con un copia
 incolla o peggio a mano.
 
+Tentiamo qualcosa di molto semplice con Lua, assegnare l'espressione a una
+variabile per poi stamparla nel documento:
+%
 \tcbdocmarginnote[enlarge top initially by=\margindown]{%
 Lua in \TeX\\
-\S{} \ref{secLuaInLuaLaTeX}}
+\gotosec{} \ref{secLuaInLuaLaTeX}}
 %
 \tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
 Variabili locali\\
-\S{} \ref{secLuaInLuaLaTeX}}
+\gotosec{} \ref{secGlobaleLocale}, \gotosec{} \ref{secFondLocaleGlobale}}
 %
 \tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
 \fn{tex.print}\\
-\S{} \ref{secLuaInLuaLaTeX}}
+\gotosec{} \ref{secPassaggioDati}}
 %
-Tentiamo qualcosa di molto semplice con Lua: passare l'espressione a una
-variabile e stamparla nel documento:
 \begin{Verbatim}
 % !TeX program = LuaLaTeX
 % filename: app-start/E0-001-expr.tex
@@ -66,16 +66,29 @@ argomento è stato sostituito con l'espressione che viene poi valutata da Lua.
 Nessun pacchetto aggiuntivo caricato, qualsiasi espressione numerica è lecita, e
 questo solo e soltanto usando Lua incluso in \LuaTeX.
 
-Funziona anche con le stringhe a patto di delimitarne il valore, e con i valori
-booleani \key{true} e \key{false} e con le stringhe. Proviamo:
+Funziona anche con le stringhe, a patto di delimitarne il valore, e con le
+espressioni booleane. Proviamo:
 \begin{tcolorbox}
 \verb=\( 56.9 > 78.42 \) è \texttt{\expr{ 56.9 > 78.42 }}=
 \tcblower
 \( 56.9 > 78.42 \) è \texttt{\expr{ 56.9 > 78.42 }}
 \end{tcolorbox}
 
-E se si volessero sostituire le rappresentazioni dei valori vero e falso? Ecco
-la modifica:
+E se si volessero sostituire le rappresentazioni testuali dei valori vero e
+falso? Ecco la modifica:
+%
+\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+Ciclo \key{if}\\
+\gotosec{} \ref{secFondCicloIf}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
+Tipo \key{boolean}\\
+\gotosec{} \ref{secFondManciataTipi}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
+Operatore ternario\\
+\gotosec{} \ref{secFondOperatoreTernario}}
+%
 \begin{Verbatim}
 \newcommand\expr[1]{\directlua{
     local result = #1
@@ -96,14 +109,23 @@ la modifica:
 
 Un semplice test ci conforterà sulla correttezza del codice:
 \begin{tcolorbox}[sidebyside]
-\verb|\expr{100 == 100 and 7 > 3}|
-\tcblower
+\begin{Verbatim}[numbers=none, xleftmargin=0pt]
 \expr{100 == 100 and 7 > 3}
+\expr{-10 < -100}
+\end{Verbatim}
+\tcblower
+\expr{100 == 100 and 7 > 3}\\
+\expr{-10 < -100}
 \end{tcolorbox}
 
 Si, funziona ma andiamo avanti. Vorrei poter regolare l'arrotondamento del
 risultato numerico della calcolatrice ricorrendo a un argomento opzionale
-separato dall'espressione con una virgola:
+separato dall'espressione da una virgola:
+%
+\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\fn{string.format}\\
+\gotosec{} \ref{secFondStringFormat}}
+%
 \begin{Verbatim}
 \newcommand\expr[1]{\directlua{
     local result, dec = #1
@@ -134,7 +156,7 @@ separato dall'espressione con una virgola:
 
 Stavolta il codice perde un po' di chiarezza perché non è possibile usare
 direttamente il carattere percento \code{\%} che verrebbe interpretato come
-inizio di un commento nel costruire la stringhe di formato. Ovviamente questo
+inizio di un commento nel costruire le stringhe di formato. Ovviamente questo
 non succederebbe se il codice fosse in un file separato o se fosse racchiuso in
 un ambiente \pack{luacode} dell'omonimo pacchetto \LaTeX.
 
@@ -194,7 +216,7 @@ se tutto funziona ancora bene:
 \tcblower
 \(\sin^2(1/2) + \cos^2(1/2) = \expr{sin(0.5)^2 + cos(0.5)^2, 8}\).
 \end{tcolorbox}
-e come espressione booleana:
+e per un'espressione booleana:
 \begin{tcolorbox}
 \begin{Verbatim}[numbers=none,xleftmargin=0pt]
 A \( 1/3 \) l'identità è \emph{\expr{sin(1/3)^2 + cos(1/3)^2 == 1}}
@@ -205,24 +227,35 @@ A \( 1/3 \) l'identità è \emph{\expr{sin(1/3)^2 + cos(1/3)^2 == 1}}
 
 Finora ogni nuova funzionalità aggiunta alla calcolatrice non ha presentato
 difficoltà. Possiamo inserire o meno il risultato in ambiente matematico,
-arrotondarlo al numero di decimali desiderato e usare funzioni matematiche con
-l'efficiente libreria in virgola mobile di Lua, che si sta dimostrando semplice
-da usare e molto efficace.
+arrotondarlo al numero di decimali desiderato e usare funzioni matematiche
+dell'efficiente libreria in virgola mobile di Lua, un linguaggio che si sta
+dimostrando semplice da usare e molto efficace.
 
 Continuamo con un nuovo passo: aggiungere costanti numeriche definite
-dall'utente, una sorta di \emph{memoria} della calcolatrice. Per inserire
-variabili letterali in un'espressione abbiamo bisogno che il loro valore
-numerico sia inizializzato ma non possiamo ricorrere alla stessa tecnica con cui
-abbiamo risolto l'inserimento delle funzioni trigonometriche.
+dall'utente, una sorta di \emph{funzione di memoria} della calcolatrice. Per
+inserire variabili letterali in un'espressione abbiamo bisogno che il loro
+valore numerico sia inizializzato ma non possiamo ricorrere alla stessa tecnica
+con cui abbiamo risolto l'inserimento delle funzioni trigonometriche.
 
 Non è possibile infatti codificare variabili locali senza conoscerne il nome,
-perché è un dato fornito dall'utente. Serve una sorta di metaprogrammazione come
-con le macro dei linguaggi compilati. Leggendo più a fondo la documentazione di
-Lua, si scopre che è possibile intervenire sull'ambiente delle variabili globali
-\code{\_ENV} di un \emph{chunk}, e anzi, a ben vedere il problema di rendere
-visibili simboli di costanti è lo stesso che quello di rendere disponibili
-nell'espressione le funzioni matematiche con nomi abbreviati. Facciamo quindi un
-tentativo ripartendo con il codice iniziale:
+perché è un dato fornito dall'utente. Servirebbe una sorta di metaprogrammazione
+come con le macro dei linguaggi compilati. Leggendo più a fondo la
+documentazione di Lua, si scopre che è possibile intervenire sull'ambiente delle
+variabili globali \code{\_ENV}\footnote{Per ulteriori informazioni
+sull'\emph{environment} di Lua rimando al PIL dove si trova un intero capitolo
+ad esso dedicato.} di un \emph{chunk}, e anzi, a ben vedere il problema di
+rendere visibili simboli di costanti è lo stesso che quello di rendere
+disponibili nell'espressione le funzioni matematiche con nomi abbreviati.
+Facciamo un tentativo ripartendo con il codice da zero:
+
+\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+Tipo \code{table}\\
+\gotosec{} \ref{iChTabella}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
+Iteratore \fn{pairs}\\
+\gotosec{} \ref{secFondPairsIterator}}
+%
 \begin{Verbatim}
 \directlua{
 calclib = {}
@@ -247,8 +280,8 @@ visibili come variabili globali proprio quando l'espressione deve essere
 valutata.
 
 Non solo, come effetto collaterale, il risultato dell'ultimo calcolo sarà
-disponibile nella successiva espressione memorizzato nella nella variabile
-\code{ans} come succede con altri tool matematici! Proviamolo:
+disponibile nella successiva espressione memorizzato nella variabile \code{ans}
+come succede con altri tool matematici! Proviamolo:
 %
 \directlua{
 calclib = {}
@@ -282,9 +315,10 @@ parentesi quadre potremo fornire all'espressione una lista di costanti nel
 formato chiave/valore con separatore il carattere virgola.
 
 Memorizzeremo le costanti indicate dall'utente solamente se il loro nome non è
-già stato utilizzato e se non è un un nome di funzione. Inoltre, specificando
-una stringa senza chiave tra le opzioni, potremo implementare la memorizzazione
-del risultato dell'espressione stessa, così che sia poi riutilizzabile:
+già stato utilizzato o se non è un un nome di funzione. Inoltre, specificando
+una stringa solo come chiave tra le opzioni, potremo implementare la
+memorizzazione del risultato dell'espressione stessa, così che sia poi
+riutilizzabile:
 \begin{Verbatim}
 \directlua{
 calclib = {}
@@ -350,7 +384,7 @@ Eccone un esempio:
 \begin{Verbatim}[numbers=none,xleftmargin=0pt]
 \( b = \expr[b=10, h=20]{b} \), % oppure \expr["b", h=20]{10}
 \( h = \expr{h} \),
-\( M = \expr[m = 1000]{m}\),
+\( M = \expr[m = 1000]{m}\), % oppure \expr["m"]{1000}
 \( \sigma = M/W_\mathrm{x} = \expr[w=(b*h^2)/6]{m/w}\).
 \end{Verbatim}
 \tcblower
@@ -361,19 +395,19 @@ Eccone un esempio:
 \end{tcolorbox}
 
 Poiché anche i valori assegnati alle costanti sono valutati da Lua \emph{dopo}
-la modifica dell'environment, anche per le costanti nelle opzioni della macro è
-possibile assegnare espressioni usando tutte le funzioni matematiche e tutte le
-costanti precedentemente definite. Da questo punto in poi, possiamo presentare
-il valore di \( W_\mathrm{x} \) scrivendo nel sorgente \verb=\expr{w}= che da
-\expr{w}.
+la modifica dell'environment, anche per le costanti nelle opzioni della macro
+\cs{expr} è possibile assegnare espressioni usando tutte le funzioni matematiche
+e tutte le costanti precedentemente definite. Da questo punto in poi, possiamo
+presentare il valore di \( W_\mathrm{x} \) scrivendo nel sorgente
+\verb=\expr{w}= che da \expr{w}.
 
 \subsection{Conclusioni}
 
 Tutte le principali funzionalità della calcolatrice sono state implementate in
-Lua e possiamo considerare terminato il tutorial. Certo non tutte. Per esempio
-potremo far eseguire calcoli coinvolgendo anche registri contatori o
-dimensionali di \TeX{}, oppure considerare che constanti dai nomi speciali come
-\code{M1}, \code{M2} eccetera si comportino come registri di memoria della
+Lua, certo non tutte. Per esempio potremo far eseguire calcoli coinvolgendo
+anche registri contatori o dimensionali di \TeX{}, per esempio per fornire
+coordinate in un disegno, oppure considerare che constanti dai nomi speciali
+come \code{M1}, \code{M2} eccetera si comportino come registri di memoria della
 calcolatrice e quindi che possano essere sovrascritti o possano funzionare da
 accumulatori.
 

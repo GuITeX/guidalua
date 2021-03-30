@@ -28,20 +28,21 @@ presentare il quadro della crescente complessità del sistema.
 
 \section{Piano della guida}
 
-La guida è divisa in tre parti: la prima offre una panoramica rapida per
-iniziare subito con Lua seguendo i passi di un ipotetico utente alle prese con
-la risoluzione di problemi compositivi raggruppati in \emph{tutorial} (parte
-\ref{partTutorial}), la seconda tratta delle basi del linguaggio Lua (parte
-\ref{partFoundation}) e la terza tratta di esempi applicativi con l'uso delle
-librerie interne di composizione (parte \ref{partApp}).
+La guida è divisa in tre parti: la prima offre una panoramica rapida in forma di
+\emph{tutorial} per iniziare subito con Lua seguendo i passi di un ipotetico
+utente alle prese con problemi compositivi (parte \ref{partTutorial}), la
+seconda tratta delle basi del linguaggio Lua (parte \ref{partFoundation}) e
+contiene numerosi esercizi, e infine la terza illustra esempi applicativi con
+l'uso delle librerie di composizione cn i nodi (parte \ref{partApp}).
 
 Tra gli argomenti ci sono:
 \begin{compactitemize}
-\item basi del linguaggio Lua \( \to \) dal capitolo \ref{chAssignment},
 \item differenza tra motore e formato di composizione \( \to \) capitolo
 \ref{iichExplain},
-\item tecniche di programmazione e di rappresentazione dei dati,
-\item interazione tra Lua e lo stato interno del motore di composizione.
+\item basi del linguaggio Lua \( \to \) dal capitolo \ref{chAssignment},
+\item tecniche di programmazione e di rappresentazione dei dati \( \to \) dal
+capitolo \ref{iichRegistro},
+\item la tecnologia dei nodi in Lua \( \to \) capitolo \ref{iichTartaglia}.
 \end{compactitemize}
 
 
@@ -69,12 +70,17 @@ pulsante Issues.
 \section{Altre risorse}
 
 La risorsa principale per imparare Lua, a cui si rimanda per tutti gli
-approfondimenti, è certamente il PIL acronimo del titolo del libro
-\emph{Programming In Lua} di Roberto Ierusalimschy, principale Autore
-di Lua. Questo testo non solo è completo e autorevole ma è anche ben scritto e
+approfondimenti, è certamente il PIL \cite{PIL} acronimo del titolo del libro
+\emph{Programming In Lua} di Roberto Ierusalimschy, principale Autore di Lua.
+Questo testo non solo è completo e autorevole ma è anche ben scritto e
 composto\footnote{Tra l'altro il libro ufficiale su Lua viene composto in
 \LaTeX{} e commercializzato per contribuire allo sviluppo del linguaggio
 stesso.}.
+
+La seconda importante risorsa su Lua si trova in rete all'indirizzo
+\href{https://www.lua.org/manual/5.3/}{\texttt{www.lua.org/manual/5.3/}} ed è il
+\emph{reference} del linguaggio con le specifiche di sintassi, metametodi, e
+funzioni di libreria.
 
 Quanto a \LuaTeX{} il riferimento è il suo manuale che, come quasi tutta la
 documentazione nel sistema \TeX{}, può essere visualizzato a video con il
@@ -86,14 +92,15 @@ $ texdoc luatex
 
 \section{Note di lettura}
 
-Nei listati compilabili riportati nelle pagine della guida compare alla prima
-linea la \emph{riga magica}, un commento utile per dare istruzioni all'editor
-sul compilatore da usare, ma che qui informerà il lettore aiutandolo a stabilire
+Nei listati compilabili riportati nella guida compare alla prima linea la
+\emph{riga magica}, un commento utile per dare istruzioni all'editor sul
+compilatore da usare, ma che qui informerà il lettore per aiutarlo a stabilire
 il contesto del codice.
 
 Se presente nel progetto, alla seconda riga dei listati si troverà invece il
 nome del file che il lettore potrà scaricare ed eseguire per i propri
-esperimenti.
+esperimenti dal \href{https://github.com/GuITeX/guidalua}{\texttt{repository
+git}}.
 
 Nella parte \ref{partFoundation} ho cercato di non dare per scontati i concetti
 fondamentali della programmazione. Ovviamente il lettore già preparato procederà

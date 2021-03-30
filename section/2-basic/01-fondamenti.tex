@@ -42,6 +42,7 @@ che non si dichiari il contrario.
 
 
 \subsection{Locale o globale?}
+\label{secFondLocaleGlobale}
 
 Una proprietà dell'assegnamento è che se non diversamente specificato Lua
 istanzia i simboli nell'ambiente globale del codice in esecuzione. Se si
@@ -113,6 +114,7 @@ utili con le funzioni e con gli iteratori di cui ci occuperemo in seguito.
 
 
 \section{Una manciata di tipi}
+\label{secFondManciataTipi}
 
 In Lua esistono una manciata di tipi. Essenzialmente, omettendone due, sono solo
 questi:
@@ -152,16 +154,19 @@ z = nil       --> distruzione della variabile
 \endlines
 \sourcecode{from_lines()}
 
-I dati non più utili come quelli la cui variabile è stata riassegnata a
-\key{nil} oppure quelli locali nel momento in cui escono di scopo, vengono
+
+\subsection{Il garbage collector}
+
+I dati non più utili come quelli di cui non esiste più un \emph{riferimento} a
+essi durante l'esecuzione, per esempio perché la variabile è stata riassegnata a
+\key{nil}, oppure quelli locali nel momento in cui escono di scopo, vengono
 automaticamente eliminati dal \emph{garbage collector} di Lua. Questo componente
-solleva l'utente dalla gestione diretta della memoria al prezzo di una piccola
-diminuzione delle prestazioni.
+solleva l'utente dalla gestione diretta della memoria e sopratutto dai deleteri
+errori di programmazione che si possono facilmente compiere nel farlo, al prezzo
+di una piccola diminuzione delle prestazioni in fase di esecuzione.
 
-Certamente se è un garbage collector a liberare dietro le quinte la memoria non
-più utilizzata, il programma non conterrà gli errori tipici della gestione
-manuale, ma sarà un po' più lento a runtime.
-
+Al termine del programma tutte le risorse in memoria vengono automaticamente
+liberate.
 
 \section{Esercizi}
 

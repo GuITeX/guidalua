@@ -69,14 +69,12 @@
 \RequirePackage{microtype}
 \RequirePackage{etoolbox}
 \RequirePackage{xcolor}
-\RequirePackage{natbib}
 \RequirePackage{multicol}
 \RequirePackage{imakeidx}
 \RequirePackage{fancyvrb}
 \RequirePackage{afterpage}
 \RequirePackage{enumitem}
 \RequirePackage[right]{eurosym}
-\RequirePackage{fancyvrb}
 \RequirePackage{listings}
 \lstloadlanguages{[LaTeX]TeX}
 \normalfont
@@ -392,7 +390,8 @@ style=sameline,noitemsep,partopsep=\z@,topsep=.25\onelineskip}
 {%
     \end{multicols}\gdef\imki@idxprologue{}\clearpage
 }
-\AtBeginDocument{\bibliographystyle{guidatematica}}%
+% the next line was excluded because in conflict with biber/biblatex
+%\AtBeginDocument{\bibliographystyle{guidatematica}}%
 \unless\ifPDFTeX
    \ifcsstring{xpg@main@language}{italian}%
      {\csgappto{init@extras@italian}{\nofrench@indent}}{}%
