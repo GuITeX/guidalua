@@ -452,8 +452,9 @@ end
 }
 \end{Verbatim}
 
-Introduciamo anche il pacchetto \pack{siunitx} utilissimo per comporre numeri,
-unità di misura e tabelle, con questo ambiente \amb{tabular} ridisegnato:
+Introduciamo anche il pacchetto \pack{siunitx} \cite{pkg:siunitx} utilissimo per
+comporre numeri, unità di misura e tabelle, con questo ambiente \amb{tabular}
+ridisegnato:
 \begin{Verbatim}
 \begin{tabular}{
     c
@@ -463,14 +464,15 @@ unità di misura e tabelle, con questo ambiente \amb{tabular} ridisegnato:
 }
 \toprule
 \diameter & {Sviluppo} & {Sezione} & {Peso}\\
-\small\si{mm} & {\small\si{cm^2/m}} & {\small\si{cm^2}} & {\small\si{daN/m}}\\
+\small\si{mm} & {\small\si{cm^2/m}} & {\small\si{cm^2}} &
+    {\small\si{daN/m}}\\
 \midrule
 \printrow{\(\mathbf{<1>}\) & <4> & <2> & <3>\\<0>}
 \bottomrule
 \end{tabular}
 \end{Verbatim}
 
-Il progetto completo si trova nel file \file{app-star/E0-006-tab.tex}, dove ho
+Il progetto completato si trova nel file \file{app-star/E0-006-tab.tex}, dove ho
 aggiunto alla tabella la colonna con il calcolo della superficie laterale delle
 barre.
 

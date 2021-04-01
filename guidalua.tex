@@ -10,7 +10,7 @@
 % License information see LICENSE text file
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2021/04/30 v0.4.2 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2021/04/03 v0.4.3 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
@@ -82,6 +82,59 @@
 \newlength{\margindown}
 \setlength{\margindown}{10mm}
 
+\makeatletter
+\newcommand\guidalualicensebox{
+\noindent
+\begin{tikzpicture}
+\begin{scope}[scale=0.18]
+\guidalualogocmd
+\end{scope}
+\node[anchor=base] at (39.5mm,1.25mm) {\@@title};
+\node[anchor=base] at (39.5mm,-3.5mm) {Copyright \textcopyright{} \the\year, \@@author};
+\end{tikzpicture}\\[\baselineskip]
+Questa documentazione è soggetta alla licenza LPPL
+\href{http://www.latex-project.org/lppl.txt}{\LaTeX{} Project Public
+License}, versione 1.3 o successive ed è curata dall'autore.}
+\makeatother
+
+\directlua{
+    local d = [[\filedate]]
+    token.set_macro('guidaluadate', d:gsub('/', '-'))
+}
+
+\licenza{%
+\guidalualicensebox
+
+\medskip Guide's \pack{biblatex} entry:\\
+\begingroup
+\ttfamily\footnotesize\noindent
+\begin{tabular}{@{}l@{}l@{}l@{}}
+\toprule
+\multicolumn{3}{l}{\hspace{-6pt}@manual\{guit:guidalua,}\\
+\hspace{8pt}
+ & title        & =\{Guida al linguaggio Lua per Lua\cs{TeX}\},\\
+ & author       & =\{Giacomelli, Roberto\},\\
+ & date         & =\{\guidaluadate\},\\
+ & version      & =\{\fileversion\},\\
+ & pagetotal    & =\{\thelastpage\},\\
+ & langid       & =\{italian\},\\
+ & url          & =\{https://www.guitex.org/home/images/doc/GuideGuIT/guidalua.pdf\},\\
+ & urldate      & =\{2021-04-01\},\\
+ & organization & =\{GuIT, Gruppo Utilizzatori Italiani di \cs{TeX}\},\\
+ & series       & =\{Guide Tematiche del GuIT\},\\
+\}\\
+\bottomrule
+\end{tabular}
+\endgroup
+}
+
+\newcommand\guidalualogocmd{
+\node at (-2.31-0.72, 0) {};
+\draw[fill,verdeguit] (0,0) circle (2.2);
+\draw[fill,verdeguit] (2.31, 2.31) circle (0.72);
+\draw[fill, white] (0.8,0.8) circle (0.72);
+}
+
 \begin{document}
 \hypersetup{
     colorlinks=true,
@@ -94,19 +147,17 @@
 \title{Guida al linguaggio Lua per \LuaTeX}
 \subtitle{
 \begin{tikzpicture}[scale=0.82]
-\node at (-2.31-0.72, 0) {};
-\draw[fill,verdeguit] (0,0) circle (2.2);
-\draw[fill,verdeguit] (2.31, 2.31) circle (0.72);
-\draw[fill, white] (0.8,0.8) circle (0.72);
+\guidalualogocmd
 \end{tikzpicture}
 \vspace*{8.5ex}
 }
 \maketitle
 
-\tableofcontents
+\input{section/0-start/01-intro}
+
 \newpage
 
-\input{section/0-start/01-intro}
+\tableofcontents
 
 \mainmatter*
 

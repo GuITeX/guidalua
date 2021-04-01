@@ -100,11 +100,12 @@ $ lualatex mydoc
 \end{Verbatim}
 
 Per ulteriore informazione, \prog{luahbtex} è il motore di composizione
-\prog{luatex} in cui è stato sostituito il componente per il calcolo della
-forma dei font con il modulo HarfBuzz, mentre \prog{luajittex} è un'altra
-variante di \prog{luatex} in cui l'interprete Lua è stato sostituito con
-LuaJIT un'implementazione indipendente più veloce dell'interprete ufficiale che
-sfrutta le tecniche di compilazione denominate \emph{Just In Time}.
+\prog{luatex} in cui è stato sostituito il componente per il calcolo della forma
+dei font con il modulo HarfBuzz \cite{lib:harfbuzz}, mentre \prog{luajittex} è
+un'altra variante di \prog{luatex} in cui l'interprete Lua è stato sostituito
+con LuaJIT \cite{prg:luajit} un'implementazione indipendente più veloce
+dell'interprete ufficiale che sfrutta le tecniche di compilazione denominate
+\emph{Just In Time}.
 
 In generale un sorgente \TeX{} che contiene codice Lua viene correttamente
 compilato da qualsiasi dei tre compositori grazie al mantenimento della
@@ -134,7 +135,7 @@ un sistema operativo diversi\footnote{Per informazioni dettagliate sulle
 codifiche rimando alla guida tematica \GuIT{}
 \href{http://www.guitex.org/home/images/doc/GuideGuIT/introcodifiche.pdf}{%
 Introduzione alle codifiche in entrata e uscita} di Claudio Beccari e Tommaso
-Gordini.}.
+Gordini \cite{gt:codifiche}.}.
 
 Per \LuaTeX{} è obbligatorio la codifica UTF-8 perciò la prima modifica al
 sorgente è semplicemente eliminare il caricamento del pacchetto \pack{inputenc}.
@@ -370,7 +371,7 @@ funzionare.
 \section{Le librerie disponibili in \LuaTeX}
 
 Agli usuali moduli della libreria standard di Lua, sono stati aggiunti in
-\LuaTeX{}, così come per gli altri motori di composizione estesi, speciali
+\LuaTeX{}, così come negli altri motori di composizione estesi, speciali
 funzionalità dedicate al controllo dello stato interno e alla creazione di
 elementi tipografici.
 
@@ -378,7 +379,7 @@ elementi tipografici.
 
 
 
-\section{La primitiva directlua}
+\section{La primitiva \key{directlua}}
 
 Abbiamo ora tutte le informazioni per svolgere alcuni esercizi e applicazioni
 fin dai prossimi capitoli. Non rimane che ricordare che il principale modo di

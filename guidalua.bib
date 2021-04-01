@@ -2,13 +2,13 @@
 % la biblioteca della guida su Lua
 
 @book{PIL,
-author = {Ierusalimschy, Roberto},
-title = {Programming in Lua, Fourth Edition},
-edition = 4,
-date = 2016,
-isbn = {8590379868},
-publisher = {Lua.Org},
-abstract = {Lua is spreading more and more throughout different areas of
+author         = {Ierusalimschy, Roberto},
+title          = {Programming in Lua, Fourth Edition},
+edition        = {4},
+date           = {2016},
+isbn           = {8590379868},
+publisher      = {Lua.Org},
+abstract       = {Lua is spreading more and more throughout different areas of
 software, from embedded systems and mobile devices to the Web and the Internet
 of Things. Besides, it has a major role in the game industry, where knowledge of
 Lua has become an indisputable asset. Lua is the language of choice for anyone
@@ -27,9 +27,77 @@ the book to present the material in a growing order of complexity, allowing the
 reader to better absorb the character of the language.}
 }
 
+@online{web:luaref,
+    author       = {Ierusalimschy, Roberto and
+        de Figueiredo, Luiz Henrique and Celes, Waldemar},
+    title        = {Lua 5.3 Reference Manual},
+    date         = {2021-04-01},
+    url          = {https://www.lua.org/manual/5.3/}
+}
 
+@manual{pkg:luacode,
+	edition      = {v1.2a},
+	title        = {The \pack{luacode} Package},
+	url          = {https://ctan.org/pkg/luacode},
+	pagetotal    = {10},
+	author       = {Pégourié-Gonnard, Manuel},
+	urldate      = {2021-04-01},
+	date         = {2012-01-23},
+	langid       = {english},
+	annotation   = {Documentazione a corredo del pacchetto \pack{luacode}.},
+	note         = {Leggibile con il comando \texttt{texdoc luacode}},
+}
 
+@manual{gt:codifiche,
+    title        = {Introduzione alle codifiche in entrata e in uscita},
+    author       = {Beccari, Claudio and Gordini, Tommaso},
+    date         = {2017-10-26},
+    pagetotal    = {34},
+    langid       = {italian},
+    url          = {https://www.guitex.org/home/images/doc/GuideGuIT/introcodifiche.pdf},
+    urldate      = {2021-04-01},
+    organization = {\GuIT},
+    series       = {Guide Tematiche del \GuIT},
+}
 
+@manual{prg:luatex,
+	title        = {{\LuaTeX} Reference Manual},
+	edition      = {v1.13},
+	url          = {https://ctan.org/pkg/luatex},
+	pagetotal    = {318},
+	author       = {LuaTeX, Development Team},
+	urldate      = {2021-04-01},
+	date         = {2021-02-14},
+	langid       = {english},
+	note         = {Leggibile con il comando \texttt{texdoc luatex}},
+}
 
+@manual{pkg:siunitx,
+	author       = {Wright, Joseph},
+	title        = {\pack{siunitx} --- A comprehensive (SI) units package},
+	edition      = {v2.8c},
+	date         = {2020-02-25},
+	url          = {https://ctan.org/pkg/siunitx},
+	urldate      = {2021-04-01},
+	pagetotal    = {96},
+	langid       = {english},
+	annotation   = {Documentazione a corredo del pacchetto \pack{siunitx}.},
+	note         = {Leggibile con il comando \texttt{texdoc siunitx}},
+}
 
+@online{lib:harfbuzz,
+    title        = {HarfBuzz text shaping library},
+    organization = {The FreeType Project},
+    author       = {Esfahbod, Behdad},
+    year         = {2021},
+    url          = {https://harfbuzz.github.io/},
+    urldate      = {2021-04-01},
+}
 
+@online{prg:luajit,
+    title        = {The LuaJIT Project},
+    year         = {2021},
+    urldate      = {2021-04-01},
+    url          = {https://luajit.org/},
+    author       = {Pall, Mike},
+}
