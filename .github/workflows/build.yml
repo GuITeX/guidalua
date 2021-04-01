@@ -2,47 +2,26 @@
 name: Compile LuaLaTeX main file guidalua.tex
 on:
   push:
-    tags:
-      - 'v*'
     branches: [ master ]
 
 jobs:
   build_latex:
     runs-on: ubuntu-latest
+    container:
+      image: danteev/texlive:latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
-      - name: Compile LuaLaTeX document (i)
-        id: compiled_i
-        uses: dante-ev/latex-action@master
-        with:
-          compiler: lualatex
-          args: --shell-escape
-          root_file: guidalua.tex
-      - name: Build bibliography (ii)
-        id: compiled_ii
-        uses: dante-ev/latex-action@master
-        with:
-          compiler: biber
-          root_file: guidalua
-      - name: Compile LuaLaTeX document (iii)
-        id: compiled_iii
-        uses: dante-ev/latex-action@master
-        with:
-          compiler: lualatex
-          args: --shell-escape
-          root_file: guidalua.tex
-      - name: Compile LuaLaTeX document (iv)
-        id: compiled_iv
-        uses: dante-ev/latex-action@master
-        with:
-          compiler: lualatex
-          args: --shell-escape
-          root_file: guidalua.tex
-      - name: Upload Release Asset
+      - name: Compile LuaLaTeX document
+        run: |
+          lualatex --shell-escape guidalua
+          biber guidalua
+          lualatex --shell-escape guidalua
+          lualatex --shell-escape guidalua
+
+      - name: Release
         uses: softprops/action-gh-release@v1
         with:
-            files: guidalua.pdf
+          files: guidalua.pdf
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
