@@ -8,14 +8,15 @@ unitaria. I diametri variano da 6 a 32 millimetri con passo 2.
 
 L'idea è definire una sorta di iteratore a due componenti. Per esempio, se
 volessimo una tabella con due colonne, la prima con gli interi da 1 a 10 e la
-seconda con i rispettivi quadrati, dovremo definire solo la funzione di calcolo
-e il numero delle righe totali, perché un secondo componente si occuperà di
-applicarla le volte necessarie.
+seconda con i rispettivi quadrati, dovremo poter definire solo la regola di
+costruzione delle righe. Un secondo componente si occuperà di applicarla le
+volte necessarie.
 
-Il primo componente variabile della funzione generatrice, può essere qualsiasi
-purché sia definita per due argomenti: il primo il contatore di riga e il
-secondo l'array di riga. Nel caso d'esempio si dovrà memorizzare nell'array il
-contatore in posizione 1 e il quadrato in posizione 2:
+Il primo componente è una funzione generatrice, input del secondo componente,
+che può essere qualsiasi purché sia definita sempre con due argomenti: il primo
+è il contatore di riga e il secondo è l'array di riga. Nel caso d'esempio si
+dovrà memorizzare nell'array in posizione 1 il contatore stesso e in posizione 2
+il suo quadrato:
 \begin{Verbatim}
 local function row_func(counter, row)
     row[1] = counter
@@ -23,11 +24,16 @@ local function row_func(counter, row)
 end
 \end{Verbatim}
 
-L'idea iniziale è quindi realizzata se attribuiamo alla funzione che calcola la
-generica riga il concreto ruolo di \emph{regola di definizione} dell'intera
-tabella. A ben vedere potremo fare a meno del secondo parametro \code{row} se
-restituissimo direttamente un nuovo array di riga, tuttavia in questo modo il
-codice risulta più efficiente.
+L'idea iniziale si concretizza se attribuiamo alla funzione che calcola la
+generica riga il ruolo di \emph{regola di definizione} dell'intera tabella. A
+ben vedere potremo fare a meno del secondo parametro \code{row} se restituissimo
+direttamente un nuovo array di riga, tuttavia in questo modo il codice risulta
+più efficiente.
+
+Il ruolo del secondo componente è assunto dalla classe \key{Row}. Essa ha il
+compito di applicare la regola qualsiasi essa sia, riga dopo riga, senza
+conoscerla. Tra il primo e il secondo componente vi è quindi una netta
+separazione e questo è indice di buona progettazione.
 
 \directlua{
 Row = {}
@@ -62,14 +68,10 @@ function Row:next()
 end
 }
 
-Il secondo componente costante, la classe di libreria \key{Row}, ha il compito
-di applicare la regola ad ogni riga della tabella, qualsiasi essa sia. Prima di
-passare alla sua implementazione esaminiamo la costruzione della tabella
-d'esempio in \LuaLaTeX{}. Il metodo \fn{new} accetta proprio una funzione come
-primo argomento e il valore totale di righe come secondo argomento.
-
-In Lua le funzioni sono valori come tutti gli altri. L'esempio minimo
-compilabile è il seguente:
+Esaminiamo la costruzione della tabella d'esempio in \LuaLaTeX{}. Il metodo
+\fn{new} della classe \code{Row} accetta proprio una funzione come primo
+argomento e il valore totale delle righe come secondo argomento. In Lua le
+funzioni sono valori come tutti gli altri:
 \begin{tcolorbox}[sidebyside,righthand width=21mm]
 \begin{Verbatim}[numbers=none,xleftmargin=0pt]
 % !TeX program = LuaLaTeX
@@ -103,7 +105,7 @@ end
 All'interno dell'ambiente \amb{tabular} c'è solo codice Lua: costruito l'oggetto
 \key{row} un ciclo \key{while} esegue l'iterazione con il metodo \fn{next}. Come
 si può verificare dall'implementazione con il paradigma a oggetti che segue, è
-\fn{next} a chiamare a ogni passo la funzione di generazione di riga:
+proprio \fn{next} a chiamare a ogni passo la funzione di generazione:
 %
 \tcbdocmarginnote[enlarge top initially by=\margindown]{%
 Metametodo \key{\_\_index}\\
@@ -148,24 +150,26 @@ end
 \end{Verbatim}
 
 Siamo in fase iniziale e questo giustifica l'assenza di controlli sui dati di
-input e la conseguente gestione degli errori, parte essenziale di ogni
-programma. Ci si potrà preoccupare in seguito in una fase di consolidamento di
-errori e altri dettagli.
+input e la gestione degli errori, parte essenziale di ogni programma. Ci si
+potrà preoccupare in seguito in una fase di consolidamento, di errori e altri
+dettagli.
 
 Per esempio, stiamo trascurando le conseguenze possibili del fatto che il codice
 Lua è all'interno del sorgente \TeX{} e che per questo ci potrebbero essere
-problemi dovuti all'espansione dell'argomento della primitiva \cs{directlua}. Un
-esempio? Riceveremmo un errore con il blocco della compilazione se usassimo i
-delimitatori delle stringhe doppi apici se nel preambolo si caricasse il
-pacchetto \pack{polyglossia} con l'opzione \opz{babelshorthands} per la lingua
-italiana, che rende attivo proprio il doppio apice. Per fortuna ci sono altri
-modi più sicuri di delimitare i valori letterali delle stringhe in Lua in questi
-casi, proprie del linguaggio.
+effetti non desiderati dovuti all'espansione dell'argomento della primitiva
+\cs{directlua}. Un esempio? Riceveremmo un errore con il blocco della
+compilazione se nel preambolo caricassimo il pacchetto \pack{polyglossia} con
+l'opzione \opz{babelshorthands} per la lingua italiana.
 
-Ogni tipo di dati potrà essere rappresentato in forma tabellare, anche dati non
-calcolati come nomi di file con relativa dimensione in byte, dati come i
-seguenti, istanziati dal costruttore di tabelle di Lua che elaborando una
-tabella che a sua volta ne contiene altre quattro:
+Nel codice abbiamo infatti usato il doppio apice come delimitatore dei valori
+letterali delle stringhe, carattere che diviene attivo con quelle impostazioni.
+Per fortuna ci sono altri modi più sicuri di delimitare i valori letterali delle
+stringhe in Lua in questi casi, proprie del linguaggio.
+
+La funzione generatrice è generale potendo costruire qualsiasi tipo di vista
+tabellare sui dati, sia essi ricavati con il calcolo come nel caso precedente
+oppure già definiti in memoria, per esempio come una lista di nomi di file con
+relativa dimensione in byte:
 \begin{Verbatim}
 local data = {
     {"files.txt",  4710},
@@ -175,8 +179,8 @@ local data = {
 }
 \end{Verbatim}
 
-Come dovremo definire il componente variabile, ovvero la funzione
-\fn{row\_func}, per costruire la tabella a due colonne nome file, e dimensione?
+Come dovremo definire il primo componente, la funzione \fn{row\_func}, per
+costruire la tabella a due colonne nome e dimensione file?
 \begin{tcolorbox}[sidebyside,righthand width=32mm]
 \begin{Verbatim}[numbers=none,xleftmargin=0pt]
 % !TeX program = LuaLaTeX
@@ -225,25 +229,31 @@ end
 \end{tabular}
 \end{tcolorbox}
 
-In questo esempio incontriamo una ridondanza perché dobbiamo specificare il
-numero di righe nel costruttore \fn{new} quando questo dato è invece
-derivabile dai dati. 
+In questo codice incontriamo una ridondanza perché dobbiamo specificare il
+numero di righe nel costruttore \fn{new} quando questo dato è invece derivabile
+dai dati. 
 
-In Lua è normale chiamare una funzione passando per lo stesso argomento una
-variabile di un tipo di dato oppure un'altra variabile di un tipo diverso. Se
-passassimo al metodo \fn{new} direttamente la tabella dati anziché la funzione
-generatrice, si potrebbe riconoscerne il tipo e costruire di conseguenza sia la
-funzione \fn{row\_func} che il numero totale di righe al posto dell'utente. In
+In Lua è normale poter chiamare una funzione variando il tipo dei suoi argomenti
+Se passassimo al metodo \fn{new} direttamente la tabella dati anziché la
+funzione generatrice, il codice sarebbe in grado di rilevare la differenza e
+costruire sia la funzione \fn{row\_func} che il numero totale di righe. In
 effetti nel codice del file \file{E0-004-tab.tex} si trova un'implementazione
 che fa proprio questo.
 
-Tuttavia potremo optare per implementare altri costruttori della classe, per
-esempio con il nome di \fn{from\_data} o \fn{from\_file}, specifici per un tipo
-di sorgente dati, e indubbiamente è la soluzione da preferire. Potremo anche
-sperimentare il punto di vista per colonne anziché quello per righe mantenendo
-la generalità della classe.
+Questa forma di polimorfismo interno del costruttore può essere convertita in
+una forma esterna a beneficio dell'interfaccia che esprime in modo diretto
+all'utente l'adattibilità della classe, nonché della chiarezza del codice,
+implementando più di un costruttore, uno per ciscun tipo di dato in ingresso con
+cui è possibile costruire la classe.
 
-Proseguiamo adesso migliorando il modo in cui generare il codice di riga
+Per esempio i nomi di costruttori di classe \fn{from\_func} o \fn{from\_file}
+definiscono esplicitamente il tipo di sorgente dati chiarendone all'utente
+l'utilizzo. In caso sorga la necessità di mettere in forma tabellare dati di un
+tipo ancora non considerato, i costruttori già implementati non ne
+risentirebbero mentre invece se il polimorfismo fosse interno, non potremo
+evitare di modificare l'unico costruttore.
+
+Proseguiamo adesso con il migliorare il modo in cui generare il codice di riga
 nell'ambiente \key{tabular}. Stiamo infatti usando la concatenazione di
 stringhe, un modo non molto efficiente e nemmeno comodo. Potrebbe essere più
 conveniente specificare una sorta di template con segnaposto come la stringa
@@ -252,12 +262,11 @@ seguente per un'ipotetica tabella a due colonne:
 template = [[\textbf{<1>} & <2>\\]]
 \end{Verbatim}
 
-Il numero tra parentesi acute, i segni di minore e maggiore, indica l'indice di
-riga così come definito nelle funzioni \fn{row\_func}.
+Il numero tra parentesi acute \code{<>} indica l'indice di riga corrispondente a
+quello definito dalla funzione \fn{row\_func}.
 
-Per far questo, basta aggiungere alla classe \code{Row} un metodo d'iterazione
-che a ogni passo ritorni la stringa risultato, e che segua le specifiche perché
-possa essere usato in un ciclo \key{for}:
+Per implementare il template di riga, basta aggiungere alla classe \code{Row} un
+iteratore che a ogni passo ritorni la stringa di codice della riga di tabella:
 %
 \tcbdocmarginnote[enlarge top initially by=\margindown]{%
 \fn{string.gsub}\\
@@ -270,6 +279,10 @@ Pattern\\
 \tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
 Capture\\
 \gotosec{} \ref{secFondCapture}}
+%
+\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+27mm\relax]{%
+Stateless iterator\\
+\gotosec{} \ref{secFondStatelessIter}}
 %
 \begin{Verbatim}
 function Row:iter_template(tmpl)
@@ -294,10 +307,10 @@ end
 
 Al di la di considerazioni di efficienza legate all'uso della funzione di
 libreria \fn{gsub}, l'iteratore in effetti funziona come dimostra il seguente
-codice per \LuaLaTeX{} estratto dal file \file{app-start/E0-005-tab.tex}
-parte della guida, dove abbiamo inserito la macro \cs{noexpand} per bloccare
-l'espansione delle control sequence\footnote{Certo mi ostino ancora a non
-utilizzare il pacchetto \pack{luacode}.}:
+codice per \LuaLaTeX{} estratto dal file \file{app-start/E0-005-tab.tex} parte
+della guida. Abbiamo inserito la macro \cs{noexpand} per bloccare l'espansione
+delle control sequence\footnote{Certo mi ostino ancora a non utilizzare il
+pacchetto \pack{luacode}.}:
 \begin{Verbatim}
 \begin{tabular}{lr}
 \directlua{

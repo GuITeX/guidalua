@@ -48,10 +48,11 @@ print(t[123])   --> stampa il tipo stringa "key"
 
 \section{La tabella è un oggetto}
 
-Cosa significa che la tabella di Lua è un oggetto? Vuol dire che la tabella è
-un dato in memoria gestito con un riferimento. In conseguenza, se si copia una
-variabile a una tabella in una seconda variabile questa farà riferimento ancora
-alla stessa tabella e non a una sua copia:
+Cosa significa che la tabella di Lua è un oggetto? Vuol dire che la tabella è un
+dato in memoria gestito con un riferimento. La variabile a cui viene assegnato
+l'oggetto contiene l'informazione della posizione in memoria della tabella. Per
+rendersene conto è sufficiente copiare una variabile a una tabella in una
+seconda variabile e verificare che non si tratta di una sua copia:
 \lines
 local t = {}
 t[1], t[2] = 10, 20
@@ -68,17 +69,9 @@ espressioni. Essa ritorna l'argomento se questo è \key{true} oppure se non è
 \key{nil}, altrimenti termina l'esecuzione del programma riportando l'errore
 descritto eventualmente da un secondo argomento testuale.
 
-Altri tipi, come i numeri, sono invece vaslori gestiti nella memoria dello
-stack. Copiare una variabile significa perciò copiarne il valore:
-\lines
-local original = 100
-local copied = original
--- modifica dell'originale
-original = original/100
--- stampiamo i valori attuali
-print(original, copied) --> stampa 1  100
-\endlines
-\sourcecode{from_lines()}
+I tipi come i numeri invece non sono oggetti e assegnare una variabile che li
+contiene a un'altra comporta la copia del dato, come si può verificare con un
+codice simile al precedente.
 
 Il fatto che la tabella sia un oggetto è la premessa fondamentale per la
 programmazione a oggetti in Lua e per scrivere codice più compatto nelle
@@ -201,5 +194,27 @@ local t = {
 \sourcecode{from_lines()}
 \end{Exercise}
 
+\begin{Exercise}[label={tab-04}]
+Ricreare la stessa tabella \key{t} dell'esercizio precedente ma \emph{senza}
+usare il costrutture.
+\end{Exercise}
+
+\begin{Exercise}[label={tab-05}]
+Dato il triangolo di vertici di coordinate \( A = \left( -1, 8\right) \), \( B =
+\left( 5, 3\right) \), e \( C = \left( 1, -3\right) \), creare con il
+costruttore una tabella di tabelle array che rappresenti il triangolo e con essa
+calcolare le coordinate del baricentro.
+\end{Exercise}
+
+\begin{Exercise}[label={tab-06}]
+Rappresentare con una tabella il triangolo dell'esercizio precedente utilizzando
+come chiavi i nomi assegnati dei vertici. Dalla tabella ricavare poi una seconda
+tabella che rappresenti il triangolo aventi i vertici nei punti medi dei lati.
+\end{Exercise}
+
+\begin{Exercise}[label={tab-07}]
+Instanziare una tabella dizionario con il costruttore a rappresentare i propri
+dati anagrafici. Stampare poi su più linee il proprio indirizzo postale.
+\end{Exercise}
 
 % end of file
