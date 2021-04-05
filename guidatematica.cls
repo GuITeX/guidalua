@@ -40,8 +40,8 @@
 \LoadClassWithOptions{memoir}
 \RequirePackage{iftex}
 \ifPDFTeX
-  \RequirePackage[utf8]{inputenc}
   \RequirePackage[T1]{fontenc}
+  \RequirePackage[utf8]{inputenc}
   \RequirePackage[italian]{babel}
   \RequirePackage[tt={oldstyle=false,tabular,monowidth}]{cfr-lm}
 \else

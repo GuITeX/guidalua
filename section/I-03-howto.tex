@@ -12,25 +12,30 @@ sorgente \TeX.
 
 Un sorgente \TeX{} contiene testo e macro. Il testo formerà i capoversi, i
 titoli e il resto del documento, mentre le macro ne stabiliranno l'aspetto e la
-struttura. I \emph{motori di composizione} costruiscono il documento disponendo
-sia delle macro dette \emph{primitive} implementate direttamente in essi, sia
-delle macro utente definite per svolgere compiti specifici e ricorrenti.
+struttura. I \emph{motori di composizione} costruiscono il documento eseguendo
+macro dette \emph{primitive}, sono cioé implementate in modo nativo per svolgere
+compiti elementari, e macro definite con esse per svolgere sequenze ricorrenti.
 
-Queste nuove macro il cui codice è generalmente scritto da veri esperti,
-possono essere aggregate in una sorta di libreria di alto livello che prende
-il nome di \emph{formato}, come \LaTeX{} o Con\TeX t, perché per esse sono
-state stabilite nuove e coerenti regole di sintassi.
+Le macro sequenze dette di alto livello, possono costituire una vera e propria
+libreria il cui codice è generalmente scritto da veri esperti, che prende il
+nome di \emph{formato}, come \LaTeX{} o Con\TeX t, perché per esse ne è stata
+ricercata la coerenza interna e sono state stabilite nuove regole di sintassi
+comune.
 
 Per esempio, nel formato \LaTeX{} è presente il concetto di \emph{ambiente} con
-la coppia di macro di delimitazione \cs{begin\{\}} e \cs{end\{\}}. I motori di
-composizione hanno l'abilità nella fase iniziale della compilazione di caricare
-il formato in forma precompilata.
+la coppia di macro di delimitazione \cs{begin\{\}} e \cs{end\{\}}, oppure quello
+di suddivisione del sorgente in preambolo e in corpo del documento.
 
-Se si avvia un qualsiasi motore di composizione della famiglia \TeX{} verrà
-caricato di default il formato più semplice chiamato \emph{plain}. Se si vuole
-invece utilizzare un diverso formato, per esempio il più diffuso \LaTeX{},
-occorre passarne il nome al compilatore con l'opzione \texttt{-{}-fmt} nel
-comando al terminale.
+Con le macro primitive o con quelle del formato, l'utente può implementare
+funzionalità specifiche oppure caricare macro definite in pacchetti o moduli che
+integrano o estendendo quelle del formato.
+
+I motori di composizione hanno l'abilità nella fase iniziale della compilazione
+di caricare il formato in forma precompilata. Se si avvia un qualsiasi programma
+di composizione della famiglia \TeX{} verrà caricato di default il formato più
+semplice chiamato \emph{plain}. Se si vuole invece utilizzarne uno diverso, per
+esempio il più diffuso \LaTeX{}, occorre specificarne il nome al compilatore con
+l'opzione \texttt{-{}-fmt} nel comando al terminale.
 
 Tuttavia, data l'importanza per gli utenti dei formati di alto livello, sono
 stati predisposti appositi comandi scorciatoia. Per esempio il programma
@@ -38,62 +43,53 @@ stati predisposti appositi comandi scorciatoia. Per esempio il programma
 l'istruzione di caricare il formato \LaTeX{}, e così anche per \prog{lualatex}
 con \prog{luatex}.
 
-I due comandi seguenti sono del tutto equivalenti, nel primo si invoca
-direttamente il motore di composizione mentre nel secondo lo si fa
-indirettamente:
+Per essere chiari, i due comandi seguenti sono del tutto equivalenti, nel primo
+si invoca direttamente il motore di composizione mentre nel secondo lo si fa con
+una scorciatoia:
 \begin{Verbatim}[numbers=none]
 $ pdftex --fmt=pdflatex mydoc
 $ pdflatex mydoc
 \end{Verbatim}
 
-Se utilizzassimo il formato \code{latex} con il compositore \prog{pdftex} avremo
-in uscita non un PDF ma un DVI, il formato nativo di \TeX{}. In questo caso,
-nelle moderne distribuzioni il nome del programma scorciatoia è proprio
-\prog{latex} perché l'originale \prog{tex} è stato sostituito da \prog{pdftex},
-quindi questi due comandi di compilazione sono equivalenti:
-\begin{Verbatim}[numbers=none]
-$ pdftex --fmt=latex mydoc
-$ latex mydoc
-\end{Verbatim}
-
 Quando il nome del formato corrisponde al nome del programma scorciatoia, non li
-si deve confondere: sono due oggetti molto diversi. I file dei formati sono
-usualmente generati o rigenerati in automatico dalle utility della distribuzione
-nel momento dell'installazione o quando l'utente esegue un aggiornamento del
-sistema che contiene modifiche al formato, perciò è molto raro che ci si trovi
-nella situazione di doverne generare uno.
+si deve confondere: il programma \prog{latex} utilizza ancora il compositore
+\prog{pdftex} con il formato \LaTeX{} e uscita in DVI.
+
+I file binari dei formati sono usualmente generati o rigenerati in automatico
+dalle utility della distribuzione nel momento dell'installazione o quando
+l'utente esegue un aggiornamento del sistema che contiene modifiche alle macro
+del formato, perciò è molto raro che ci si trovi nella situazione di doverne
+generare uno.
 
 Riassumendo, i motori di composizione sono programmi tipografici mentre i
 formati sono insiemi coerenti di macro basate sulle primitive del compositore. I
 nomi dei programmi disponibili nel sistema \TeX{} possono confondere se non si
 conosce questa importante distinzione: alcuni di essi sono comandi scorciatoia
-per identificare sia il motore sia il formato e non un vero e proprio motore di
-composizione.
+per eseguire un motore di composizione con un particolare formato.
 
 
 \subsection{Compositori Lua-powered}
 
 \LuaTeX{} è un programma che elabora un file di testo contenente codice \TeX{}
-per comporne il corrispondente file PDF, il formato di uscita di default, quindi
-è un motore di composizione. Nella famiglia \TeX{} ci sono almeno altri due
-compositori dotati dell'interprete Lua, LuaHB\TeX{} e Luajit\TeX{}.
+per comporne il corrispondente file PDF, l'uscita di default, quindi è un motore
+di composizione. Nella famiglia \TeX{} ci sono almeno altri due compositori
+dotati dell'interprete Lua, LuaHB\TeX{} e LuaJIT\TeX{}.
 
 Tutti e tre questi compositori possono eseguire il formato \LaTeX. Come detto in
-apertura di sezione, esiste il programma \prog{lualatex} scorciatoia a un
-compositore che carica il formato \LaTeX.
-
-Dalla TeX Live 2020 questo compositore è \prog{luahbtex}. Per rendercene conto
-basta scrivere in un terminale il nome del programma, premere invio e leggere
-l'output poi premere CTRL+C per chiuderne l'esecuzione di prova:
+apertura di capitolo, il programma \prog{lualatex} esegue un compositore che
+carica il formato \LaTeX. Dalla TeX Live 2020 questo compositore è
+\prog{luahbtex}. Per rendercene conto basta scrivere in un terminale il nome del
+programma con l'opzione \code{-{-}version}:
 \begin{Verbatim}[numbers=none]
-> lualatex
-This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/W32TeX)
- restricted system commands enabled.
-**
+> lualatex --version
+This is LuaHBTeX, Version 1.13.0 (TeX Live 2021)
+
+Execute  'luahbtex --credits'  for credits and version details.
+...
 \end{Verbatim}
 
-E in definitiva per compilare un sorgente \LaTeX{} con \LuaLaTeX{}, con la TeX
-Live 2020 i due comandi equivalenti sono:
+Per compilare un sorgente \LaTeX{} con \LuaLaTeX{}, con la TeX Live 2021 i due
+comandi equivalenti sono:
 \begin{Verbatim}[numbers=none]
 $ luahbtex --fmt=lualatex mydoc
 $ lualatex mydoc
@@ -112,100 +108,38 @@ compilato da qualsiasi dei tre compositori grazie al mantenimento della
 compatibilità.
 
 
-\subsection{\LaTeX{} con \code{pdflatex} o \code{lualatex}}
-
-I sorgenti \LaTeX{} possono essere compilati sia con il tradizionale motore
-\code{pdftex} che con il compositore \code{luahbtex} con minime modifiche.
-Vediamo quali sono.
-
-Nel preambolo di un sorgente scritto per \code{pdflatex} si caricano tre
-pacchetti fondamentali, come in questo frammento di codice:
-\begin{Verbatim}
-% !TeX program = pdfLaTeX
-\documentclass{article}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[italian]{babel}
-\end{Verbatim}
-
-Oggi la stragrande maggioranza degli utenti, e se non siete tra loro fatelo
-subito, codificano i file sorgenti con la codifica UTF-8. Il testo in Unicode
-infatti elimina ogni incoveniente quando si condividono i file o li si apre in
-un sistema operativo diversi\footnote{Per informazioni dettagliate sulle
-codifiche rimando alla guida tematica \GuIT{}
-\href{http://www.guitex.org/home/images/doc/GuideGuIT/introcodifiche.pdf}{%
-Introduzione alle codifiche in entrata e uscita} di Claudio Beccari e Tommaso
-Gordini \cite{gt:codifiche}.}.
-
-Per \LuaTeX{} è obbligatorio la codifica UTF-8 perciò la prima modifica al
-sorgente è semplicemente eliminare il caricamento del pacchetto \pack{inputenc}.
-Se il vostro file non è codificato Unicode, e oggi l'eventualità dovrebbe essere
-rara, si può utilizzare un tool come \code{iconv} come spiegato nella guida
-tematica menzionata in nota.
-
-Per i font invece è necessario eliminare il pacchetto \pack{fontenc} ed
-eventualmente specificare quelli da usare nel documento con il pacchetto
-\pack{fontspec} e le sue macro \cs{setmainfont}, \cs{setmonofont} eccetera. I
-font matematici vanno invece gestiti con il pacchetto \pack{unicode-math} con la
-macro \cs{setmathfont}.
-
-Da quel che abbiamo detto il preambolo cambia così:
-\begin{Verbatim}
-% !TeX program = LuaLaTeX
-\documentclass{article}
-\usepackage{fontspec}
-\usepackage[italian]{babel}
-\end{Verbatim}
-
-L'immediato vantaggio di passare da pdf\LaTeX{} a \LuaLaTeX{} è proprio nel
-poter comporre il documento con i font Open Type. Inoltre non si usa un
-programma che il cui sviluppo è cessato da tempo. Per la mia esperienza la
-compatibilità con i numerosi pacchetti \LaTeX{} è ottima mentre è possibile
-utilizzare i pacchetti scritti in Lua ormai numerosi.
-
-Ulteriori informazioni dove viene incluso anche il compositore \XeLaTeX{} si
-possono trovare nel documento \texttt{lualatex-doc}, al solito disponibile a
-video con l'utility \code{texdoc}.
-
 \subsection{Codice Lua in \LuaTeX}
 
 Per illustrare l'esecuzione di codice Lua all'interno di un sorgente \LuaTeX,
-consideriamo la stampa di un semplice testo nell'output di console con il
-seguente sorgente completo, dove il codice Lua va inserito come argomento della
-primitiva \cs{directlua}:
+consideriamo la stampa nell'output di console di un testo semplice. Il codice
+Lua va inserito come argomento della primitiva \cs{directlua}:
 \begin{Verbatim}
-% !TeX program = LuaTeX
+% !TeX program = LuaHBTeX
 \directlua{
     print("Hello World!")
 }
 \bye
 \end{Verbatim}
-il testo uscirà tra gli altri messaggi di output senza che sia prodotto un file
-PDF. Ciò significa che \cs{directlua} è una macro espandibile con risultato
-vuoto.
-
-La prima linea di commento è una \emph{riga magica}, comodissima nel dare
-istruzione allo shell editor sul programma da usare per compilare il documento
-ma ignorata durante la compilazione stessa\footnote{La sintassi delle righe
-magiche dipende dall'editor, in questa guida essa è scritta secondo le regole
-di TeX Works.}. Qui le useremo se pertinenti per aiutare il lettore a
-stabilire il contesto di esecuzione del codice.
 
 Se il sorgente è memorizzato nel file \texttt{primo.tex}, possiamo verificare
 quanto previsto in un terminale lanciando il comando:
 \begin{Verbatim}[numbers=none]
-$ luatex primo
+$ luahbtex primo
 \end{Verbatim}
-e per il sistema operativo Windows e la distribuzione TeX Live 2020, l'output
+e per il sistema operativo Linux e la distribuzione TeX Live 2021, l'output
 in console è:
 \begin{Verbatim}
-This is LuaTeX, Version 1.12.0 (TeX Live 2020/W32TeX) 
-    restricted system commands enabled.
+This is LuaHBTeX, Version 1.13.0 (TeX Live 2021) 
+restricted system commands enabled.
 (./primo.texHello World!
 )
 warning  (pdf backend): no pages of output.
-Transcript written on primo.log.
+Transcript written on t.log.  
 \end{Verbatim}
+
+Il testo uscirà tra gli altri messaggi di output senza che sia stato prodotto un
+file PDF. Ciò significa che \cs{directlua} è una macro espandibile con risultato
+vuoto.
 
 
 \subsection{Codice Lua in Lua\LaTeX}
@@ -233,6 +167,28 @@ l'argomento e passa a Lua il controllo che esegue immediatamente il codice per
 poi restituirlo di nuovo a \TeX{} al termine dell'esecuzione.
 
 
+\section{La primitiva \key{directlua}}
+
+Abbiamo ora tutte le informazioni per svolgere alcuni esercizi e applicazioni.
+Non rimane che ricordare che il principale modo di eseguire codice Lua in
+\LuaTeX{} è assegnarlo come argomento alla macro \cs{directlua}. Quello che
+avviene è stabilito da queste regole:
+\begin{compactenumerate}
+\item l'argomento di \cs{directlua} viene espanso ed eseguito come blocco, può
+quindi contenere macro o argomenti macro con un testo di sostituzione;
+
+\item le variabili locali hanno validità solo all'interno del gruppo/blocco
+mentre quelle globali saranno valide anche in quelli di successive
+\cs{directlua};
+
+\item l'espansione di \cs{directlua} è vuota;
+\end{compactenumerate}
+
+Per documentarsi nel dettaglio esiste un'ottima risorsa su Overleaf, la popolare
+piattaforma di compilazione e gestione progetti \LaTeX{} online,
+\href{https://cs.overleaf.com/learn/latex/Articles/An_Introduction_to_LuaTeX_(Part_2):_Understanding_%5Cdirectlua}{questo indirizzo web}.
+
+
 \section{Passaggio di dati}
 \label{secPassaggioDati}
 
@@ -244,7 +200,8 @@ del compositore con le funzioni della famiglia \fn{tex.print}.
 
 Interrompete la lettura della guida per provare a scrivere la funzione Lua
 \fn{fact} che calcola il fattoriale di un intero. La useremo per dimostrare come
-avviene questo scambio di dati. L'idea è definire un nuovo comando che usando la funzione stampi il fattoriale del numero argomento:
+avviene questo scambio di dati. L'idea è definire un nuovo comando che stampi il
+fattoriale del numero argomento:
 \begin{Verbatim}
 \newcommand{\fattoriale}[1]{\directlua{
     local n = #1
@@ -266,15 +223,11 @@ tex.print(tostring(fact(n)))
 La funzione \fn{tex.print} inserisce l'argomento stringa nell'input d'ingresso
 come se fossero stati letti dal sorgente. Quando a termine l'esecuzione del
 blocco di codice Lua della macro \cs{fattoriale} i successivi caratteri che si
-troverà a elaborare il compositore saranno le cifre 120 e l'espansione della
-macro sarà stata vuota.
+troverà a elaborare il compositore saranno le cifre 1, 2, e 0 e l'espansione
+della macro sarà stata vuota.
 
-Per documentarsi nel dettaglio esiste un'ottima risorsa su Overleaf, la popolare
-piattaforma di compilazione e gestione progetti \LaTeX{} online,
-\href{https://cs.overleaf.com/learn/latex/Articles/An_Introduction_to_LuaTeX_(Part_2):_Understanding_%5Cdirectlua}{questo indirizzo web}.
-
-Il listato del sorgente completo dell'esercizio proposto da confrontare con la vostra personale soluzione è:
-\VerbatimInput{app-start/E1-001-fattoriale.tex}
+Il listato del sorgente completo dell'esercizio proposto da confrontare con la
+vostra personale soluzione è: \VerbatimInput{app-start/E1-001-fattoriale.tex}
 
 
 \section{Globale o locale}
@@ -288,7 +241,7 @@ contenuto in una macro \cs{directlua} forma un blocco.
 
 Per questo motivo se separassimo il codice che calcola il fattoriale dalla
 definizione della macro utente \cs{fattoriale}, per non ricevere un errore di
-chiamata di un valore \code{nil} dal secondo blocco dovremo definire la funzione
+chiamata di un valore \key{nil} dal secondo blocco dovremo definire la funzione
 come globale come in:
 \VerbatimInput{app-start/E1-002-fattoriale.tex}
 
@@ -303,10 +256,10 @@ Questa buona prassi diviene \emph{obbligatoria} quando stiamo scrivendo codice
 applicativo in contesti di utilizzo reale.
 
 Come ulteriore esempio, nel listato\footnote{Questo listato è interessante
-perché è migliorabile sia per eliminare le ripetizioni di codice a cui è
-costretto l'utente sia nell'efficienza di esecuzione.} che segue è mostrato come
-si possa formattare il numero del fattoriale con il pacchetto
-\pack{siunitx}: \VerbatimInput{app-start/E1-003-fattoriale.tex}
+perché migliorabile sia per eliminare le ripetizioni di codice a cui è costretto
+l'utente sia nell'efficienza di esecuzione.} che segue è mostrato come si possa
+formattare il numero del fattoriale con il pacchetto \pack{siunitx}:
+\VerbatimInput{app-start/E1-003-fattoriale.tex}
 
 
 \section{Espansione di macro}
@@ -322,7 +275,7 @@ Al termine dell'espansione l'istruzione di assegnazione della variabile numerica
 lo stesso file potrebbe essere:
 \VerbatimInput{app-start/E1-005-time.tex}
 
-Nel capitolo~\ref{iichRegistro} vedremo che anche con la libreria standard di
+Nel capitolo~\ref{iiichRegistro} vedremo che anche con la libreria standard di
 Lua è possibile ottenere la data e l'ora corrente.
 
 
@@ -373,28 +326,89 @@ funzionare.
 Agli usuali moduli della libreria standard di Lua, sono stati aggiunti in
 \LuaTeX{}, così come negli altri motori di composizione estesi, speciali
 funzionalità dedicate al controllo dello stato interno e alla creazione di
-elementi tipografici.
+elementi tipografici che chiameremo librerie interne, e funzionalità generiche
+che chiameremo librerie esterne.
+
+Tutte queste librerie formano un nutrito elenco come riporta dettagliatamente il
+manuale del compositore. Tra quelle interne più importanti ricordiamo:
+\begin{compactitemize}
+\item \code{node}, gestione dei nodi tipografici;
+\item \code{token}, scansione dei token per la raccolta di argomenti, creazione
+di macro da codice, e molto altro;
+\item \code{tex}, funzioni di ingresso dell'input del compositore, accesso a
+registri e parametri interi;
+\item \code{harfbuzz}, informazioni sui font e i singoli glifi (solo per il
+compositore \prog{luahbtex});
+\item \code{mplib}, \hologo{METAPOST} per la grafica vettoriale.
+\end{compactitemize}
+
+Tra le librerie esterne troviamo:
+\begin{compactitemize}
+\item \code{lfs}, Lua File System per visitare l'albero delle directory e
+ottenere informazioni sui file;
+\item \code{socket}, connessioni di rete con protocolli SMTP, HTTP e FTP;
+\item \code{luazip}, compressione e decompressione di file e cartelle;
+\item \code{lpeg}, parsing di grammatiche da testo semplice.
+\end{compactitemize}
+
+Alcune di queste librerie richiedono l'autorizzazione esplicita dell'utente
+all'esecuzione per mezzo di opzioni di compilazione.
 
 
+\section{\LaTeX{} con \code{pdflatex} o \code{lualatex}}
 
+I sorgenti \LaTeX{} possono essere compilati sia con il tradizionale motore
+\code{pdftex} che con il compositore \code{luahbtex} con minime modifiche.
+Vediamo quali sono affiancando i preamboli minimi nei due casi:\\
+\begin{tcolorbox}[width=(\linewidth/2-1mm),equal height group=A,nobeforeafter]
+\begin{Verbatim}[numbers=none, xleftmargin=0pt]
+% !TeX program = pdfLaTeX
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\end{Verbatim}
+\end{tcolorbox}
+%
+\begin{tcolorbox}[width=(\linewidth/2-1mm),equal height group=A,nobeforeafter]
+\begin{Verbatim}[numbers=none, xleftmargin=0pt]
+% !TeX program = LuaLaTeX
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage[italian]{babel}
+\end{Verbatim}
+\end{tcolorbox}
 
+Nel preambolo di un sorgente scritto per \code{pdflatex} si caricano tre
+pacchetti fondamentali \pack{fontenc} per la codifica dei font, \pack{inputenc}
+per quella del sorgente, e \pack{babel} per le lingue.
 
-\section{La primitiva \key{directlua}}
+Oggi la stragrande maggioranza degli utenti, e se non siete tra loro fatelo
+subito, codificano i file sorgenti con UTF-8. Il testo in Unicode infatti
+elimina ogni incoveniente quando si condividono i file tra diversi sistemi
+operativi\footnote{Per informazioni dettagliate sulle codifiche rimando alla
+guida tematica \GuIT{}
+\href{http://www.guitex.org/home/images/doc/GuideGuIT/introcodifiche.pdf}{%
+Introduzione alle codifiche in entrata e uscita} di Claudio Beccari e Tommaso
+Gordini \cite{gt:codifiche}.}.
 
-Abbiamo ora tutte le informazioni per svolgere alcuni esercizi e applicazioni
-fin dai prossimi capitoli. Non rimane che ricordare che il principale modo di
-eseguire codice Lua in \LuaTeX{} è assegnarlo come argomento alla macro
-\cs{directlua}. Quello che avviene è stabilito da queste regole:
-\begin{compactenumerate}
-\item l'argomento di \cs{directlua} viene espanso ed eseguito come blocco, può
-quindi contenere macro o argomenti macro con un testo di sostituzione;
+Per \LuaTeX{} è obbligatoria la codifica UTF-8 perciò la prima modifica al
+preambolo è semplicemente l'eliminazione del pacchetto \pack{inputenc}. Se i
+vostri file non fossero codificati UTF-8, si può utilizzare un tool come
+\code{iconv} come spiegato nella guida tematica menzionata in nota.
 
-\item le variabili locali hanno validità solo all'interno del gruppo/blocco
-mentre quelle globali saranno valide anche in quelli di successive
-\cs{directlua};
+Per i font non è più necessario il pacchetto \pack{fontenc}. Per selezionarne
+nel documento si usa il pacchetto \pack{fontspec} e le sue macro
+\cs{setmainfont}, \cs{setmonofont} eccetera. I font matematici vanno invece
+gestiti con il pacchetto \pack{unicode-math} e con la macro \cs{setmathfont}.
 
-\item l'espansione di \cs{directlua} è vuota;
-\end{compactenumerate}
+L'immediato vantaggio di passare da pdf\LaTeX{} a \LuaLaTeX{} è proprio nel
+poter comporre il documento con i font Open Type. Per la mia esperienza la
+compatibilità con i numerosi pacchetti \LaTeX{} è ottima mentre è possibile
+utilizzare i pacchetti scritti in Lua ormai numerosi.
 
+Ulteriori informazioni si possono trovare nel documento \texttt{lualatex-doc},
+al solito disponibile a video con l'utility \code{texdoc}, dove viene
+considerato anche il compositore \XeLaTeX{}.
 
 % end of file

@@ -10,11 +10,11 @@
 % License information see LICENSE text file
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2021/04/03 v0.4.3 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2021/04/05 v0.4.4 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
-
+\usepackage{hologo}
 \usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{guidalua.bib}
 
@@ -89,8 +89,8 @@
 \begin{scope}[scale=0.18]
 \guidalualogocmd
 \end{scope}
-\node[anchor=base] at (39.5mm,1.25mm) {\@@title};
-\node[anchor=base] at (39.5mm,-3.5mm) {Copyright \textcopyright{} \the\year, \@@author};
+\node[anchor=base] at (40mm,1.25mm) {\@@title};
+\node[anchor=base] at (40mm,-3.5mm) {Copyright \textcopyright{} \the\year, \@@author};
 \end{tikzpicture}\\[\baselineskip]
 Questa documentazione è soggetta alla licenza LPPL
 \href{http://www.latex-project.org/lppl.txt}{\LaTeX{} Project Public
