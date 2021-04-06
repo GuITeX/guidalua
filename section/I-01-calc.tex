@@ -18,10 +18,10 @@ introdurne l'utilità.
 
 \section{La calcolatrice}
 
-Una calcolatrice, una macro \cs{expr} che accetti un'espressione numerica e
-ne stampi il risultato. Sarebbe davvero utile non dover più calcolare a
-parte il risultato e riportarlo nel sorgente del documento \LaTeX{} con un copia
-incolla o peggio a mano.
+Una calcolatrice, una macro \cs{expr} che accetti un'espressione numerica e ne
+stampi il risultato. Sarebbe davvero utile non dover più calcolare a parte il
+risultato e riportarlo nel sorgente del documento \LaTeX{} con un copia incolla
+o peggio a mano.
 
 Tentiamo qualcosa di molto semplice con Lua, assegnare l'espressione a una
 variabile per poi stamparla nel documento:
@@ -74,6 +74,9 @@ espressioni booleane. Proviamo:
 \( 56.9 > 78.42 \) è \texttt{\expr{ 56.9 > 78.42 }}
 \end{tcolorbox}
 
+
+\subsection{Espressioni booleane personalizzate}
+
 E se si volessero sostituire le rappresentazioni testuali dei valori vero e
 falso? Ecco la modifica:
 %
@@ -107,7 +110,7 @@ Operatore ternario\\
     tex.print(tostring(result))
 }}
 
-Un semplice test ci conforterà sulla correttezza del codice:
+Un semplice test ci conforterà sulla correttezza del codice e si funziona:
 \begin{tcolorbox}[sidebyside]
 \begin{Verbatim}[numbers=none, xleftmargin=0pt]
 \expr{100 == 100 and 7 > 3}
@@ -118,9 +121,11 @@ Un semplice test ci conforterà sulla correttezza del codice:
 \expr{-10 < -100}
 \end{tcolorbox}
 
-Si, funziona ma andiamo avanti. Vorrei poter regolare l'arrotondamento del
-risultato numerico della calcolatrice ricorrendo a un argomento opzionale
-separato dall'espressione da una virgola:
+
+\subsection{Arrotondamento numerico}
+
+Vorrei poter regolare l'arrotondamento del risultato numerico della calcolatrice
+ricorrendo a un argomento opzionale separato dall'espressione da una virgola:
 %
 \tcbdocmarginnote[enlarge top initially by=\margindown]{%
 \fn{string.format}\\
@@ -167,10 +172,14 @@ Mettiamo alla prova la modifica alla macro \cs{expr}:
 \(\sqrt{2} + \sqrt{3} \approx \expr{ 2^0.5 + 3^0.5, 2}\)
 \end{tcolorbox}
 
-Potremo trovare una sintassi un po' più chiara, tuttavia occupiamoci di un
-problema più urgente: poter usare funzioni matematiche come seno e coseno. Se
-scrivessimo \verb=\expr{sin(1)^2 + cos(1)^2}= non otterremo il valore unitario
-ma un errore. Dovremo infatti usare la scomoda notazione
+
+\subsection{Funzioni matematiche}
+
+Potremo trovare una sintassi un po' più chiara per indicare il numero di cifre a
+cui arrontondare il risultato, tuttavia c'è di un problema più urgente: poter
+usare funzioni matematiche come seno e coseno. Se scrivessimo
+\verb=\expr{sin(1)^2 + cos(1)^2}= non otterremo il valore unitario ma un errore.
+Dovremo infatti usare la scomoda notazione
 \code{math.}\meta{funzione}/\meta{costante} come in
 \verb=\expr{math.cos(math.pi)}= invece della più naturale \verb=\expr{cos(pi)}=.
 Ma ci vuole poco a riassegnare le funzioni a nomi locali per far si che
@@ -230,6 +239,9 @@ difficoltà. Possiamo inserire o meno il risultato in ambiente matematico,
 arrotondarlo al numero di decimali desiderato e usare funzioni matematiche
 dell'efficiente libreria in virgola mobile di Lua, un linguaggio che si sta
 dimostrando semplice da usare e molto efficace.
+
+
+\subsection{Costanti numeriche}
 
 Continuamo con un nuovo passo: aggiungere costanti numeriche definite
 dall'utente, una sorta di \emph{funzione di memoria} della calcolatrice. Per

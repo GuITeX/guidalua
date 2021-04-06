@@ -29,7 +29,7 @@ per le tabelle.
 
 La funzione \fn{ipairs} restituisce un iteratore che a ogni ciclo genera due
 valori: l'indice dell'array e il valore corrispondente. L'iterazione comincia
-dalla posizione di indice 1 e termina quando il valore corrente è \key{nil}:
+dalla posizione 1 e termina quando il valore è \key{nil}:
 \lines
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
@@ -56,13 +56,12 @@ end
 \endlines
 \sourcecode{from_lines()}
 
-Se non interessa il valore dell'indice possiamo convenzionalmente utilizzare
-per esso il nome di variabile corrispondente a un segno di underscore che in
-Lua è un identificatore valido:
+Se non interessa il valore dell'indice è buona norma dare al nome di variabile
+corridspondente un segno di underscore \key{\_} che in Lua è un identificatore
+valido. Per esempio:
 \lines
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
-
 local sum = 0
 for _, elem in ipairs(t) do
     sum = sum + elem
@@ -86,7 +85,7 @@ pertanto l'iteratore restituirà in un ordine casuale tutte le coppie chiave
 valore contenute nella tabella stessa.
 
 Una tabella con indici a salti verrà iterata parzialmente da \fn{ipairs} ma
-completamente da \fn{pairs}:
+completamente da \fn{pairs} al prezzo di perdere l'ordinamento:
 \sourcecode{
     from_file [[code/e9-iter.lua]]
     :select_lines [[uno]]
@@ -94,7 +93,7 @@ completamente da \fn{pairs}:
 }
 
 Il comportamento di questi due iteratori potrebbe lasciare perplessi ma è
-coerente con le caratteristiche della tabella di Lua.
+coerente con le caratteristiche di Lua.
 
 
 \section{Generic \key{for}}
@@ -117,7 +116,7 @@ Funziona, molto semplicemente. Non è stato necessario introdurre nessun nuovo
 elemento al linguaggio. L'iteratore è solamente una questione d'implementazione
 che tra l'altro in questo caso ricrea l'iteratore \fn{ipairs} visto poco fa.
 
-Infatti, la funzione \fn{iter\_test} mantiene nella closure lo stato
+Infatti, la funzione \fn{iter\_fn} mantiene nella closure lo stato
 dell'iteratore --- l'indice \key{i} e la tabella \key{t} --- e restituisce uno
 dopo l'altro gli elementi della tabella. Il ciclo \key{while} infinito,
 s'interrompe quando il valore è \key{nil}.
@@ -148,23 +147,19 @@ end
 
 \section{L'esempio dei numeri pari}
 
-Per definire questo iteratore dobbiamo creare una funzione che restituisce a
-sua volta una funzione in grado di generare la sequenza dei numeri pari.
-L'iterazione termina quando giunti all'ultimo elemento, la funzione restituirà
-il valore nullo ovvero \key{nil}, cosa che succede in automatico senza dover
-esplicitare un'istruzione di \key{return} grazie al funzionamento del generic
-for.
+Per definire un iteratore sui numeri pari di un intervallo dobbiamo creare una
+funzione che restituisce a sua volta una funzione in grado di generare la
+sequenza. L'iterazione termina quando giunti all'ultimo elemento, la funzione
+restituirà il valore nullo \key{nil}, cosa che succede in automatico senza dover
+esplicitare un'istruzione di \key{return}.
 
 Potremo fare così: dato il numero iniziale per prima cosa potremo calcolare il
-numero pari successivo usando la funzione della libreria standard di Lua
-\fn{math.ceil} che fornisce il numero arrotondato al primo intero superiore
-dell'argomento.
-
-Poi potremo creare la funzione di iterazione in sintassi anonima che prima
-incrementa di 2 il numero pari precedente --- ed ecco perché dovremo
-inizialmente sottrarre la stessa quantità all'indice --- e, se questo è
-inferiore all'estremo superiore dell'intervallo ritornerà l'indice e il numero
-pari della sequenza. Ecco il codice completo:
+primo numero pari dell'intervallo usando l'operatore modulo \key{\%} e poi
+creare la funzione di iterazione in sintassi anonima che prima incrementa di 2
+la variabile di ciclo --- ed ecco perché dovremo inizialmente sottrarle la
+stessa quantità --- e, se questo è inferiore all'estremo superiore
+dell'intervallo ritornare indice e numero pari della sequenza. Ecco il codice
+completo:
 \sourcecode{
     from_file [[code/e9-iter.lua]]
     :select_lines [[iter_even]]
@@ -173,11 +168,11 @@ pari della sequenza. Ecco il codice completo:
 
 In questo esempio, oltre ad approfondire il concetto di iterazione basata sulla
 closure di Lua, possiamo notare che il generic for effettua correttamente anche
-l'assegnazione a più variabili di ciclo con le regole viste nel
-capitolo~\ref{chAssignment}.
+l'assegnazione a più variabili di ciclo con le regole viste nella
+sezione~\ref{secFondAssegnamento}.
 
-Naturalmente, l'implementazione data di \fn{evenNum} è solo una delle possibili
-soluzioni, e non è detto che non debbano essere considerate situazioni
+Naturalmente, l'implementazione data di \fn{evenNum} è solo una fra quelle
+possibili, e non è detto che non debbano essere considerate situazioni
 particolari come quella in cui si passa all'iteratore un solo numero o
 addirittura nessun argomento.
 
@@ -187,23 +182,27 @@ addirittura nessun argomento.
 
 Una seconda versione del generatore di numeri pari può essere un buon esempio
 di un iteratore in Lua che non necessita di una closure, per un risultato ancora
-più efficiente.
+più efficiente, implementando uno \emph{stateless iterator}.
 
 Per capire come ciò sia possibile dobbiamo conoscere nel dettaglio come
 funziona il generic for in Lua; dopo la parola chiave \key{in} esso si aspetta
 altri due parametri oltre alla funzione da chiamare a ogni ciclo: una variabile
 che rappresenta lo stato invariante e la variabile di controllo.
+\lines
+for <vars> in <iter_fn>, <state>, <ctl_var> do
+    ...
+end
+\endlines
+\sourcecode{from_lines()}
+
+La funzione d'iterazione verrà chiamata a ogni ciclo con due argomenti: lo stato
+invariante e la variabile di controllo e ci si aspetta che restituisca uno o più
+dati di ciclo. Quando questi valori saranno \key{nil} il ciclo a termine.
 
 Nel seguente codice la funzione \fn{evenNum} provvede a restituire i tre
-parametri necessari: la funzione \fn{nextEven} come iteratore, lo stato
-invariante, che per noi è il numero a cui la sequenza dovrà fermarsi e la
-variabile di controllo che è proprio il valore nella sequenza dei numeri pari,
-e con ciò abbiamo realizzato un stateless iterator in Lua, ovvero un iteratore
-che non ha necessità di closure.
-
-La funzione \fn{nextEven} verrà chiamata a ogni ciclo con, nell'ordine, lo
-stato invariante e la variabile di controllo, pertanto fate attenzione, dovete
-mettere in questo stesso ordine gli argomenti nella definizione:
+parametri necessari: la funzione \fn{next\_even} come iteratore, lo stato
+invariante, ovvero il numero a cui la sequenza dovrà fermarsi e la variabile di
+controllo che è proprio il valore nella sequenza dei numeri pari.
 \sourcecode{
     from_file [[code/e9-iter.lua]]
     :select_lines [[generic_for]]
@@ -223,10 +222,10 @@ tramite l'iteratore predefinito \fn{pairs}.
 \end{Exercise}
 
 \begin{Exercise}[label=iter-02]
-Scrivere una funzione che accetta un array (una tabella con indici sequenziali
-interi) di stringhe e utilizzando la funzione di libreria \fn{string.upper}
-restituisca un nuovo array con il testo trasformato in maiuscolo (per esempio da
-\key{\{"abc", "def", "ghi"\}} a \key{\{"ABC", "DEF", "GHI"\}}).
+Scrivere una funzione che accetta un array (una tabella con indici interi in
+sequenza) di stringhe e utilizzando la funzione di libreria \fn{string.upper}
+restituisca un nuovo array con il testo trasformato in maiuscolo. Per esempio da
+\code{\{"abc", "def", "ghi"\}} a \code{\{"ABC", "DEF", "GHI"\}}).
 \end{Exercise}
 
 \begin{Exercise}[label=iter-03]

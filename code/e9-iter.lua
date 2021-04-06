@@ -3,17 +3,15 @@
 -- produzione tabella con salto
 local t = {45, 56, 89}
 local i = 100 + #t -- 100 holes
-for _, v in ipairs({12, 0, 2, -98}) do
-    t[i] = v
-    i = i + 1
+for j, v in ipairs{12, 0, 2, -98} do
+    t[i+j] = v
 end
-
 print("ipairs() table iteration test")
 for index, elem in ipairs(t) do
     print(string.format("t[%3d] = %d", index, elem))
 end
-
-print("\npairs() table iteration test")
+print()
+print("pairs() table iteration test")
 for key, val in pairs(t) do
     print(string.format("t[%3d] = %d", key, val))
 end
@@ -33,9 +31,9 @@ function iter(t)
 end
 
 -- utilizzo
-local iter_test = iter(t)
+local iter_fn = iter(t)
 while true do
-    local val = iter_test()
+    local val = iter_fn()
     if val == nil then
         break
     end
@@ -69,9 +67,9 @@ print ""
 -- iteratore dei numeri pari compresi
 -- nell'intervallo [first, last]
 function evenNum(first, last)
-    -- primo numero pari della sequenza
-    local val = 2*math.ceil(first/2) - 2
-    local i = 0 -- indice
+    -- valori iniziali delle variabili di ciclo
+    local val = first + first % 2 - 2
+    local i = 0
     return function ()
         i = i + 1
         val = val + 2
@@ -80,10 +78,9 @@ function evenNum(first, last)
         end
     end
 end
-
 -- iterazione con due variabili di ciclo
 for val, i in evenNum(13,20) do
-    print(string.format("[%d] %d", i, val))
+    print(string.format("iterazione %d -> %d", i, val))
 end
 --->>>
 
@@ -91,8 +88,8 @@ end
 print ""
 
 ---<<< generic_for
--- even numbers stateless iterator
-local function nextEven(last, i)
+-- even number stateless iterator
+local function next_even(last, i)
    i = i + 2
    if i<=last then
       return i
@@ -100,11 +97,10 @@ local function nextEven(last, i)
 end
  
 local function evenNum(a, b)
-   local start = 2*math.ceil(a/2)-2
-   return nextEven, b, start
+   return next_even, b, a + a % 2 - 2
 end
 
--- example of the 'generic for' cycle
+-- run the 'generic for'
 for n in evenNum(10, 20) do
     print(n)
 end

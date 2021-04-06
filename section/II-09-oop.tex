@@ -1,6 +1,6 @@
 
 \chapter{Programmazione a oggetti in Lua}
-\label{iChOop}
+\label{iiChOop}
 
 In sintesi, il paradigma della \emph{Object Oriented Programming} \textsc{oop},
 si basa sulla creazione di entità indipendenti chiamate \emph{oggetti}. Ciascun
@@ -9,7 +9,7 @@ oggetto incorpora sia dati che funzioni, che prendono il nome di \emph{metodi}.
 Ogni oggetto è un'istanza che fa parte di una stessa famiglia chiamata
 \emph{classe}, una sorta di prototipo che rappresenta un ``tipo di dati''. Le
 classi possono essere ricavate da altre classi con il meccanismo
-dell'\emph{ereditarietà} per specializzare il comportamento.
+dell'\emph{ereditarietà} per specializzarne il comportamento.
 
 Per instanziare un oggetto di una classe si utilizza un metodo speciale chiamato
 \emph{costruttore}, che valida gli eventuali dati in ingresso e instanzia in
@@ -18,24 +18,24 @@ memoria l'oggetto.
 In questo capitolo ritroveremo tutti questi concetti del paradigma della
 programmazione a oggetti dal punto di vista di Lua. Con essi la struttura del
 problema non è più pensata in termini di funzioni, ma attraverso la
-rappresentazione dei suoi elementi concettuali attraverso le classi, e le
-relazioni fra di essi attraverso l'ereditarietà.
+rappresentazione dei suoi elementi concettuali in classi e le loro relazioni di
+ereditarietà.
 
-Negli ultimi anni, la programmazione a oggetti è stata ridimensionata, tant'è
-che nei linguaggi di nuova generazione come Go e Rust non è inclusa nel modo
-classico. Ciò non toglie che essa possa rendere più intuitiva la programmazione
-in Lua, in special modo per chi sviluppa applicazioni per \LuaTeX.
+Negli ultimi anni, la programmazione a oggetti è stata ripensata tant'è che nei
+linguaggi di nuova generazione come Go e Rust non è inclusa nel modo classico.
+Ciò non toglie che essa possa rendere più intuitiva la programmazione in Lua, in
+special modo per chi sviluppa applicazioni per \LuaTeX.
 
 
 \section{Il minimalismo di Lua}
 
-Il linguaggio Lua non è progettato con gli stessi obiettivi di Java o del C++,
-i due linguaggi più noti per la programmazione a oggetti, non possiede un
-controllo preventivo del tipo, non prevede il concetto sintattico di
-classe, non offre alcun meccanismo per dichiarare come privati campi e metodi,
-e lascia al programmatore più di un modo per implementare i dettagli.
+Il linguaggio Lua non è progettato con gli stessi obiettivi di Java o del C++, i
+due linguaggi più noti per la programmazione a oggetti, non possiede un
+controllo preventivo del tipo, non prevede il concetto sintattico di classe, non
+offre alcun meccanismo per dichiarare come privati campi e metodi, e lascia al
+programmatore più di un modo per implementare la \textsc{oop}.
 
-Tuttavia Lua offre basandosi sulle tabelle, il pieno supporto ai principi del
+Tuttavia Lua basandosi sulle tabelle offre il pieno supporto ai principi del
 paradigma a oggetti senza perdere le caratteristiche minimali del linguaggio.
 
 
@@ -61,16 +61,16 @@ fallisce:
 }
 
 Il problema sta nel fatto che nel metodo \fn{area} compare il particolare
-riferimento alla tabella \key{Rectangle} che invece deve poter essere qualunque.
-La soluzione non può che essere l'introduzione del riferimento dell'oggetto come
-parametro esplicito nel metodo stesso, ed è la stessa utilizzata --- in modo
-nascosto ma vedremo che è possibile nascondere il riferimento anche in Lua ---
-dagli altri linguaggi di programmazione che supportano gli oggetti.
+riferimento alla tabella \key{Rettangolo}. La soluzione non può che essere
+l'introduzione del riferimento dell'oggetto come parametro esplicito nel metodo
+stesso, ed è la stessa utilizzata anche dagli altri linguaggi di programmazione
+che supportano gli oggetti. Vedremo tra poco come, allo stesso modo dei
+linguaggi \textsc{oop}, anche in Lua si possa nascondere il riferimento
+con la colon notation.
 
 Secondo quest'idea dovremo riscrivere il metodo \fn{area} in questo modo (in
-Lua il riferimento esplicito all'oggetto deve chiamarsi \key{self} pertanto
-abituiamoci fin dall'inizio a questa convenzione così da poter generalizzare la
-validità del codice):
+Lua il riferimento implicito all'oggetto deve chiamarsi \key{self} pertanto
+abituiamoci fin dall'inizio a questa convenzione):
 \sourcecode{
     from_file [[code/e10-oop.lua]]
     :select_lines [[tre]]
@@ -78,12 +78,17 @@ validità del codice):
 
 Fino a ora abbiamo costruito l'oggetto sfruttando le caratteristiche della
 tabella e la particolarità che consente di assegnare una funzione a una
-variabile. Da questo momento entra in scena l'operatore \key{:} --- che
-chiameremo \emph{colon notation}.
+variabile. Questo punto è importante: le chiavi nella tabella dell'oggetto
+possono contenere sia funzioni/metodi sia valori/campi perciò sovrascrivere una
+chiave nell'intenzione di introdurre un nuovo campo/metodo porta a errori.
 
-L'operatore \key{:} fa in modo che le seguenti due espressioni siano
-perfettamente equivalenti anche se le rende differenti dal punto di vista
-concettuale agli occhi del programmatore:
+
+\section{Colon notation}
+
+Da questo momento entra in scena l'operatore \key{:} --- che chiameremo
+\emph{colon notation}. L'operatore \key{:} fa in modo che le seguenti due
+espressioni siano perfettamente equivalenti anche se le rende differenti dal
+punto di vista concettuale agli occhi del programmatore:
 \sourcecode{
     from_file [[code/e10-oop.lua]]
     :select_lines [[colon_notation]]
@@ -92,21 +97,21 @@ concettuale agli occhi del programmatore:
 Questo operatore è il primo nuovo elemento che Lua introduce per facilitare la
 programmazione orientata agli oggetti. Se si accede a un metodo memorizzato in
 una tabella con l'operatore due punti \key{:} anziché con l'operatore \key{.}
-allora l'interprete Lua aggiungerà implicitamente un primo parametro con il
-riferimento alla tabella stessa a cui assegnerà il nome di \key{self}.
+allora l'interprete aggiungerà implicitamente un primo parametro chiamandolo
+\key{self} con il riferimento alla tabella stessa, insomma puro zucchero
+sintattico
 
 
 \section{Metatabelle}
 
 Il linguaggio Lua si fonda sull'essenzialità tanto che supporta la
 programmazione a oggetti utilizzando quasi esclusivamente le proprie risorse di
-base senza introdurre nessun nuovo costrutto. In particolare Lua implementa gli
-oggetti utilizzando la tabella l'unica struttura dati disponibile nel
-linguaggio, assieme a particolari funzionalità dette \emph{metatabelle} e
-\emph{metametodi}.
+base senza introdurre nessun nuovo costrutto. In particolare in Lua si utilizza
+la tabella, l'unica struttura dati predefinita nel linguaggio, assieme a
+particolari funzionalità dette \emph{metatabelle} e \emph{metametodi}.
 
 Il salto definitivo nella programmazione \textsc{oop} consiste nel poter
-costruire una \emph{classe} senza ogni volta assemblare i campi e metodi,
+costruire una \emph{classe} senza ogni volta assemblare campi e metodi,
 introducendo un qualcosa che faccia da stampo per gli oggetti.
 
 In Lua l'unico meccanismo disponibile per compiere questo ultimo importante
@@ -114,16 +119,23 @@ passo consiste nelle \emph{metatabelle}. Esse sono normali tabelle contenenti
 funzioni dai nomi prestabiliti che vengono chiamati quando si verificano
 particolari eventi come l'esecuzione di un'espressione di somma tra due tabelle
 con l'operatore \key{+}. Ogni tabella può essere associata a una metatabella e
-questo consente di creare degli insiemi di tabelle che condividono una stessa
+questo consente di creare degli insiemi di oggetti che condividono una stessa
 aritmetica.
 
-I nomi di queste funzioni particolari dette \emph{metametodi} iniziano tutti
-con un doppio trattino basso, per esempio nel caso della somma sarà richiesta
-la funzione \fn{\_\_add} della metatabella associata alle due tabelle addendo
---- e se non esiste verrà generato un errore.
+Metatabelle e metametodi quindi, possono rendere il codice intuitivo e compatto,
+sono quindi una funzionalità indipendente dalla programmazione a oggetti.
 
-Per assegnare una metatabella si utilizza la funzione \fn{setmetatable}. Essa
-ha due argomenti tabella, la prima è l'oggetto e la seconda è la metatabella.
+I nomi delle funzioni di una metatabella vengono detti \emph{metametodi} e
+iniziano tutti con un doppio trattino basso. Per esempio nel caso della somma
+sarà richiesta la funzione \fn{\_\_add} nella metatabella associata al primo
+addendo o se non esiste a quella del secondo addendo.
+
+Per assegnare una metatabella si utilizza la funzione \fn{setmetatable}. Essa ha
+due argomenti tabella, la prima è l'oggetto e la seconda è la tabella con i
+metametodi.
+
+
+\section{Il metametodo \fn{\_\_tostring}}
 
 Il metametodo più semplice di tutti è \fn{\_\_tostring}. Esso viene
 invocato se una tabella è data come argomento alla funzione \fn{print} per
@@ -158,26 +170,26 @@ tabella che assume il ruolo concettuale di una vera e propria classe:
 Queste poche righe di codice racchiudono il meccanismo della creazione di una
 nuova classe in Lua: abbiamo infatti assegnato a una nuova tabella \key{r} la
 metatabella con funzione di classe \key{Rettangolo}. Quando viene richiesta la
-stampa del campo \key{larghezza}, poiché tale campo non esiste nella tabella
-vuota \key{r} verrà ricercato il metametodo \key{\_\_index} nella metatabella
+stampa del campo \key{b}, poiché tale campo non esiste nella tabella vuota
+\key{r} verrà ricercato il metametodo \key{\_\_index} nella metatabella
 associata che è appunto la tabella \key{Rettangolo}.
 
 A questo punto il metametodo restituisce semplicemente la tabella
 \key{Rettangolo} stessa e questo fa sì che tutti i campi e i metodi siano
-ereditati in essa contenuti siano accessibili da \key{r}. Il campo
-\key{larghezza} e il metodo \fn{area} del nuovo oggetto \key{r} sono in realtà
-quelli definiti nella tabella \key{Rettangolo}.
+ereditati da essa per essere accessibili da \key{r}. Il campo \key{b} e il
+metodo \fn{area} del nuovo oggetto \key{r} sono in realtà quelli definiti nella
+tabella \key{Rettangolo}.
 
 Se volessimo creare invece un rettangolo assegnando direttamente la dimensione
 dei lati dovremo semplicemente crearli in \key{r} con i nomi previsti dalla
-classe: \key{larghezza} e \key{lunghezza}. Il metodo \fn{area} sarà ancora
-caricato dalla tabella \key{Rettangolo} ma i campi numerici con le nuove misure
-dei lati saranno quelli interni dell'oggetto \key{r} e non quelli della
-metatabella poiché semplicemente esistono.
+classe: \key{b} e \key{h}. Il metodo \fn{area} sarà ancora caricato dalla
+tabella \key{Rettangolo} ma i campi numerici con le nuove misure dei lati
+saranno quelli interni dell'oggetto \key{r} e non quelli della metatabella
+poiché semplicemente esistono in \key{r}.
 
 Questa costruzione funziona ma può essere migliorata con l'introduzione del
-costrutture come vedremo meglio in seguito. Il linguaggio apparirà sempre più
-concettualmente simile a una classe.
+costrutture come vedremo meglio in seguito. L'oggetto \key{Rettangolo} apparirà
+sempre più concettualmente simile a una classe.
 
 
 \section{Il costruttore}
@@ -186,7 +198,7 @@ concettualmente simile a una classe.
 Proponendoci ancora la rappresentazione del concetto di rettangolo, completiamo
 il quadro introducendo il costruttore della classe. Il lavoro che dovrà
 svolgere questa speciale funzione sarà quello di inizializzare i campi
-argomento in una delle tante modalità possibili, una volta effettuato il
+argomento in una delle tante modalità possibili e una volta effettuato il
 controllo di validità degli argomenti.
 
 Il codice completo della classe \key{Rettangolo} è il seguente:
@@ -195,12 +207,11 @@ Il codice completo della classe \key{Rettangolo} è il seguente:
     :select_lines [[newrect]]
 }
 
-Il costruttore chiamato \fn{new} accetta una tabella come argomento, altrimenti
-ne crea una vuota, controlla gli eventuali parametri geometrici, assegna la
-metatabella e restituisce l'oggetto.
-
-Al costruttore \fn{new} arriva il riferimento implicito a \key{Rettangolo}
-grazie alla colon notation, per cui \key{self} punterà a \key{Rettangolo}.
+Il costruttore \fn{new} accetta una tabella come argomento, altrimenti ne crea
+una vuota, controlla gli eventuali parametri geometrici, assegna la metatabella
+e restituisce l'oggetto. Alla funzione arriva il riferimento implicito a
+\key{Rettangolo} grazie alla colon notation, per cui \key{self} è un riferimento
+alla stessa tabella del di quello della variabile \key{Rettangolo}.
 
 Quando viene passata una tabella con uno o due campi sulle misure dei lati al
 costruttore, l'oggetto disporrà delle misure come valori interni effettivi,
@@ -211,12 +222,16 @@ chiavi/valori da sottoporre al controllo di validità e poi includere in una
 nuova tabella con modalità e nomi che riguardano solo l'implementazione interna
 della classe.
 
+Essendo il costruttore una normale funzione Lua, i suoi argomenti possono essere
+più di uno e di diverso tipo, mentre la classe può averne anche più di uno con
+nomi differenti.
+
 
 \section{Questa volta un cerchio}
 
 Per capire ancor meglio i dettagli e renderci conto di come funziona il
-meccanismo automatico delle metatabelle, costruiamo una classe \key{Cerchio}
-che annoveri fra i suoi metodi uno che modifichi il valore del raggio
+meccanismo automatico delle metatabelle, costruiamo una classe \key{Cerchio} che
+annoveri fra i suoi metodi una funzione che modifichi il valore del raggio
 aggiungendovi una misura:
 \sourcecode{
     from_file [[code/e10-oop.lua]]
@@ -225,12 +240,12 @@ aggiungendovi una misura:
 
 Nella sezione del codice utente viene dapprima creato un cerchio senza fornire
 alcun valore per il raggio. Ciò significa che quando stampiamo il valore del
-raggio con la successiva istruzione otteniamo 0 che è il valore di default del
-raggio dell'oggetto \key{Cerchio} per effetto della chiamata a \key{\_\_index}
-della metatabella.
+raggio con la successiva istruzione otteniamo \( 0 \) che è il valore di default
+del raggio dell'oggetto \key{Cerchio}, per effetto della chiamata a
+\key{\_\_index} della metatabella.
 
 Fino a questo momento la tabella dell'oggetto \key{o} non contiene alcun campo
-\key{radius}. Cosa succede allora quando viene lanciato il comando
+\key{radius}. Cosa succede allora quando è chiamato il comando
 \key{o:addToRadius(12.342)}?
 
 Il metodo \fn{addToRadius} contiene una sola espressione. Come da regola viene
@@ -253,8 +268,8 @@ campi e i metodi della classe base. Dopodiché si implementano o si modificano i
 metodi della classe derivata creando una gerarchia di oggetti.
 
 In Lua l'operazione di derivazione consiste molto semplicemente nel creare un
-oggetto con il costruttore della classe base e modificarne o aggiungerne i
-metodi o i campi.
+oggetto con il costruttore della classe base e modificarne o aggiungerne metodi
+o campi.
 
 Vediamo un esempio semplice dove si rappresenta il concetto generale di una
 persona che svolge attività sportiva e da questo, il concetto di una persona
