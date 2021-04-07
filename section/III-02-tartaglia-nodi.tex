@@ -158,7 +158,7 @@ con la funzione \fn{node.vpack}.
 Queste sono le nuove funzioni: \fn{next\_level} calcola la riga del triangolo
 rispetto a quella precedente, e \fn{tartaglia} genera il triangolo fino al
 livello specificato in una scatola verticale:
-\lines
+\begin{lines}
 -- filename: app-tartaglia/05.tex
 local function next_level(t, row)
     t[row+1] = 1
@@ -186,8 +186,7 @@ local function tartaglia(level)
     local vbox = node.vpack(head)
     return vbox
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Il risultato è questo:
 \begin{center}
@@ -232,7 +231,7 @@ L'esattezza matematica dell'espressione è dovuta al fatto che il numero in test
 e in coda per ogni riga del triangolo è sempre 1.
 
 Il listato completo della funzione \fn{pack\_level} è il seguente:
-\lines
+\begin{lines}
 -- filename: app-tartaglia/06.tex
 local function pack_level(t, diff_level, k_left, k_right)
     local a = tex.sp "24pt"
@@ -266,8 +265,7 @@ local function pack_level(t, diff_level, k_left, k_right)
     end
     return node.hpack(head)
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 La funzione tiene conto delle situazioni in cui non è necessario inserire il
 distanziamento di allineamento su un lato, cioè quando la lunghezza vale zero
@@ -284,7 +282,7 @@ Per questo nel codice viene inserita la lunghezza a destra nonostante
 l'allineamento a sinistra. I parametri \( k_\mathrm{left} \) e \(
 k_\mathrm{right} \) sono definiti dalla funzione principale \fn{tartaglia} a
 seconda del parametro \code{align}. Il listato è il seguente:
-\lines
+\begin{lines}
 -- filename: app-tartaglia/06.tex
 local function tartaglia(level, align)
     assert(type(level)=="number")
@@ -329,8 +327,7 @@ local function tartaglia(level, align)
     local vbox = node.vpack(head)
     return vbox
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Domanda: se avessimo avuto numeri diversi da 1 come primo e ultimo elemento, se
 ritenuto necessario, quali modifiche occorrebbe considerare nel codice?
@@ -441,7 +438,7 @@ Aggiungere una distanza fissa è molto semplice. Sappiamo che il nodo \code{hbox
 \code{hbox.head.next} punta al primo nodo distanza. In un ciclo \key{while}
 scorrere i soli nodi \code{glue} significa saltare un nodo e quindi preparare il
 prossimo riferimento con il campo \code{glue.next.next}:
-\lines
+\begin{lines}
 -- filename app-tartaglia/08.tex
 local function add_distance(hbox, d)
     assert(hbox and hbox.id == 0)
@@ -452,8 +449,7 @@ local function add_distance(hbox, d)
         glue = glue.next.next
     end
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Nel triangolo dobbiamo tener in conto tuttavia degli eventuali nodi di
 spaziatura iniziale e finale per l'allineamento orizzontale del triangolo. In
@@ -462,7 +458,7 @@ numero dei livelli totali con il numero di quello corrente. Dovremo adattare la
 funzione \fn{add\_distance} per modificare le lunghezze non solo dei nodi
 intermedi tra un numero e l'altro, ma anche per gli eventuali spazi di
 allineamento citati, in questo modo:
-\lines
+\begin{lines}
 -- filename app-tartaglia/09.tex
 local
 function add_distance(hbox, d, k_left, k_right, level, totlevel)
@@ -485,8 +481,7 @@ function add_distance(hbox, d, k_left, k_right, level, totlevel)
         glue.width = glue.width +  tdist*k_right
     end
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Non si utilizza il ciclo \code{while} ma un ciclo \code{for} che itera tante
 volte quanti sono gli spazi nel livello, ovvero il numero del livello a

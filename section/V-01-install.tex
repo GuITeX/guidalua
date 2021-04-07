@@ -19,10 +19,9 @@ Prepariamoci a scrivere il primo programma in Lua, ovviamente il fatidico
 salvando il seguente codice in un file chiamato \key{primo.lua} ed eseguiamolo
 direttamente in SciTE premendo il tasto funzione F5 o al terminale con il
 comando \tcmd{\$ lua primo.lua}:
-\lines
+\begin{linesrun}
 print("Hello world!")
-\endlines
-\sourcecode{from_lines():add_output()}
+\end{linesrun}
 
 In ambiente Linux o Mac OS~X, come per tutti gli altri linguaggi di scripting,
 possiamo inserire come prima riga del file a cui sono stati assegnati i permessi
@@ -30,11 +29,10 @@ di esecuzione, la
 \href{http://en.wikipedia.org/wiki/Shebang_%28Unix%29}{Sha-Bang}. In questo modo
 basterà semplicemente scriverne il nome nel terminale, e in questo caso è
 conveniente omettere l'estensione. Ecco il programma con la Sha-Bang:
-\lines
+\begin{lines}
 #!/usr/bin/env lua
 print("Hello world!")
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Lua è in grado di passare al programma gli argomenti che l'utente digita nel
 terminale separandoli da spazi, tramite la tabella array chiamata \key{arg} che
@@ -129,13 +127,12 @@ valore, utilizzando la funzione \texttt{type()}. Essa restituisce una stringa
 che corrisponde al nome del tipo di un'espressione, stringa che possiamo a sua
 volta stampare con la funzione \texttt{print()} in console. Digitiamo
 \footnote{Il doppio trattino inserisce un commento di riga.}:
-\lines
+\begin{lines}
 a = 123
 print(type(123))    --> stampa "number"
 print(type(a))      --> stampa "number"
 print(type("123"))  --> stampa "string"
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 % end of file

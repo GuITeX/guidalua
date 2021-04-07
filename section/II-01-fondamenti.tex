@@ -28,7 +28,9 @@ dei possibili \emph{tipi} di dato.
 La sintassi di Lua non sorprende: a sinistra compare il nome della variabile e
 a destra l'espressione che fornirà il valore da assegnare al simbolo. Il
 carattere di `\texttt{=}' funge da separatore:
-\sourcecode{from_array{[[a = 123]]}}
+\begin{lines}
+a = 123
+\end{lines}
 
 Durante l'esecuzione di questo codice, Lua determina dinamicamente il tipo del
 valore letterale `123' --- un numero --- creandolo in memoria col nome di
@@ -69,35 +71,32 @@ istruzione. Questo significa che l'assegnamento è in realtà più complesso di
 quello presentato fino a ora perché è possibile scrivere una lista di variabili
 separate da virgole che assumeranno i valori corrispondenti della lista di
 espressioni, sempre separate da virgole che compare dopo il segno di uguale:
-\lines
+\begin{lines}
 local a, b = 0.45 + 0.23, "text"
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Quando il numero delle variabili non corrispondono a quello delle espressioni,
 Lua assegnerà automaticamente valori \texttt{nil} o ignorerà le espressioni in
 eccesso. Per esempio:
-\lines
+\begin{lines}
 local a, b, c = 0.45, "text"    -- 'c' vale nil
 print(a, b, c)
 local x, y = "op", "qw", "lo"   -- "lo" è un dato ignorato
 print(x, y)
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Nell'assegnazione Lua prima valuta le espressioni a destra e solo
 successivamente crea le rispettive variabili secondo l'ordine della lista.
 Perciò per scambiare il valore di due variabili, operazione chiamata
 \emph{switch}, è possibile scrivere semplicemente:
-\lines
+\begin{lines}
 x, y = y, x
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Un ulteriore esempio di assegnazione multipla è il seguente, a dimostrazione
 che le espressioni della lista a destra vengono prima valutate e solo dopo
 assegnate alle corrispondenti variabili nella lista di sinistra:
-\lines
+\begin{linesrun}
 local pi = 3.14159
 local r = 10.8 -- raggio del cerchio
 -- grandezze cerchio
@@ -106,8 +105,7 @@ local diam, circ, area = 2*r, 2*pi*r, pi*r^2
 print("Diametro:", diam)
 print("Circonferenza:", circ)
 print("Area:", area)
-\endlines
-\sourcecode{from_lines():add_output()}
+\end{linesrun}
 
 Le assegnazioni multiple sono interessanti ma sembra non siano così importanti,
 possiamo infatti ricorrere ad assegnazioni singole. Diverranno invece molto
@@ -147,13 +145,12 @@ chiamato \key{nil}. Il nome è così sia l'unico valore possibile che il tipo.
 Leggere una variabile non istanziata non è un errore perché Lua restituisce
 semplicemente \key{nil}, mentre assegnare il valore nullo a una variabile la
 distrugge:
-\lines
+\begin{lines}
 print(z)      --> stampa nil, la variabile 'z' non esiste
 local z = 123 --> assegnamento di un tipo numerico
 print(z)      --> stampa 123
 z = nil       --> distruzione della variabile
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \subsection{Il garbage collector}

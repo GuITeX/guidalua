@@ -1,163 +1,31 @@
 -- a LuaTeX small library to typeset source code along with its console output
 
-local sclib = {} -- main container
-
--- global parameters (default values)
--- this table will be set as metatable of the data object
-sclib._parameters = {
-    prompt = "> ",
-    run    = false,
-}
-sclib._parameters.__index = sclib._parameters
-
--- setup global parameters
-function sclib:_set_parameters(opt)
-    for k, v in pairs(opt) do
-        if self._parameters[k] then
-            self._parameters[k] = v
-        end
-    end
-end
-
--- methods
-
--- selecting lines in the source code
-function sclib._parameters:select_lines(opt)
-    if type(opt) == "string" then
-        self.delim_key = opt
-    elseif type(opt) == "table" then
-        if opt.delim_key then
-            self.delim_key = opt.delim_key
-        end
-    end
-    return self
-end
-
-function sclib._parameters:add_output(opt)
-    self.run = true
-    if type(opt) == "table" then
-        if opt.prompt then -- local prompt parameter
-            self.prompt = opt.prompt
-        end
-        if opt.delim_run then -- delim_run otherwise all
-            self.delim_run = true
-        end
-    end
-    return self
-end
-
--- user's interface costructor function
-function sclib._from_file(filename)
-    local task = {filename = filename}
-    setmetatable(task, sclib._parameters)
-    return task
-end
-
-function sclib._from_lines(tcode)
-    local task = {lines = tcode}
-    setmetatable(task, sclib._parameters)
-    return task
-end
-
-function sclib._from_string()
-    local task = {lines = sclib.lines}
-    sclib.lines = nil
-    setmetatable(task, sclib._parameters)
-    return task
-end
-
 -- aux functions
-local function getkey(line)
-    local rg = "^%-%-%-<<<(%s*)([%a%d_%-]+)(%s*)"
-    local s1, key, s2 = string.match(line, rg)
-    if key then
-        local rest = line:sub(6+#s1+#key+#s2+1)
-        local s3 = string.match(rest, "(%s*)$")
-        return key, rest:sub(1,-#s3-1)
+
+local function sendlua_to_latexenv(buf, start, stop, prt)
+    assert(stop >= start)
+    prt([=[\begin{lstlisting}[style=lua]]=])
+    for l = start, stop do
+        prt(buf[l])
     end
+    prt([[\end{lstlisting}]])
 end
 
-local function getend(line)
-    local closing = "^%-%-%->>>%s*$"
-    if string.match(line, closing) then
-        return true
-    else
-        return false
+local function sendterminal_to_latexenv(buf, prompt, prt)
+    assert(#buf > 0)
+    prt([=[\vspace*{-1.5ex}\begin{lstlisting}[style=out,numbers=none]]=])
+    for _, l in ipairs(buf) do
+        prt(prompt .. l)
     end
+    prt([[\end{lstlisting}]])
 end
 
---
-local function filter_lines(tlines, delim_key)
-    local i, j
-    if type(delim_key) ~= "string" or delim_key == "" then
-        return i, j
-    end
-    local is_open = false
-    for c, line in ipairs(tlines) do
-        if is_open then
-            if getend(line) then
-                return i, c + 1
-            end
-        else -- lines before
-            local key, rest = getkey(line)
-            if key and key == delim_key then
-                -- delim open code line
-                is_open = true
-                i = c + 1
-            end
-        end
-    end
-    if is_open then
-        error("Unclosed delimiter in the source lines")
-    else
-        error("Delimiter not found in the source lines")
-    end
-end
-
-local function get_lines(filename, delim_key)
-    local l = {}
-    if type(delim_key) ~= "string" or delim_key == "" then
-        for line in io.lines(filename) do
-            l[#l+1] = line
-        end
-        return l
-    end
-
-    local is_open = false
-    for line in io.lines(filename) do
-        if is_open then
-            if getend(line) then
-                return l
-            else
-                l[#l+1] = line
-            end
-        else -- lines before
-            local key, rest = getkey(line)
-            if key and key == delim_key then
-                -- delim open code line
-                is_open = true
-            end
-        end
-    end
-    if is_open then
-        error("Unclosed delimiter in the source file")
-    else
-        error("Delimiter not found in the source file")
-    end
-end
-
-
-local function run(code, i, j)
-    local filename
-    if type(code) == "table" then -- limited run
-        filename = "tmp.lua"
-        local flua = io.open(filename, "w")
-        flua:write(table.concat(code, "\n", i, j))
-        flua:close()
-    elseif type(code) == "string" and code ~="" then
-        filename = code
-    end
-    local f = io.popen("luatex --luaonly "..filename)
+local function run_buffer(buf, last)
+    local filename = "tmp.lua"
+    local flua = io.open(filename, "w")
+    flua:write(table.concat(buf, "\n", 1, last))
+    flua:close()
+    local f = io.popen("texlua "..filename)
     local l = {}
     for line in f:lines() do
         l[#l+1] = line
@@ -165,42 +33,169 @@ local function run(code, i, j)
     return l
 end
 
-function sclib._parameters:_typeset()
-    local tkprint = sclib.tkprint
-    local codelines, source -- line to typeset and line to execute
-    local i, j -- limit index
-    if self.filename then
-        codelines = get_lines(self.filename, self.delim_key)
-        if self.delim_run then
-            source = codelines
-        else
-            source = self.filename
-        end
-    elseif self.lines then
-        codelines = self.lines
-        i, j = filter_lines(self.lines, self.delim_key)
-        source = self.lines
+local function run_file(filename)
+    local f = assert(io.popen("texlua "..filename))
+    local l = {}
+    for line in f:lines() do
+        l[#l+1] = line
     end
-    if #codelines > 0 then
-        tkprint([=[\begin{lstlisting}[style=lua]]=])
-        for idx, l in ipairs(codelines) do
-            if i and (idx >= i and idx <= j) then
-                tkprint(l)
-            else
-                tkprint(l)
-            end
-        end
-        tkprint([=[\end{lstlisting}]=])
-        if self.run then
-            local tout = run(source, i, j)
-            tkprint([=[\vspace*{-1.5ex}\begin{lstlisting}[style=out,numbers=none]]=])
-            for _, l in ipairs(tout) do
-                tkprint(self.prompt.. l)
-            end
-            tkprint([=[\end{lstlisting}]=])
-        end
+    return l
+end
+
+local function getkey(line)
+    local rg = "^%-%-%-<<<%s*([%a%d_%-]+)%s*"
+    local key = string.match(line, rg)
+    return key
+end
+
+local function getend(line)
+    local closing = "^%-%-%->>>%s*$"
+    if string.match(line, closing) then
+        return true
     end
 end
 
-return sclib
+local function get_lines(buf, filename, delim_key)
+    local l = 0
+    if delim_key then
+        assert(type(delim_key) == "string")
+        local is_open = false
+        for line in io.lines(filename) do
+            if is_open then
+                if not getend(line) then
+                    l = l + 1
+                    buf[l] = line
+                else
+                    return l
+                end
+            else -- lines before the delimiter signal
+                local key = getkey(line)
+                if key and key == delim_key then
+                    -- block opened
+                    is_open = true
+                end
+            end
+        end
+        if is_open then
+            error("Unclosed delimiter in the source file")
+        else
+            error("Delimiter not found in the source file")
+        end
+    else
+        for line in io.lines(filename) do
+            l = l + 1
+            buf[l] = line
+        end
+        return l
+    end
+end
 
+
+local sourcecode = {
+    prompt = "> ",
+    _buffer = {},
+    _counter = 0,
+    _opt_key = {
+        file   = "_file",
+        run    = "_run",
+        select = "_sel",
+    }
+}
+
+-- luatex callback function 'process_input_buffer'
+function sourcecode.process_input_buffer(line)
+    if line:match [[\end{lines}]] then
+        return line
+    else
+        if not (line == '' and sourcecode._counter == 0) then
+            sourcecode._counter = sourcecode._counter + 1
+            local buf = sourcecode._buffer
+            buf[sourcecode._counter] = line
+	    end
+        return ''
+    end
+end
+
+function sourcecode.process_input_buffer_star(line)
+    if line:match [[\end{linesrun}]] then
+        return line
+    else
+        if not (line == '' and sourcecode._counter == 0) then
+            sourcecode._counter = sourcecode._counter + 1
+            local buf = sourcecode._buffer
+            buf[sourcecode._counter] = line
+	    end
+        return ''
+    end
+end
+
+-- methods
+
+function sourcecode:reset()
+    self._counter = 0
+    self._file = nil
+    self._run = nil
+    self._sel = nil
+    return self
+end
+
+function sourcecode:option(opt)
+    assert(type(opt) == "table")
+    for k, val in pairs(opt) do
+        local inner_k = self._opt_key[k]
+        if not inner_k then
+            error("Option key '"..k.."' not found")
+        end
+        self[inner_k] = val
+    end
+    return self
+end
+
+function sourcecode:trim_tail()
+    local buf = self._buffer
+    local counter = self._counter
+    if counter > 0 then
+        while buf[counter] == '' do
+            counter = counter - 1
+        end
+    end
+    self._counter = counter
+    return self
+end
+
+function sourcecode:load_file()
+    local filename = self._file
+    assert(type(filename) == "string", "Do you remember to run option()?")
+    local buf = self._buffer
+    local kselect = self._sel
+    local counter = get_lines(buf, filename, kselect)
+    assert(counter > 0)
+    self._counter = counter
+    return self
+end
+
+-- file
+-- select
+-- run
+-- lines of code comes from a source file
+-- lines of code comes from the luatex callback
+function sourcecode:typeset()
+    local buffer = self._buffer
+    local counter = self._counter
+    assert(counter > 0, "Empty buffer. Maybe you forget to run load_file()")
+    local prt = self._tkprint
+    sendlua_to_latexenv(buffer, 1, counter, prt)
+    if self._run then
+        local filename = self._file
+        if filename and (not self._sel) then
+            local term_output = run_file(filename)
+            sendterminal_to_latexenv(term_output, self.prompt, prt)
+        else
+            local term_output = run_buffer(buffer, counter)
+            sendterminal_to_latexenv(term_output, self.prompt, prt)
+        end
+    end
+    self:reset()
+end
+
+return sourcecode

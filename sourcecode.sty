@@ -1,16 +1,13 @@
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \ProvidesPackage{sourcecode}
-    [2017/12/04 v0.1 Sourcecode Lua script]
+    [2021/04/06 v0.2 Sourcecode Lua script]
 
-\RequirePackage{listings}
-\RequirePackage{xcolor}
-\RequirePackage{luacode}
-
+% setup listings
 \lstdefinestyle{lua}{
     language=[5.3]Lua,
     basicstyle=\small\ttfamily,
     keywordstyle=\color{blue},
-    stringstyle=\color{magenta},
+    stringstyle=\color{orange},
     commentstyle=\color{black!80}
 }
 
@@ -21,46 +18,52 @@
 
 \directlua{
 sourcecodelib = require [[sourcecode]]
-sourcecodelib.tkprint = tex.print
+sourcecodelib._tkprint = tex.print
 }
 
-\newcommand\setupcode[1]{\directlua{
-sourcecodelib:_set_parameters{#1}
+% opzione run = false
+\newenvironment{lines}{\directlua{
+    luatexbase.add_to_callback(
+        'process_input_buffer',
+        sourcecodelib.process_input_buffer,
+        'sourcecodelib:lines',
+        1
+    )
+}}{\directlua{
+    luatexbase.remove_from_callback(
+        'process_input_buffer',
+        'sourcecodelib:lines'
+    )
+    sourcecodelib
+        :trim_tail()
+        :typeset()
 }}
+
+% run = true
+\newenvironment{linesrun}{\directlua{
+    sourcecodelib:option{run=true}
+    luatexbase.add_to_callback(
+        'process_input_buffer',
+        sourcecodelib.process_input_buffer_star,
+        'sourcecodelib:linesstar',
+        1
+    )
+}}{\directlua{
+    luatexbase.remove_from_callback(
+        'process_input_buffer',
+        'sourcecodelib:linesstar'
+    )
+    sourcecodelib
+        :trim_tail()
+        :typeset()
+}}
+
 
 \newcommand\sourcecode[1]{\directlua{
-    local from_file = sourcecodelib._from_file;
-    local from_array = sourcecodelib._from_lines;
-    local from_lines = sourcecodelib._from_string;
-    local res = #1;
-    res:_typeset()
+    sourcecodelib
+        :option{#1}
+        :load_file()
+        :typeset()
 }}
-
-\def\mkchar#1{\catcode`#1=12 }
-\def\lines{%
-\directlua{
-    sourcecodelib.lines = {}
-    sourcecodelib.l = 0
-}\begingroup
-\let\do=\mkchar \dospecials
-\endlinechar`\^^M \catcode`\^^M=12 \xlines}
-
-{\catcode`\^^M=12 \endlinechar=-1 %
- \gdef\xlines#1^^M{%
- \def\test{#1}
- \ifx\test\endlines
-    \let\next\endgroup
- \else
-    \directlua{
-        if sourcecodelib.l == 0 then sourcecodelib.l = 1 else
-        ;sourcecodelib.lines[sourcecodelib.l] = [==[#1]==];
-        sourcecodelib.l = sourcecodelib.l + 1; end
-    }%
-    \let\next\xlines \fi \next}
-}
-
-{\escapechar=-1
-\xdef\endlines{\string\\endlines}
-}
 
 \endinput

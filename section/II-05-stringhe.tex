@@ -14,10 +14,7 @@ In una stringa delimitata da doppi apici possiamo inserire liberamente apici
 semplici e viceversa, e caratteri non stampabili come il ritorno a capo
 (\cs{n}) e la tabulazione (\cs{t}), tramite il carattere di escape backslash
 che quindi va inserito esso stesso come doppio backslash (\cs{\textbackslash}):
-\sourcecode{
-    from_file[[code/e1-005.lua]]
-    :add_output()
-}
+\sourcecode{file = [[code/e1-005.lua]], run = true}
 
 In Lua non esiste il tipo carattere quindi gli Autori del linguaggio hanno
 pensato di utilizzare i delimitatori normalmente destinati a rappresentarne la
@@ -32,18 +29,13 @@ Il terzo tipo di delimitatore per le stringhe è una coppia si parentesi quadre 
 ha la proprietà di ammettere il ritorno a capo. Si possono così introdurre nel
 sorgente interi brani di testo nel quale i caratteri di escaping non saranno
 interpretati.
-\sourcecode{
-    from_file [[code/e1-006.lua]]
-    :add_output()
-}
+\sourcecode{file = [[code/e1-006.lua]], run = true}
 
 Se per caso nel testo fossero presenti i delimitatori di chiusura è possibile
 inserire un numero qualsiasi di caratteri \key{=} tra le parentesi quadre,
 purché il numero sia lo stesso per i delimitatori di apertura e chiusura,
 esempio:
-\sourcecode{
-    from_file [[code/e1-007.lua]]
-}
+\sourcecode{ file = [[code/e1-007.lua]]}
 
 
 \section{Commenti multiriga}
@@ -55,7 +47,7 @@ riga che si introducono nel codice con un doppio trattino \key{--}.
 I commenti multiriga sono comodi quando si vuol escludere dall'esecuzione un
 intero blocco di righe: iniziano con i doppi trattini seguiti da un delimitatore
 di stringa multiriga e terminano con la corrispondente chiusura:
-\lines
+\begin{lines}
 -- questo è un commento di riga
 
 --[[
@@ -67,14 +59,13 @@ multiriga
 e anche questo è un commento
 multiriga
 ]=]
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Normalmente in Lua i commenti multiriga vengono chiusi premettendo i doppi
 trattini anche al gruppo delimitatore di chiusura. Questo è solo un trucco per
 riattivare rapidamente il codice eventualmente contenuto nel commento, basta uno
 spazio per far trasformare il commento multiriga in uno semplice:
-\lines
+\begin{lines}
 --[[ righe di codice non attive
 local tab = {}
 --]]
@@ -84,22 +75,20 @@ local tab = {}
 
 local tab = {}
 --]] -- e questo diventa una normale riga di commento
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \section{Concatenazione stringhe e immutabilità}
 
 In Lua l'operatore \key{..} concatena due stringhe, in questo modo:
-\lines
+\begin{linesrun}
 local s1 = "Hello" .. " " .. "world"
 local s2 = s1 .. " OK"
 s2 = s2 .. "."
 
 print(s1 .. "!")
 print(s2)
-\endlines
-\sourcecode{from_lines():add_output()}
+\end{linesrun}
 
 Il concetto importante riguardo alle stringhe è se queste siano o no immutabili.
 Se non lo sono la concatenazione di stringhe non comporta la creazione di una
@@ -113,15 +102,14 @@ variabile.
 
 Per poche operazioni di concatenazione ciò non è un problema, ma in alcuni casi
 invece si. Consideriamo il seguente codice apparentemente innocuo:
-\lines
+\begin{lines}
 local s = ""
 
 for i = 1, 100 do
     s = s .. "**"
 end
 print(#s) -- # funziona anche per le stringhe!
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Ma cosa succede in dettaglio? Perché questo codice non è efficiente?
 Ad ogni concatenazione viene creata una nuova stringa. La prima volta vengono
@@ -137,15 +125,14 @@ ripari mettendo a disposizione una struttura dati o una funzione che risolve il
 problema, per esempio un tipo \key{StringBuffer}. In Lua la soluzione è una
 funzione della libreria \key{table} che, anticipando rispetto alle nostre
 chiaccherate è \fn{table.concat}:
-\lines
+\begin{lines}
 local t = {}
 for i = 1, 100 do
     t[#t + 1] = "**"
 end
 
 print(#table.concat(t))
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Nel caso specifico avremo dovuto usare la funzione \fn{string.rep} anche se
 \fn{table.concat} è più generale.
@@ -160,11 +147,10 @@ carattere apice semplice che doppio?
 
 \begin{Exercise}[label=string-02]
 Quale sarà il risultato dell'esecuzione del seguente codice?
-\lines
+\begin{lines}
 local s = "'"..'"'.."ok"..[["']]
 print(s)
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 \end{Exercise}
 
 \begin{Exercise}[label=string-03]

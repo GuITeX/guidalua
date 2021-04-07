@@ -7,12 +7,11 @@ perché sono molto utili per scrivere codice efficiente ed elegante.
 
 Il linguaggio Lua prevede il ciclo d'iterazione \emph{generic for} che
 introduce la nuova parola chiave \key{in} secondo questa sintassi:
-\lines
+\begin{lines}
 for <lista variabili> in iterator_function() do
 -- codice
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Le tabelle di Lua sono oggetti che possono essere impiegati per rappresentare
 degli array oppure dei dizionari. In entrambe i casi Lua mette a disposizione
@@ -30,7 +29,7 @@ per le tabelle.
 La funzione \fn{ipairs} restituisce un iteratore che a ogni ciclo genera due
 valori: l'indice dell'array e il valore corrispondente. L'iterazione comincia
 dalla posizione 1 e termina quando il valore è \key{nil}:
-\lines
+\begin{lines}
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
 
@@ -38,11 +37,10 @@ local t = {45, 56, 89, 12, 0, 2, -98}
 for i, v in ipairs(t) do
     print(i, v)
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Il ciclo con \fn{ipairs} è equivalente a questo codice:
-\lines
+\begin{lines}
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
 do
@@ -53,13 +51,12 @@ do
         v = t[i]
     end
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Se non interessa il valore dell'indice è buona norma dare al nome di variabile
 corridspondente un segno di underscore \key{\_} che in Lua è un identificatore
 valido. Per esempio:
-\lines
+\begin{lines}
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
 local sum = 0
@@ -67,8 +64,7 @@ for _, elem in ipairs(t) do
     sum = sum + elem
 end
 print(sum)
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Se non vogliamo incorrere in errori è molto importante ricordarsi che con
 \fn{ipairs} verranno restituiti i valori in ordine di posizione da 1 in poi e
@@ -87,9 +83,9 @@ valore contenute nella tabella stessa.
 Una tabella con indici a salti verrà iterata parzialmente da \fn{ipairs} ma
 completamente da \fn{pairs} al prezzo di perdere l'ordinamento:
 \sourcecode{
-    from_file [[code/e9-iter.lua]]
-    :select_lines [[uno]]
-    :add_output{delim_run=  true}
+    file = [[code/e9-iter.lua]],
+    select = [[uno]],
+    run = true,
 }
 
 Il comportamento di questi due iteratori potrebbe lasciare perplessi ma è
@@ -108,8 +104,8 @@ Perchè non utilizzare la closure per memorizzare lo stato dell'iteratore?
 Abbiamo incontrato le closure nella sezione \ref{secClosure}. Proviamo a
 scrivere il codice per iterare una tabella:
 \sourcecode{
-    from_file [[code/e9-iter.lua]]
-    :select_lines [[due]]
+    file = [[code/e9-iter.lua]],
+    select = [[due]],
 }
 
 Funziona, molto semplicemente. Non è stato necessario introdurre nessun nuovo
@@ -125,8 +121,8 @@ Tuttavia, data l'importanza degli iteratori, Lua introduce il nuovo costrutto
 chiamato \emph{generic for} che si aspetta una funzione proprio come la
 \fn{iter} del codice precedente. E in effetti funziona:
 \sourcecode{
-    from_file [[code/e9-iter.lua]]
-    :select_lines [[tre]]
+    file = [[code/e9-iter.lua]],
+    select = [[tre]],
 }
 
 Riassumendo, la costruzione di un iteratore in Lua si basa sulla creazione di
@@ -137,12 +133,11 @@ impiegato in un ciclo generic for.
 Se per esempio si volesse iterare la collezione dei numeri pari compresi
 nell'intervallo da 1 a 10, avendo a disposizione l'apposito iteratore
 \fn{evenNum} che definiremo in seguito, potrei scrivere semplicemente:
-\lines
+\begin{lines}
 for n in evenNum(1,10) do
     print(n)
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \section{L'esempio dei numeri pari}
@@ -161,9 +156,9 @@ stessa quantità --- e, se questo è inferiore all'estremo superiore
 dell'intervallo ritornare indice e numero pari della sequenza. Ecco il codice
 completo:
 \sourcecode{
-    from_file [[code/e9-iter.lua]]
-    :select_lines [[iter_even]]
-    :add_output{delim_run = true}
+    file = [[code/e9-iter.lua]],
+    select = [[iter_even]],
+    run = true,
 }
 
 In questo esempio, oltre ad approfondire il concetto di iterazione basata sulla
@@ -188,12 +183,11 @@ Per capire come ciò sia possibile dobbiamo conoscere nel dettaglio come
 funziona il generic for in Lua; dopo la parola chiave \key{in} esso si aspetta
 altri due parametri oltre alla funzione da chiamare a ogni ciclo: una variabile
 che rappresenta lo stato invariante e la variabile di controllo.
-\lines
+\begin{lines}
 for <vars> in <iter_fn>, <state>, <ctl_var> do
     ...
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 La funzione d'iterazione verrà chiamata a ogni ciclo con due argomenti: lo stato
 invariante e la variabile di controllo e ci si aspetta che restituisca uno o più
@@ -204,8 +198,8 @@ parametri necessari: la funzione \fn{next\_even} come iteratore, lo stato
 invariante, ovvero il numero a cui la sequenza dovrà fermarsi e la variabile di
 controllo che è proprio il valore nella sequenza dei numeri pari.
 \sourcecode{
-    from_file [[code/e9-iter.lua]]
-    :select_lines [[generic_for]]
+    file = [[code/e9-iter.lua]],
+    select = [[generic_for]],
 }
 
 Con gli iteratori abbiamo terminato l'esplorazione di base del linguaggio Lua.

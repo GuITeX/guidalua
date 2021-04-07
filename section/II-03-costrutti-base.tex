@@ -11,7 +11,7 @@ il capitolo precedente come utile riferimento.
 
 Creiamo la tabella con il costruttore in linea e iteriamo con un ciclo
 \key{for}:
-\sourcecode{from_file [[code/e1-001.lua]]:add_output()}
+\sourcecode{file = [[code/e1-001.lua]], run = true}
 
 Il corpo del ciclo \key{for} di Lua è il blocco compreso tra le parole chiave
 obbligatorie \key{do} ed \key{end}. La variabile \key{i} interna al ciclo
@@ -38,35 +38,32 @@ quello di \emph{disuguaglianza} è la coppia dei segni tilde e uguale
 
 Ma come si comporta l'operatore di lunghezza \texttt{\#} per le tabelle array
 con indici non lineari? Per esempio, qual è il risultato del seguente codice:
-\lines
+\begin{lines}
 local t = {}
 t[1] = 1
 t[2] = 2
 t[1000] = 3
 print(#t)
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 e in questo caso cosa verrà stampato?
-\lines
+\begin{lines}
 local t = {}
 t[1000] = 123
 print(#t)
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Avrete certamente capito che l'operatore \texttt{\#} tiene conto solamente
 degli elementi con indici consecutivi a cominciare da 1 e s'interrompe quando
 incontra \texttt{nil}. Infatti, l'operatore di lunghezza \texttt{\#} considera
 per le tabelle il valore \texttt{nil} di un indice come termine dell'array.
 L'operatore è usato molto spesso per inserire progressivamente elementi:
-\lines
+\begin{lines}
 local t = {}
 for i = 1, 100 do
     t[#t+1] = i*i
 end
 print(t[100])
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \section{Il ciclo \key{while}}
@@ -75,9 +72,7 @@ print(t[100])
 Passiamo a scrivere il codice per inserire in una tabella i fattori primi di un
 numero. Fatelo per esercizio e poi confrontate il codice seguente che utilizza
 l'operatore modulo \key{\%}:
-\sourcecode{
-    from_file [[code/e1-002.lua]]:add_output()
-}
+\sourcecode{file = [[code/e1-002.lua]], run = true}
 
 Così abbiamo introdotto anche il ciclo \key{while} perfettamente coerente con
 la sintassi dei costrutti visti fino a ora: il blocco di codice ripetuto fino a
@@ -111,11 +106,7 @@ confondere i nomi e magari di introdurre errori.
 Provate a scrivere il codice Lua che verifica se un numero è \emph{palindromo},
 ovvero che gode della proprietà che le cifre decimali sono simmetriche come per
 esempio avviene per il numero 123321. Confrontate poi questa soluzione:
-\sourcecode{
-    from_file [[code/e1-003.lua]]
-    :select_lines [[prima_sol]]
-    :add_output{delim_run=true}
-}
+\sourcecode{file = [[code/e1-003.lua]], select = [[prima_sol]], run = true}
 
 La soluzione utilizza una tabella per memorizzare le cifre in ordine inverso
 del numero da verificare, che vengono poi utilizzate successivamente nel ciclo
@@ -128,11 +119,7 @@ variabile \key{i} che quindi passa dal numero di cifre del numero da
 controllare (6 nel nostro caso) a 1.
 
 In effetti non è necessaria la tabella:
-\sourcecode{
-    from_file [[code/e1-003.lua]]
-    :select_lines [[seconda_sol]]
-    :add_output{delim_run=true}
-}
+\sourcecode{file = [[code/e1-003.lua]], select = [[seconda_sol]], run=true}
 
 
 \section{\key{if} a rami multipli}
@@ -140,9 +127,7 @@ In effetti non è necessaria la tabella:
 Il prossimo problema è il seguente: determinare il numero di cifre di un
 intero. Ancora una volta, confrontate il codice proposto solo dopo aver cercato
 una vostra soluzione.
-\sourcecode{
-    from_file [[code/e1-004.lua]]
-}
+\sourcecode{file = [[code/e1-004.lua]]}
 
 Questo esempio mostra in azione l'\key{if} a più rami che in Lua svolge la
 funzione del costrutto \key{switch} presente in altri linguaggi, con una nuova
@@ -176,21 +161,20 @@ riportato alla sezione~\ref{secCicloWhile} per includerne la molteplicità.
 \begin{Exercise}[label=cos-03]
 Instanziare la tabella seguente con tre tabelle/array di tre numeri e calcolarne
 il determinante della matrice corrispondente.
-\lines
+\begin{lines}
 local t = {
     { 0,  5, -1},
     { 2, -2,  0},
     {-1,  0,  1},
 }
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 \end{Exercise}
 
 \begin{Exercise}[label=cos-04]
 Data la tabella seguente stampare in console il conteggio dei numeri pari e dei
 numeri dispari contenuti in essa. Verificare che la somma di questi due
 conteggi sia uguale alla dimensione della tabella.
-\lines
+\begin{lines}
 local t = {
     45, 23, 56, 88, 96, 11,
     80, 32, 22, 85, 50, 10,
@@ -206,8 +190,7 @@ local t = {
     56, 62, 81, 71, 33, 30,
     90, 22, 80, 58, 42, 10,
 }
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 \end{Exercise}
 
 \begin{Exercise}[label=cos-05]

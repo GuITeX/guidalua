@@ -38,7 +38,7 @@ Oltre a funzioni, la tabella include campi numerici come la costante \( \pi \).
 
 Un esempio introduttivo è questo dove nella funzione \fn{one} viene definita una
 funzione locale:
-\sourcecode{from_file [[code/e8-libstd.lua]]:select_lines [[one]]}
+\sourcecode{file = [[code/e8-libstd.lua]], select = [[one]]}
 
 
 \section{Libreria stringhe}
@@ -65,9 +65,9 @@ sta per float.
 I campi formato derivano da quelli della funzione classica di libreria
 \fn{printf} del C. Di seguito un esempio di codice:
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[fmt]]
-    :add_output {delim_run=true}
+    file = [[code/e8-libstd.lua]],
+    select = [[fmt]],
+    run = true,
 }
 
 Come avete potuto notare nel codice, è anche possibile fornire un ulteriore
@@ -97,9 +97,9 @@ al pattern dato come secondo argomento.
 Per esempio, possiamo ricercare in un numero di tre cifre intere all'interno di
 un testo con il pattern \key{\%d\%d\%d}:
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[pattern_one]]
-    :add_output {delim_run=true}
+    file = [[code/e8-libstd.lua]],
+    select = [[pattern_one]],
+    run = true,
 }
 
 Le classi carattere possibili sono le seguenti:
@@ -128,9 +128,9 @@ caratteri:
 
 Esempio:
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[pattern_two]]
-    :add_output {delim_run=true}
+    file = [[code/e8-libstd.lua]],
+    select = [[pattern_two]],
+    run = true,
 }
 
 \section{Capture}
@@ -145,17 +145,16 @@ Per esempio per estrarre l'anno di una data nel formato \key{dd/mm/yyyy}
 possiamo usare il pattern con la capture seguente
 \key{\%d\%d/\%d\%d/(\%d\%d\%d\%d)}:
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[capture_one]]
-    :add_output {delim_run=true}
+    file = [[code/e8-libstd.lua]],
+    select = [[capture_one]],
+    run = true,
 }
 
 Più capture ci sono nel pattern e altrettanti argomenti multipli di uscita
 saranno restituiti:
-
-\sourcecode{from_file [[code/e8-libstd.lua]]
-   :select_lines [[capture_two]]
-   :add_output {delim_run=true}
+\sourcecode{file = [[code/e8-libstd.lua]],
+   select = [[capture_two]],
+   run = true,
 }
 
 
@@ -173,9 +172,9 @@ Intanto per individuare le occorrenze è naturale pensare di utilizzare un
 pattern e che sia possibile utilizzare le capture nel testo di sostituzione,
 per esempio:
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[gsub]]
-    :add_output {delim_run=true}
+    file = [[code/e8-libstd.lua]],
+    select = [[gsub]],
+    run = true,
 }
 
 Il primo argomento è la stringa da ricercare, il secondo è il pattern e il
@@ -187,9 +186,9 @@ calcolerà il testo da sostituire.
 Una funzione quindi assai flessibile. Mi viene in mente questo esercizio:
 moltiplicare per 12 tutti gli interi in una stringa, ed ecco il codice:
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[gsubfn]]
-    :add_output {delim_run=true}
+    file = [[code/e8-libstd.lua]],
+    select = [[gsubfn]],
+    run = true,
 }
 
 A questo punto degli esempi avrete certamente capito che \fn{gsub} restituisce
@@ -216,8 +215,8 @@ nelle variabili \key{d}, \key{m} e \key{y}.
 \begin{Exercise}[label=libstd-03]
 Cosa restituisce l'esecuzione della seguente funzione?
 \sourcecode{
-    from_file [[code/e8-libstd.lua]]
-    :select_lines [[esercizio3]]
+    file = [[code/e8-libstd.lua]],
+    select = [[esercizio3]],
 }
 Quale pattern corrisponde a un numero decimale la cui parte intera può essere
 omessa?

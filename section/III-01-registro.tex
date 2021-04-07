@@ -27,15 +27,14 @@ chiave: la scrittura su file di testo.
 Ci rivolgeremo alla libreria standard di Lua \code{io}\footnote{La completa
 documentazione della libreria \code{io} si trova alla pagina
 \url{https://www.lua.org/manual/5.3/manual.html\#6.8}.}:
-\lines
+\begin{lines}
 -- write a line of text in a file
 local function append(filename, line)
     local f = io.open(filename, "a+")
     f:write(line.."\n")
     f:close()
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 La funzione \fn{io.open} restituisce un riferimento ad un oggetto che
 rappresenta un canale di input/output del sistema operativo verso un file, che
@@ -104,7 +103,7 @@ Se la funzione \fn{lfs.attributes} non restituisce la tabella con i dati del
 file significa dunque che nel comando di compilazione è stata attivata l'opzione
 \code{--jobname} per assegnare un diverso nome al file PDF di uscita.
 Modifichiamo dunque il codice in questo senso:
-\lines
+\begin{lines}
 local jobname = tex.jobname
 local attr = lfs.attributes(jobname..".tex")
 if attr then
@@ -117,8 +116,7 @@ end
 tline[3] = os.date()
 tline[4] = os.clock() - register.start
 tline[5] = status.luatex_engine
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Anche l'estensione \code{.tex} è un problema perché se fosse diversa ancora una
 volta il codice non funzionerebbe, per esempio se il file sorgente avesse
@@ -157,7 +155,7 @@ Questa separazione non è solo utile per un buon sviluppo, ma facilita l'accesso
 alle funzionalità da parte degli utenti indipendentemente dal formato.
 
 Allo stato attuale dello sviluppo del codice, il modulo Lua è il seguente:
-\sourcecode{from_file [[app-registro/mod-history.lua]]}
+\sourcecode{file = [[app-registro/mod-history.lua]]}
 
 Tutte le funzionalità sono racchiuse in un unica tabella Lua chiamata
 \code{register}. Dall'esterno, caricando il modulo con la funzione \fn{require}

@@ -48,16 +48,16 @@ dotato di proprietà come l'area e il perimetro, che implementeremo come metodi.
 
 Un primo tentativo potrebbe essere questo:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[primo]]
+    file = [[code/e10-oop.lua]],
+    select = [[primo]],
 }
 
 Ci accorgiamo presto che questo tentativo è difettoso in quanto non rispetta
 l'indipendenza degli oggetti rispetto al loro nome. Infatti il prossimo test
 fallisce:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[due]]
+    file = [[code/e10-oop.lua]],
+    select = [[due]],
 }
 
 Il problema sta nel fatto che nel metodo \fn{area} compare il particolare
@@ -72,8 +72,8 @@ Secondo quest'idea dovremo riscrivere il metodo \fn{area} in questo modo (in
 Lua il riferimento implicito all'oggetto deve chiamarsi \key{self} pertanto
 abituiamoci fin dall'inizio a questa convenzione):
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[tre]]
+    file = [[code/e10-oop.lua]],
+    select = [[tre]],
 }
 
 Fino a ora abbiamo costruito l'oggetto sfruttando le caratteristiche della
@@ -90,8 +90,8 @@ Da questo momento entra in scena l'operatore \key{:} --- che chiameremo
 espressioni siano perfettamente equivalenti anche se le rende differenti dal
 punto di vista concettuale agli occhi del programmatore:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[colon_notation]]
+    file = [[code/e10-oop.lua]],
+    select = [[colon_notation]],
 }
 
 Questo operatore è il primo nuovo elemento che Lua introduce per facilitare la
@@ -143,8 +143,8 @@ ottenere il valore stringa da stampare. Se non esiste una metatabella
 associata con questo metametodo verrà stampato l'indirizzo di memoria della
 tabella:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[tostring]]
+    file = [[code/e10-oop.lua]],
+    select = [[tostring]],
 }
 
 
@@ -156,15 +156,15 @@ Il metametodo che interessa la programmazione a oggetti in Lua è
 che non esiste e che normalmente restituirebbe il valore \key{nil}. Un esempio
 di codice chiarirà il meccanismo:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[index]]
+    file = [[code/e10-oop.lua]],
+    select = [[index]],
 }
 
 Tornando all'oggetto \key{Rettangolo} riscriviamo il codice creando adesso una
 tabella che assume il ruolo concettuale di una vera e propria classe:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[classe_rect]]
+    file = [[code/e10-oop.lua]],
+    select = [[classe_rect]],
 }
 
 Queste poche righe di codice racchiudono il meccanismo della creazione di una
@@ -203,8 +203,8 @@ controllo di validità degli argomenti.
 
 Il codice completo della classe \key{Rettangolo} è il seguente:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[newrect]]
+    file = [[code/e10-oop.lua]],
+    select = [[newrect]],
 }
 
 Il costruttore \fn{new} accetta una tabella come argomento, altrimenti ne crea
@@ -234,8 +234,8 @@ meccanismo automatico delle metatabelle, costruiamo una classe \key{Cerchio} che
 annoveri fra i suoi metodi una funzione che modifichi il valore del raggio
 aggiungendovi una misura:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[cerchio]]
+    file = [[code/e10-oop.lua]],
+    select = [[cerchio]],
 }
 
 Nella sezione del codice utente viene dapprima creato un cerchio senza fornire
@@ -256,7 +256,6 @@ metametodo, e successivamente il risultato della somma uguale all'argomento
 solo in quel momento.
 
 
-
 \section{Ereditarietà}
 
 Il concetto di ereditarietà nella programmazione a oggetti consiste nella
@@ -275,8 +274,8 @@ Vediamo un esempio semplice dove si rappresenta il concetto generale di una
 persona che svolge attività sportiva e da questo, il concetto di una persona
 che svolge uno specifico sport:
 \sourcecode{
-    from_file [[code/e10-oop.lua]]
-    :select_lines [[sportivo]]
+    file = [[code/e10-oop.lua]],
+    select = [[sportivo]],
 }
 
 Continua tutto a funzionare per via della ricerca effettuata dal metametodo

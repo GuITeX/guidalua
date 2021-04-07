@@ -13,10 +13,7 @@ Come primo esempio, vi presento una funzione per calcolare l'ennesimo numero
 della \href{http://it.wikipedia.org/wiki/Successione_di_Fibonacci}{serie di
 Fibonacci}. Un elemento si ottiene sommando i due precedenti elementi avendo
 posto uguale a 1 i primi due:
-\sourcecode{
-    from_file [[code/e2-001.lua]]
-    :select_lines [[uno]]
-}
+\sourcecode{file = [[code/e2-001.lua]], select = [[uno]]}
 
 Con le regole dell'assegnazione multipla una funzione può accettare più
 argomenti. Se gli argomenti passati sono in eccesso rispetto a quelli che essa
@@ -33,9 +30,9 @@ Per esempio, potremo modificare la funzione precedente per restituire la somma
 dei primi \( n \) numeri di Fibonacci oltre che l'ennesimo elemento della serie
 stessa e considerare un valore di default se l'argomento è \key{nil}:
 \sourcecode{
-    from_file [[code/e2-001.lua]]
-    :select_lines [[due]]
-    :add_output{delim_run = true}
+    file = [[code/e2-001.lua]],
+    select = [[due]],
+    run = true,
 }
 
 
@@ -48,32 +45,29 @@ flessibilità al codice.
 
 In realtà in Lua tutte le funzioni sono memorizzate in variabili. Per assegnare
 direttamente una funzione a una variabile esiste la sintassi anonima:
-\lines
+\begin{lines}
 add = function (a, b)
     return a + b
 end
 print(add(45.4564, 161.486))
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 Essendo le funzioni valori di prima classe ne consegue che in Lua le funzioni
 sono oggetti senza nome esattamente come lo sono gli altri tipi come i numeri e
 le stringhe. Inoltre, la sintassi classica di definizione:
-\lines
+\begin{lines}
 function variable_name (args)
     -- function body
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 \noindent è solo \emph{zucchero sintattico} perché l'interprete Lua la tradurrà
 automaticamente nel codice equivalente in sintassi anonima:
-\lines
+\begin{lines}
 variable_name = function (args)
     -- function body
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \section{Funzioni: valori di prima classe, II}
@@ -81,8 +75,8 @@ end
 Un esempio di funzione con un argomento funzione è il seguente, dove viene
 eseguito un numero di volte dato, la stessa funzione priva di argomenti:
 \sourcecode{
-    from_file [[code/e3-001.lua]]
-    :select_lines [[uno]]
+    file = [[code/e3-001.lua]],
+    select = [[uno]],
 }
 
 Molto interessante. Nell'ultima riga di codice l'argomento è una funzione
@@ -90,15 +84,14 @@ definita in sintassi anonima che verrà eseguita 12 volte.
 
 Per prendere confidenza con il concetto di \emph{funzioni come valori di prima
 classe}, cambiamo il significato della funzione \fn{print}:
-\lines
+\begin{lines}
 local orig_print = print
 print = function (n)
     orig_print("Argomento funzione -> "..n)
 end
 
 print(12)
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \section{Tabelle e funzioni}
@@ -114,8 +107,8 @@ in sintassi anonima;
 anonima.
 \end{compactitemize}
 \sourcecode{
-    from_file [[code/e3-001.lua]]
-    :select_lines [[due]]
+    file = [[code/e3-001.lua]],
+    select = [[due]],
 }
 
 Con questo meccanismo una tabella può svolgere il ruolo di \emph{modulo}
@@ -134,8 +127,8 @@ una tabella oppure effettuare un'assegnazione multipla.
 Un esempio è una funzione che restituisce la somma di tutti gli argomenti
 numerici:
 \sourcecode{
-    from_file [[code/e3-001.lua]]
-    :select_lines [[tre]]
+    file = [[code/e3-001.lua]],
+    select = [[tre]],
 }
 
 Per inciso, anche la funzione base \fn{print} accetta un numero variabile di
@@ -143,8 +136,8 @@ argomenti. Il meccanismo è ancora più flessibile perché tra i primi argomenti
 vi possono essere variabili ``fisse''. Per esempio il primo parametro potrebbe
 essere un moltiplicatore:
 \sourcecode{
-    from_file [[code/e3-001.lua]]
-    :select_lines [[quattro]]
+    file = [[code/e3-001.lua]],
+    select = [[quattro]],
 }
 
 Un'altra funzione predefinita \fn{select} consente di accedere alla lista degli
@@ -161,13 +154,12 @@ numero totale di argomenti, inclusi i \key{nil}.
 
 Il codice seguente preso pari pari dal \href{http://www.lua.org/pil/}{PIL} ne è
 un'applicazione:
-\lines
+\begin{lines}
 for i = 1, select("#", ...) do
     local arg = select(i, ...)
     -- loop body
 end
-\endlines
-\sourcecode{from_lines()}
+\end{lines}
 
 
 \section{Omettere le parentesi se}
@@ -181,8 +173,8 @@ possibilità di ommettere le parentesi tonde \key{()}, ammessa solo se:
 
 Per esempio:
 \sourcecode{
-    from_file[[code/e7-funzioni.lua]]
-    :select_lines [[anchequesto]]
+    file = [[code/e7-funzioni.lua]],
+    select = [[anchequesto]],
 }
 
 
@@ -206,8 +198,8 @@ Tutte le chiamate a una stessa funzione condivideranno una stessa closure.%
 Se questo è vero una funzione potrebbe incrementare un contatore creato al suo
 interno, e anche qui prendo l'esempio di codice dal PIL:
 \sourcecode{
-    from_file [[code/e7-funzioni.lua]]
-    :select_lines [[uno]]
+    file = [[code/e7-funzioni.lua]],
+    select = [[uno]],
 }
 
 Il codice definisce una funzione \fn{new\_counter} che restituisce una
@@ -228,9 +220,9 @@ particolare \fn{table.sort}, per applicare l'algoritmo di ordinamento alla
 tabella passata come argomento in base al criterio di ordine stabilito con la
 funzione passata come secondo argomento in sintassi anonima.
 \sourcecode{
-    from_file [[code/e7-funzioni.lua]]
-    :select_lines [[due]]
-    :add_output{delim_run=true}
+    file = [[code/e7-funzioni.lua]],
+    select = [[due]],
+    run = true,
 }
 
 
