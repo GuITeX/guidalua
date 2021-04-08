@@ -96,7 +96,8 @@ x, y = y, x
 Un ulteriore esempio di assegnazione multipla è il seguente, a dimostrazione
 che le espressioni della lista a destra vengono prima valutate e solo dopo
 assegnate alle corrispondenti variabili nella lista di sinistra:
-\begin{linesrun}
+\begin{lines}
+#[run]
 local pi = 3.14159
 local r = 10.8 -- raggio del cerchio
 -- grandezze cerchio
@@ -105,7 +106,7 @@ local diam, circ, area = 2*r, 2*pi*r, pi*r^2
 print("Diametro:", diam)
 print("Circonferenza:", circ)
 print("Area:", area)
-\end{linesrun}
+\end{lines}
 
 Le assegnazioni multiple sono interessanti ma sembra non siano così importanti,
 possiamo infatti ricorrere ad assegnazioni singole. Diverranno invece molto

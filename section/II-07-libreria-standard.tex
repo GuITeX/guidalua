@@ -58,9 +58,9 @@ dei dati forniti dal secondo argomento in poi.
 
 Il formato è esso stesso specificato come una stringa contenente dei segnaposto
 creati con il simbolo percentuale e uno specificatore di tipo. Per esempio
-\key{\%d} indica il formato relativo a un numero intero, dove \key{d} sta per
-digit mentre \key{\%f} indica il segnaposto per un numero decimale --- \key{f}
-sta per float.
+\verb|"%d"| indica il formato relativo a un numero intero, dove \key{d} sta per
+digit mentre \verb|"%f"| indica il segnaposto per un numero decimale con \key{f}
+che sta per float.
 
 I campi formato derivano da quelli della funzione classica di libreria
 \fn{printf} del C. Di seguito un esempio di codice:
@@ -71,8 +71,8 @@ I campi formato derivano da quelli della funzione classica di libreria
 }
 
 Come avete potuto notare nel codice, è anche possibile fornire un ulteriore
-specifica di dettaglio tra il \key{\%} e lo specificatore di tipo, per esempio
-per gestire il numero delle cifre decimali.
+specifica di dettaglio tra il carattere \key{\%} e lo specificatore di tipo, per
+esempio per indicare il numero delle cifre decimali di arrotondamento.
 
 Per elaborare il testo si utilizza di solito una libreria per le espressioni
 regolari. Lua mette a disposizione alcune funzioni di sostituzione e
@@ -95,7 +95,7 @@ la prima corrispondenza trovata in una stringa primo argomento corrispondente
 al pattern dato come secondo argomento.
 
 Per esempio, possiamo ricercare in un numero di tre cifre intere all'interno di
-un testo con il pattern \key{\%d\%d\%d}:
+un testo con il pattern \verb|"%d%d%d"|:
 \sourcecode{
     file = [[code/e8-libstd.lua]],
     select = [[pattern_one]],
@@ -142,8 +142,7 @@ per restituirne parti componenti. Questa funzionalità viene chiamata
 classi.
 
 Per esempio per estrarre l'anno di una data nel formato \key{dd/mm/yyyy}
-possiamo usare il pattern con la capture seguente
-\key{\%d\%d/\%d\%d/(\%d\%d\%d\%d)}:
+possiamo usare il pattern con la capture seguente \verb|"%d%d/%d%d/(%d%d%d%d)"|:
 \sourcecode{
     file = [[code/e8-libstd.lua]],
     select = [[capture_one]],
@@ -231,7 +230,7 @@ Come eliminare da un testo eventuali caratteri spazio iniziali e/o finali?
 \end{Exercise}
 
 \begin{Exercise}[label=libstd-06]
-Il pattern \key{(\%d+)/(\%d+)/(\%d+)} è adatto per catturare giorno, mese e
+Il pattern \verb|"(%d+)/(%d+)/(%d+)"| è adatto per catturare giorno, mese e
 anno di una data presente in una stringa nel formato \key{dd/mm/yyyy}?
 \end{Exercise}
 

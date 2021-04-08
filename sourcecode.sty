@@ -1,19 +1,38 @@
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \ProvidesPackage{sourcecode}
-    [2021/04/06 v0.2 Sourcecode Lua script]
+    [2021/04/08 v0.2.1 Sourcecode Lua script]
 
 % setup listings
-\lstdefinestyle{lua}{
-    language=[5.3]Lua,
+\lstdefinestyle{sourcecodelua}{
+    language={[5.3]Lua},
     basicstyle=\small\ttfamily,
     keywordstyle=\color{blue},
-    stringstyle=\color{orange},
-    commentstyle=\color{black!80}
+    stringstyle=\color{violet},
+    commentstyle=\color{gray}
 }
 
-\lstdefinestyle{out}{
+\lstdefinestyle{sourcecodeterm}{
     frame=tb,
     basicstyle=\small\ttfamily
+}
+
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colString}{rgb}{0.6,0.1,0.1}
+\definecolor{mydarkblue}{rgb}{0.07,0.08,0.4}
+
+\lstdefinestyle{sourcecodelatex}{
+    language={[latex]tex},
+    basicstyle=\small\ttfamily,
+    identifierstyle=\color{colIdentifier},
+    keywordstyle=\color{colKeys}\bfseries,
+    stringstyle=\color{violet},
+    commentstyle=\itshape\color{black!70},
+    morekeywords=[2]{directlua,newcommand,approx,texttt,textbf},
+    morestring=[b]",
+    emph=[2]{document,tabular},
+    emphstyle=[2]{\color{mydarkblue}\sffamily\bfseries},
+    texcl=false
 }
 
 \directlua{
@@ -21,7 +40,9 @@ sourcecodelib = require [[sourcecode]]
 sourcecodelib._tkprint = tex.print
 }
 
-% opzione run = false
+% option run = true via attributes #[run]
+% option tex via attributes #[tex]
+% option tex via attributes #[lua]
 \newenvironment{lines}{\directlua{
     luatexbase.add_to_callback(
         'process_input_buffer',
@@ -39,30 +60,11 @@ sourcecodelib._tkprint = tex.print
         :typeset()
 }}
 
-% run = true
-\newenvironment{linesrun}{\directlua{
-    sourcecodelib:option{run=true}
-    luatexbase.add_to_callback(
-        'process_input_buffer',
-        sourcecodelib.process_input_buffer_star,
-        'sourcecodelib:linesstar',
-        1
-    )
-}}{\directlua{
-    luatexbase.remove_from_callback(
-        'process_input_buffer',
-        'sourcecodelib:linesstar'
-    )
-    sourcecodelib
-        :trim_tail()
-        :typeset()
-}}
-
-
 \newcommand\sourcecode[1]{\directlua{
     sourcecodelib
         :option{#1}
         :load_file()
+        :trim_tail()
         :typeset()
 }}
 

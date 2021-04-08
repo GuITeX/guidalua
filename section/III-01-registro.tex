@@ -45,7 +45,7 @@ ogni caso otterremo il file aperto in scrittura.
 
 La funzione \fn{append} può essere inserita in un sorgente \LuaTeX{}
 compilabile come in questo sorgente:
-\VerbatimInput{app-registro/01.tex}
+\sourcecode{file = [[app-registro/01.tex]]}
 
 
 \section{Dati di compilazione}
@@ -169,7 +169,7 @@ il codice ed elimina la necessità di creare una closure, (piccolo incremento
 delle prestazioni) per includere il riferimento.
 
 Il sorgente in plain \LuaTeX{} si semplifica in questo:
-\VerbatimInput{app-registro/03.tex}
+\sourcecode{file = [[app-registro/03.tex]]}
 
 Per compilarlo correttamente il file Lua del modulo chiamato
 \code{mod-history.lua} deve essere visibile. La soluzione più semplice è
@@ -179,12 +179,12 @@ A questo punto è semplice creare un pacchetto \LaTeX{} d'interfaccia. Non ci
 sarà alcuna macro utente ma un aggiunta al codice di chiusura del documento
 con la macro \cs{AtEndDocument}. Basta caricare il pacchetto e tutte le
 compilazioni del sorgente verranno registrate. Ecco il codice:
-\VerbatimInput{app-registro/historylog.sty}
+\sourcecode{file = [[app-registro/historylog.sty]]}
 
 e un conseguente file sorgente compilabile con Lua\LaTeX{}:
-\VerbatimInput{app-registro/doc.tex}
+\sourcecode{file = [[app-registro/doc.tex]]}
 
-Compilatelo più volte e controllate poi il file locale \code{history.log}.
+Compilatelo più volte e controllate poi il file locale \file{history.log}.
 
 
 \section{Sviluppo}

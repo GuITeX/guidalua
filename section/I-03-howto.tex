@@ -113,13 +113,14 @@ compatibilità.
 Per illustrare l'esecuzione di codice Lua all'interno di un sorgente \LuaTeX,
 consideriamo la stampa nell'output di console di un testo semplice. Il codice
 Lua va inserito come argomento della primitiva \cs{directlua}:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 % !TeX program = LuaHBTeX
 \directlua{
     print("Hello World!")
 }
 \bye
-\end{Verbatim}
+\end{lines}
 
 Se il sorgente è memorizzato nel file \texttt{primo.tex}, possiamo verificare
 quanto previsto in un terminale lanciando il comando:
@@ -147,7 +148,8 @@ vuoto.
 
 Con Lua\LaTeX{} si ottiene lo stesso risultato ma con il sorgente scritto nella
 sintassi \LaTeX, ovvero:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 % !TeX program = LuaLaTeX
 \documentclass{article}
 \directlua{
@@ -155,7 +157,7 @@ sintassi \LaTeX, ovvero:
 }
 \begin{document}
 \end{document}
-\end{Verbatim}
+\end{lines}
 e questa volta il comando di compilazione è:
 \begin{Verbatim}[numbers=none]
 $ lualatex primo
@@ -202,12 +204,13 @@ Interrompete la lettura della guida per provare a scrivere la funzione Lua
 \fn{fact} che calcola il fattoriale di un intero. La useremo per dimostrare come
 avviene questo scambio di dati. L'idea è definire un nuovo comando che stampi il
 fattoriale del numero argomento:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 \newcommand{\fattoriale}[1]{\directlua{
     local n = #1
     tex.print(tostring(fact(n)))
 }}
-\end{Verbatim}
+\end{lines}
 
 Quando \TeX{} incontra una macro utente con un segnaposto\footnote{Fate
 riferimento ha una buona guida per \LaTeX{} per saperne di più sulla definizione
@@ -215,10 +218,10 @@ di macro utente.} lo sostituisce con i dati corrispondenti token singolo o
 gruppo di token tra parentesi graffe. Per questo quando nel sorgente scriviamo
 \cs{fattoriale}\code{\{5\}}, dopo la sostituzione il codice Lua effettivamente
 eseguito sarà:
-\begin{Verbatim}
+\begin{lines}
 local n = 5
 tex.print(tostring(fact(n)))
-\end{Verbatim}
+\end{lines}
 
 La funzione \fn{tex.print} inserisce l'argomento stringa nell'input d'ingresso
 come se fossero stati letti dal sorgente. Quando a termine l'esecuzione del
@@ -227,7 +230,8 @@ troverà a elaborare il compositore saranno le cifre 1, 2, e 0 e l'espansione
 della macro sarà stata vuota.
 
 Il listato del sorgente completo dell'esercizio proposto da confrontare con la
-vostra personale soluzione è: \VerbatimInput{app-start/E1-001-fattoriale.tex}
+vostra personale soluzione è:
+\sourcecode{file = [[app-start/E1-001-fattoriale.tex]]}
 
 
 \section{Globale o locale}
@@ -259,7 +263,7 @@ Come ulteriore esempio, nel listato\footnote{Questo listato è interessante
 perché migliorabile sia per eliminare le ripetizioni di codice a cui è costretto
 l'utente sia nell'efficienza di esecuzione.} che segue è mostrato come si possa
 formattare il numero del fattoriale con il pacchetto \pack{siunitx}:
-\VerbatimInput{app-start/E1-003-fattoriale.tex}
+\sourcecode{file = [[app-start/E1-003-fattoriale.tex]]}
 
 
 \section{Espansione di macro}
@@ -268,12 +272,12 @@ La comunicazione di un dato tra \TeX{} e Lua può avvenire anche per espansione
 di macro. Come esempio minimo consideriamo il seguente sorgente \LuaTeX{} che
 stampa l'ora di inizio della compilazione avvalendosi del contatore \cs{time}
 che indica i minuti trascorsi dall'inizio del giorno:
-\VerbatimInput{app-start/E1-004-time.tex}
+\sourcecode{file = [[app-start/E1-004-time.tex]]}
 
 Al termine dell'espansione l'istruzione di assegnazione della variabile numerica
 \key{time} sarà l'effettiva e corretta sintassi Lua. Per il formato \LuaLaTeX{}
 lo stesso file potrebbe essere:
-\VerbatimInput{app-start/E1-005-time.tex}
+\sourcecode{file = [[app-start/E1-005-time.tex]]}
 
 Nel capitolo~\ref{iiichRegistro} vedremo che anche con la libreria standard di
 Lua è possibile ottenere la data e l'ora corrente.
@@ -361,22 +365,26 @@ I sorgenti \LaTeX{} possono essere compilati sia con il tradizionale motore
 \code{pdftex} che con il compositore \code{luahbtex} con minime modifiche.
 Vediamo quali sono affiancando i preamboli minimi nei due casi:\\
 \begin{tcolorbox}[width=(\linewidth/2-1mm),equal height group=A,nobeforeafter]
-\begin{Verbatim}[numbers=none, xleftmargin=0pt]
+\begin{lines}
+#[tex]
+#[tcolorbox]
 % !TeX program = pdfLaTeX
 \documentclass{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
-\end{Verbatim}
+\end{lines}
 \end{tcolorbox}
 %
 \begin{tcolorbox}[width=(\linewidth/2-1mm),equal height group=A,nobeforeafter]
-\begin{Verbatim}[numbers=none, xleftmargin=0pt]
+\begin{lines}
+#[tex]
+#[tcolorbox]
 % !TeX program = LuaLaTeX
 \documentclass{article}
 \usepackage{fontspec}
 \usepackage[italian]{babel}
-\end{Verbatim}
+\end{lines}
 \end{tcolorbox}
 
 Nel preambolo di un sorgente scritto per \code{pdflatex} si caricano tre

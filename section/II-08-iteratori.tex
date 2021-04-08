@@ -184,7 +184,7 @@ funziona il generic for in Lua; dopo la parola chiave \key{in} esso si aspetta
 altri due parametri oltre alla funzione da chiamare a ogni ciclo: una variabile
 che rappresenta lo stato invariante e la variabile di controllo.
 \begin{lines}
-for <vars> in <iter_fn>, <state>, <ctl_var> do
+for <var list> in <iter_fn>, <state>, <ctl_var> do
     ...
 end
 \end{lines}
@@ -219,7 +219,7 @@ tramite l'iteratore predefinito \fn{pairs}.
 Scrivere una funzione che accetta un array (una tabella con indici interi in
 sequenza) di stringhe e utilizzando la funzione di libreria \fn{string.upper}
 restituisca un nuovo array con il testo trasformato in maiuscolo. Per esempio da
-\code{\{"abc", "def", "ghi"\}} a \code{\{"ABC", "DEF", "GHI"\}}).
+\verb|{"abc", "def", "ghi"}| a \verb|{"ABC", "DEF", "GHI"}|.
 \end{Exercise}
 
 \begin{Exercise}[label=iter-03]

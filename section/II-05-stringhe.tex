@@ -4,7 +4,7 @@
 In Lua le stringhe rappresentano uno dei tipi di base del linguaggio.
 Per rappresentare valori stringa letterali ci sono tre diversi delimitatori:
 \begin{compactitemize}
-\item doppi apici: carattere \key{"};
+\item doppi apici: carattere \verb|"|;
 \item apice semplice: carattere \key{'};
 \item doppie parentesi quadre: delimitatori \key{[[} e \key{]]} con o senza un
 numero corrispondente di caratteri \key{=}, per esempio \key{[==[} e \key{]==]}.
@@ -21,9 +21,9 @@ pensato di utilizzare i delimitatori normalmente destinati a rappresentarne la
 forma letterale, per consentire all'utente di creare stringhe contenenti i
 delimitatori stessi, senza utilizzare l'escaping.
 
-Sono comunque ammessi i simboli \key{\textbackslash{}"} e \key{\textbackslash '}
-che rappresentano i caratteri corrispondenti, come si vede nella variabile
-\key{s5} del codice precedente.
+Sono comunque ammessi i simboli \key{\textbackslash}\verb|"| e
+\key{\textbackslash '} che rappresentano i caratteri corrispondenti, come si
+vede nella variabile \key{s5} del codice precedente.
 
 Il terzo tipo di delimitatore per le stringhe è una coppia si parentesi quadre e
 ha la proprietà di ammettere il ritorno a capo. Si possono così introdurre nel
@@ -81,14 +81,15 @@ local tab = {}
 \section{Concatenazione stringhe e immutabilità}
 
 In Lua l'operatore \key{..} concatena due stringhe, in questo modo:
-\begin{linesrun}
+\begin{lines}
+#[run]
 local s1 = "Hello" .. " " .. "world"
 local s2 = s1 .. " OK"
 s2 = s2 .. "."
 
 print(s1 .. "!")
 print(s2)
-\end{linesrun}
+\end{lines}
 
 Il concetto importante riguardo alle stringhe è se queste siano o no immutabili.
 Se non lo sono la concatenazione di stringhe non comporta la creazione di una
@@ -113,7 +114,7 @@ print(#s) -- # funziona anche per le stringhe!
 
 Ma cosa succede in dettaglio? Perché questo codice non è efficiente?
 Ad ogni concatenazione viene creata una nuova stringa. La prima volta vengono
-copiati due byte per dare la stringa \key{"**"}. La seconda iterazione la
+copiati due byte per dare la stringa \verb|"**"|. La seconda iterazione la
 memoria copiata sarà di 4 byte, e alla terza di 6 byte, eccetera.
 
 A ogni iterazione la memoria copiata cresce di due byte con il risultato che per
@@ -154,17 +155,17 @@ print(s)
 \end{Exercise}
 
 \begin{Exercise}[label=string-03]
-Creare la stringa \key{"\textbackslash/"}.
+Creare la stringa \verb|"\/"|.
 \end{Exercise}
 
 \begin{Exercise}[label=string-04]
-Scrivere un programma che a partire dalla stringa \key{"*"} crei e stampi la
+Scrivere un programma che a partire dalla stringa \verb|"*"| crei e stampi la
 stringa di 64 asterischi senza utilizzare l'operatore di concatenazione o la
 funzione \fn{string.rep}.
 \end{Exercise}
 
 \begin{Exercise}[label=string-05]
-Scrivere un programma che a partire dalla stringa \key{"*"} crei e stampi
+Scrivere un programma che a partire dalla stringa \verb|"*"| crei e stampi
 la stringa di 64 asterischi usando l'operatore di concatenazione il minimo
 indispensabile di volte.
 \end{Exercise}

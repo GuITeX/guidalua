@@ -50,7 +50,7 @@ inserire in una scatola che lo compone sulla pagina.
 
 Ecco la mia versione, che utilizza una sola tabella che cresce livello dopo
 livello:
-\VerbatimInput{app-tartaglia/01.tex}
+\sourcecode{file = [[app-tartaglia/01.tex]]}
 
 
 \section{Nodi}
@@ -77,7 +77,7 @@ del font per il campo \code{font}.
 
 Ottenuto l'oggetto nodo possiamo comporlo sulla pagina con la funzione
 \fn{node.write}. Per esempio se volessimo stampare un 8:
-\VerbatimInput{app-tartaglia/02.tex}
+\sourcecode{file = [[app-tartaglia/02.tex]]}
 
 La macro \cs{leavevmode} è importante perché è vietato inserire un oggetto glifo
 in modo verticale, ed è questa la modalità in cui si trova \TeX{} all'inizio.
@@ -93,7 +93,7 @@ aggiungere un elemento in testa.
 
 Curando il caso particolare dello zero, questo è quello che fa la funzione
 \fn{digit} nel seguente sorgente compilabile:
-\VerbatimInput{app-tartaglia/03.tex}
+\sourcecode{file = [[app-tartaglia/03.tex]]}
 
 Il metodo \fn{node.write} accetta un nodo e non una lista. Ma se il nodo
 argomento ha un riferimento a un nodo nel campo \code{next}, verrà composta
@@ -132,7 +132,7 @@ affinché restituisca due paramentri: il nodo della scatola orizzontale che
 contiene la lista dei nodi glifi e la larghezza della scatola stessa.
 
 Il sorgente compilabile diventa questo:
-\VerbatimInput{app-tartaglia/04.tex}
+\sourcecode{file = [[app-tartaglia/04.tex]]}
 
 Se esageriamo con la grandezza dei numeri allora si sovrapporrano. Questo
 succede se la lunghezza elastica è negativa poiché la distanza assiale di 24pt
@@ -340,7 +340,8 @@ Tartaglia è possibile sovrapporre linee verticali sottili di passo \( a \) al
 disegno. Realizzare questo disegno è in realtà molto semplice poiché una volto
 costruito il nodo del contenitore, la scatola può essere assegnata direttamente
 a uno dei registri tramite indicizzazione della tabella \code{tex.box}:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 % !TeX program = LuaTeX
 \newbox\tartbox % nuovo registro
 \directlua{
@@ -349,7 +350,7 @@ a uno dei registri tramite indicizzazione della tabella \code{tex.box}:
 }
 \box\tartbox
 \bye
-\end{Verbatim}
+\end{lines}
 
 La macro \cs{box} è una primitiva di \TeX{}. Quello che fa è comporre sulla
 pagina il contenuto del box indicato dalla control sequence che lo segue e poi
@@ -358,7 +359,8 @@ svuotarlo.
 A questo punto è facile separare la costruzione del triangolo dal suo impiego, e
 un esempio è proprio far espandere la scatola in una macro \cs{node} del
 pacchetto grafico TikZ:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 % !TeX program = LuaTeX
 % filename: app-tartaglia/07.tex
 \input tikz.tex
@@ -378,7 +380,7 @@ pacchetto grafico TikZ:
 \node at (0, 0) {\box\tartbox};
 \endtikzpicture
 \bye
-\end{Verbatim}
+\end{lines}
 
 Le rette rosse e quelle blue distano 24pt una dall'altra. Sono posizionate a
 partire dall'ascissa zero poiché TikZ inserirà la scatola usando il suo punto

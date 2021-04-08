@@ -17,12 +17,12 @@ che può essere qualsiasi purché sia definita sempre con due argomenti: il prim
 è il contatore di riga e il secondo è l'array di riga. Nel caso d'esempio si
 dovrà memorizzare nell'array in posizione 1 il contatore stesso e in posizione 2
 il suo quadrato:
-\begin{Verbatim}
+\begin{lines}
 local function row_func(counter, row)
     row[1] = counter
     row[2] = counter^2
 end
-\end{Verbatim}
+\end{lines}
 
 A ben vedere potremo fare a meno del secondo parametro \code{row} se
 restituissimo direttamente un nuovo array di riga, tuttavia in questo modo il
@@ -68,12 +68,11 @@ function Row:next()
 end
 }
 
-Esaminiamo la costruzione della tabella d'esempio in \LuaLaTeX{}. Il metodo
-\fn{new} della classe \code{Row} accetta proprio una funzione come primo
-argomento e il valore totale delle righe come secondo argomento. In Lua le
-funzioni sono valori come tutti gli altri:
-\begin{tcolorbox}[sidebyside,righthand width=21mm]
-\begin{Verbatim}[numbers=none,xleftmargin=0pt]
+\begin{tcbfloat}[sidebyside,righthand width=21mm,label=lsttwocols]{%
+    Listato parziale per la tabella a due colonne}
+\begin{lines}
+#[tex]
+#[tcolorbox]
 % !TeX program = LuaLaTeX
 % filename: app-start/E0-003-tab.tex
 \documentclass{article}
@@ -89,7 +88,7 @@ while row:next() do
 end
 }\end{tabular}
 \end{document}
-\end{Verbatim}
+\end{lines}
 \tcblower
 \begin{tabular}{rr}
 \directlua{
@@ -100,13 +99,18 @@ while row:next() do
 end
 }
 \end{tabular}
-\end{tcolorbox}
+\end{tcbfloat}
+
+Esaminiamo la costruzione della tabella d'esempio in \LuaLaTeX{} nel
+listato~\ref{lsttwocols}. Il metodo \fn{new} della classe \code{Row} accetta
+proprio una funzione come primo argomento e il valore totale delle righe come
+secondo argomento. In Lua le funzioni sono valori come tutti gli altri.
 
 All'interno dell'ambiente \amb{tabular} c'è solo codice Lua: costruito l'oggetto
 \key{row} un ciclo \key{while} esegue l'iterazione con il metodo \fn{next}. Come
 si può verificare dall'implementazione con il paradigma a oggetti che segue, è
 proprio \fn{next} a chiamare a ogni passo la funzione di generazione:
-%
+
 \tcbdocmarginnote[enlarge top initially by=\margindown]{%
 Metametodo \key{\_\_index}\\
 \gotosec{} \ref{secFondMetaIndex}}
@@ -115,7 +119,7 @@ Metametodo \key{\_\_index}\\
 Costruttore\\
 \gotosec{} \ref{secFondCostruttore}}
 %
-\begin{Verbatim}
+\begin{lines}
 Row = {}
 Row.__index = Row
 -- costruttore
@@ -147,7 +151,7 @@ function Row:next()
         return true
     end
 end
-\end{Verbatim}
+\end{lines}
 
 Siamo in fase iniziale e questo giustifica l'assenza di controlli sui dati di
 input e la gestione degli errori, parte essenziale di ogni programma. Ci si
@@ -173,19 +177,26 @@ La funzione generatrice è generale potendo costruire qualsiasi tipo di vista
 tabellare sui dati, sia essi ricavati con il calcolo come nel caso precedente
 oppure già definiti in memoria, per esempio come una lista di nomi di file con
 relativa dimensione in byte:
-\begin{Verbatim}
+\begin{lines}
 local data = {
     {"files.txt",  4710},
     {"lib.lua"  ,   330},
     {"parse.lua", 50995},
     {"path.txt" ,  2150},
 }
-\end{Verbatim}
+\end{lines}
 
 Come dovremo definire il primo componente, la funzione \fn{row\_func}, per
-costruire la tabella a due colonne nome e dimensione file?
-\begin{tcolorbox}[sidebyside,righthand width=32mm]
-\begin{Verbatim}[numbers=none,xleftmargin=0pt]
+costruire la tabella a due colonne nome e dimensione file? La risposta è nel
+listato~\ref{lstTabData}. Nel codice incontriamo una ridondanza perché dobbiamo
+specificare il numero di righe nel costruttore \fn{new} quando questo dato è
+invece derivabile dai dati. 
+
+\begin{tcbfloat}[sidebyside,righthand width=32mm,label=lstTabData]{%
+    Generazione della tabella da un set di dati}
+\begin{lines}
+#[tex]
+#[tcolorbox]
 % !TeX program = LuaLaTeX
 % filename: app-start/E0-004-tab.tex
 \documentclass{article}
@@ -209,7 +220,7 @@ while row:next() do
 end
 }\end{tabular}
 \end{document}
-\end{Verbatim}
+\end{lines}
 \tcblower
 \begin{tabular}{lr}
 \directlua{
@@ -230,31 +241,26 @@ tex.print(row[1]..'&'..row[2]..p)
 end
 }
 \end{tabular}
-\end{tcolorbox}
-
-In questo codice incontriamo una ridondanza perché dobbiamo specificare il
-numero di righe nel costruttore \fn{new} quando questo dato è invece derivabile
-dai dati. 
+\end{tcbfloat}
 
 In Lua è normale poter chiamare una funzione variando il tipo dei suoi argomenti
 Se passassimo al metodo \fn{new} direttamente la tabella dati anziché la
 funzione generatrice, il codice sarebbe in grado di rilevare la differenza e
-costruire sia la funzione \fn{row\_func} che il numero totale di righe. In
-effetti nel codice del file \file{E0-004-tab.tex} si trova un'implementazione
-che fa proprio questo.
+costruire sia la funzione \fn{row\_func} che il numero totale di righe.
 
-Questa forma di polimorfismo interno del costruttore può essere convertita in
-una forma esterna a beneficio dell'interfaccia che esprime in modo diretto
-all'utente l'adattibilità della classe, nonché della chiarezza del codice,
-implementando più di un costruttore, uno per ciscun tipo di dato in ingresso con
-cui è possibile costruire la classe.
+In effetti nel codice del file \file{E0-004-tab.tex} si trova un'implementazione
+che fa proprio questo. Questa forma di polimorfismo interno del costruttore può
+essere convertita in una forma esterna a beneficio dell'interfaccia che esprime
+in modo diretto all'utente l'adattibilità della classe, nonché della chiarezza
+del codice, implementando più di un costruttore, uno per ciscun tipo di dato in
+ingresso con cui è possibile costruire la classe.
 
-Per esempio i nomi di costruttori di classe \fn{from\_func} o \fn{from\_file}
-definiscono esplicitamente il tipo di sorgente dati chiarendone all'utente
-l'utilizzo. In caso sorga la necessità di mettere in forma tabellare dati di un
-tipo ancora non considerato, i costruttori già implementati non ne
-risentirebbero mentre invece se il polimorfismo fosse interno, non potremo
-evitare di modificare l'unico costruttore.
+Per esempio già i nomi dei costruttori \fn{from\_func} o \fn{from\_file}
+definiscono esplicitamente il tipo di sorgente dati da cui costruire l'oggetto.
+Aggiungere un nuovo tipo di sorgente per i dati in forma tabellare significa
+aggiungere un nuovo costruttore. Il codice dei costruttori già implementati non
+ne risente mentre invece se il polimorfismo fosse interno, non potremo evitare
+di modificare l'unico costruttore.
 
 
 \subsection{Template di riga}
@@ -264,16 +270,16 @@ nell'ambiente \key{tabular}. Stiamo infatti usando la concatenazione di
 stringhe, un modo non molto efficiente e nemmeno comodo. Potrebbe essere più
 conveniente specificare una sorta di template con segnaposto come la stringa
 seguente per un'ipotetica tabella a due colonne:
-\begin{Verbatim}[numbers=none]
+\begin{lines}
 template = [[\textbf{<1>} & <2>\\]]
-\end{Verbatim}
+\end{lines}
 
 Il numero tra parentesi acute \code{<>} indica l'indice di riga corrispondente a
 quello definito dalla funzione \fn{row\_func}.
 
 Per implementare il template di riga, basta aggiungere alla classe \code{Row} un
 iteratore che a ogni passo ritorni la stringa di codice della riga di tabella:
-%
+
 \tcbdocmarginnote[enlarge top initially by=\margindown]{%
 \fn{string.gsub}\\
 \gotosec{} \ref{secFondGsub}}
@@ -290,7 +296,7 @@ Capture\\
 Stateless iterator\\
 \gotosec{} \ref{secFondStatelessIter}}
 %
-\begin{Verbatim}
+\begin{lines}
 function Row:iter_template(tmpl)
     local iter_fn = function(row, i)
         if not i then
@@ -309,7 +315,7 @@ function Row:iter_template(tmpl)
     end
     return iter_fn, self, nil
 end
-\end{Verbatim}
+\end{lines}
 
 Al di la di considerazioni di efficienza legate all'uso della funzione di
 libreria \fn{gsub}, l'iteratore in effetti funziona come dimostra il seguente
@@ -317,7 +323,8 @@ codice per \LuaLaTeX{} estratto dal file \file{app-start/E0-005-tab.tex} parte
 della guida. Abbiamo inserito la macro \cs{noexpand} per bloccare l'espansione
 delle control sequence\footnote{Certo mi ostino ancora a non utilizzare il
 pacchetto \pack{luacode}.}:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 \begin{tabular}{lr}
 \directlua{
 local tmpl = [[\noexpand\textbf{<1>} & <2>\noexpand\\]]
@@ -326,11 +333,11 @@ for _, s in row:iter_template(tmpl) do
 end
 }
 \end{tabular}
-\end{Verbatim}
+\end{lines}
 
 Torniamo alla nostra tabella dei pesi. La funzione generatrice e il template di
 riga saranno le seguenti:
-\begin{Verbatim}
+\begin{lines}
 local function row_func(diam, row)
     row[1] = diam
     local area = math.pi * (diam/20)^2
@@ -340,7 +347,7 @@ local function row_func(diam, row)
 end
 row = Row:new(row_func, 6, 32, 2)
 tmpl = [[\noexpand\textbf{<1>} & <2> & <3>\noexpand\\]]
-\end{Verbatim}
+\end{lines}
 
 \directlua{
 function Row:iter_template(tmpl)
@@ -391,7 +398,7 @@ Miglioriamo ora il codice della funzione generatrice aggiungendo il metodo
 \key{col}, il valore da inserire nella cella \key{val} e infine il valore
 opzionale di arrotondamento numerico \key{prec}. Eccone una sua implementazione
 molto semplice:
-\begin{Verbatim}
+\begin{lines}
 function Row:insert(col, val, prec)
     if prec then
         local p = string.char(37)
@@ -401,18 +408,18 @@ function Row:insert(col, val, prec)
     self[col] = val
     return self
 end
-\end{Verbatim}
+\end{lines}
 
 Il nuovo metodo restituisce l'oggetto stesso così che possiamo concatenare più
 inserimenti di cella. Ecco come la funzione di generazione può semplificarsi:
-\begin{Verbatim}
+\begin{lines}
 local function row_func(diam, row)
     local area = math.pi * (diam/20)^2
     row:insert(1, diam)
        :insert(2, area, 3)
        :insert(3, 0.785*area, 3)
 end
-\end{Verbatim}
+\end{lines}
 
 Sono scomparse le acrobazie per il formato numerico a favore della compattezza.
 Un ulteriore miglioramento ci consente di evitare di dover controllare
@@ -421,24 +428,26 @@ l'espansione quando inseriamo il testo del template di riga grazie al comando
 
 Introduciamo in proposito una nuova macro \cs{printrow} che ha come argomento il
 template che rappresenta il modello della genrica riga della tabella:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 \newcommand{\printrow}[1]{\directlua{
 local tmpl = [=[\detokenize{#1}]=]
 for _, s in row:iter_template(tmpl) do
    tex.print(s)
 end
 }}
-\end{Verbatim}
+\end{lines}
 
 Per non introdurre un secondo argomento, nell'istanziare l'oggetto della classe
 \code{Row} dovremo solo ricordarci di chiamare la variabile \key{row}, lo stesso
 nome usato nella definizione di \cs{printrow}. Mettiamo subito al lavoro la
 nuova macro:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 \begin{tabular}{lrr}
 \printrow{\textbf{<1>} & <2> & <3>\\}
 \end{tabular}
-\end{Verbatim}
+\end{lines}
 
 Molto semplice: si definisce prima la funzione generatrice e con essa si
 costruisce l'oggetto \key{Row}, poi si scrive il codice \LaTeX{} dando alla
@@ -455,8 +464,7 @@ L'ultimo passo è migliorare l'aspetto della tabella. Con il pacchetto
 facilitare la lettura dei dati. Dobbiamo così modificare la funzione di riga per
 derminare se il numero di riga è multiplo di tre --- senza usare l'operatore
 modulo \key{\%} di Lua perché non ci troviamo in un file esterno:
-\begin{Verbatim}
-\directlua{
+\begin{lines}
 local function fn(diam, row)
     local area = math.pi * (diam/20)^2
     local peso = 0.785*area
@@ -471,13 +479,13 @@ local function fn(diam, row)
        :insert(3, peso, 6)
        :insert(0, midrule)
 end
-}
-\end{Verbatim}
+\end{lines}
 
 Introduciamo anche il pacchetto \pack{siunitx} \cite{pkg:siunitx} utilissimo per
 comporre numeri, unità di misura e tabelle, con questo ambiente \amb{tabular}
 ridisegnato:
-\begin{Verbatim}
+\begin{lines}
+#[tex]
 \begin{tabular}{
     c
     S[table-format=4.3]
@@ -492,23 +500,11 @@ ridisegnato:
 \printrow{\(\mathbf{<1>}\) & <4> & <2> & <3>\\<0>}
 \bottomrule
 \end{tabular}
-\end{Verbatim}
+\end{lines}
 
 Il progetto completato si trova nel file \file{app-star/E0-006-tab.tex}, dove ho
 aggiunto alla tabella la colonna con il calcolo della superficie laterale delle
 barre.
-
-
-\subsection{Conclusioni}
-
-La nostra classe \code{Row} ci permette di costruire tabelle iterative in Lua in
-modo del tutto generale, compiendo calcoli numerici e ogni sorta di possibili
-elaborazioni. Molti altri affinamenti sono possibili come il caricamento di dati
-esterni oppure l'uso di pipeline di operatori all'interno dei segnaposto dei
-template. Anche questo tutorial si chiude perciò con una lista di nuove idee da
-implementare con Lua.
-
-La tabella sottostante mostra il risultato finale.
 
 \directlua{
 function Row:insert(col, val, prec)
@@ -546,7 +542,12 @@ for _, s in row:iter_template(tmpl) do
 end
 }}
 
-\begin{center}
+\begin{table}[bp]
+\caption{La tabella dei pesi generata automaticamente definendone la regola di
+generazione e il template di riga.}
+\label{tabTabPesi}
+\centering
+\small
 \begin{tabular}{
     c
     S[table-format=4.3]
@@ -560,6 +561,17 @@ end
 \printrow{\(\mathbf{<1>}\) & <4> & <2> & <3>\\<0>}
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
+
+\subsection{Conclusioni}
+
+La nostra classe \code{Row} ci permette di costruire tabelle iterative in Lua in
+modo del tutto generale, compiendo calcoli numerici e ogni sorta di possibili
+elaborazioni. Molti altri affinamenti sono possibili come il caricamento di dati
+esterni oppure l'uso di pipeline di operatori all'interno dei segnaposto dei
+template. Anche questo tutorial si chiude perciò con una lista di nuove idee da
+implementare con Lua.
+
+La tabella~\ref{tabTabPesi} mostra il risultato finale.
 
 % end of file
