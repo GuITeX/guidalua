@@ -5,10 +5,8 @@
 \directlua{
 hl_register = require "mod-history"
 }
-% register a compile task line at the end of history.log text file
-\newcommand{\hl@logrun}{\directlua{
-hl_register:log()
-}}
+% register an infoline at the end of the history.log file
+\newcommand{\hl@logrun}{\directlua{hl_register:log()}}
 \AtEndDocument{\hl@logrun}
 \endinput
 

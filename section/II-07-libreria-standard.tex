@@ -1,6 +1,6 @@
 
 \chapter{La libreria standard di Lua}
-\label{iChLibstd}
+\label{iiChLibstd}
 
 In Lua sono immediatamente disponibili un folto gruppo di funzioni che ne
 formano la \emph{libreria standard}. Si tratta di una collezione di funzioni
@@ -123,7 +123,7 @@ caratteri:
   \item[\key{+}] indica 1 o più ripetizioni;
   \item[\key{*}] indica 0 o più ripetizioni;
   \item[\key{-}] come \key{*} ma nella sequenza più breve;
-  \item[\key{?}] indica 0 o 1 occorrenza;
+  \item[\key{?}] indica 0 o 1 ripetizione;
 \end{compactdescription}
 
 Esempio:
@@ -161,26 +161,25 @@ saranno restituiti:
 \label{secFondGsub}
 
 Abbiamo appena cominciato a scoprire le funzionalità dedicate al testo
-disponibili nella libreria standard di Lua precaricata a runtime.
+disponibili nella libreria standard di Lua. Diamo solo un altro sguardo
+presentando la funzione \fn{string.gsub}. Il suo nome sta per \emph{global
+substitution}, ovvero la sostituzione di tutte le parti di un testo che
+corrispondono a uno schema.
 
-Diamo solo un altro sguardo alla libreria presentando la funzione
-\fn{string.gsub}. Il suo nome sta per \emph{global substitution}, ovvero
-la sostituzione di tutte le occorrenze in un testo.
-
-Intanto per individuare le occorrenze è naturale pensare di utilizzare un
-pattern e che sia possibile utilizzare le capture nel testo di sostituzione,
-per esempio:
+Per individuare le parti da sostituire è naturale pensare di utilizzare un
+pattern e che sia possibile utilizzare le capture nel testo di sostituzione, per
+esempio:
 \sourcecode{
     file = [[code/e8-libstd.lua]],
     select = [[gsub]],
     run = true,
 }
 
-Il primo argomento è la stringa da ricercare, il secondo è il pattern e il
-terzo è il testo di sostituzione dell'occorrenza, ma può anche essere una
-tabella dove le chiavi corrispondenti al pattern saranno sostituite con
-i rispettivi valori, oppure anche una funzione che riceverà le catture e
-calcolerà il testo da sostituire.
+Il primo argomento è la stringa da ricercare, il secondo è il pattern, il terzo
+è il testo di sostituzione per ciscuna corrispondenza, ma può anche essere una
+tabella dove le chiavi corrispondenti al pattern saranno sostituite con i
+rispettivi valori, oppure una funzione che dal singolo frammento di testo
+estratto elabora la stringa di sostituzione.
 
 Una funzione quindi assai flessibile. Mi viene in mente questo esercizio:
 moltiplicare per 12 tutti gli interi in una stringa, ed ecco il codice:
@@ -230,8 +229,8 @@ Come eliminare da un testo eventuali caratteri spazio iniziali e/o finali?
 \end{Exercise}
 
 \begin{Exercise}[label=libstd-06]
-Il pattern \verb|"(%d+)/(%d+)/(%d+)"| è adatto per catturare giorno, mese e
-anno di una data presente in una stringa nel formato \key{dd/mm/yyyy}?
+Il pattern \verb|"(%d+)/(%d+)/(%d+)"| è adatto per estrarre giorno, mese e
+anno di una data presente in una stringa nel formato \verb|"dd/mm/yyyy"|?
 \end{Exercise}
 
 \begin{Exercise}[label=libstd-07]

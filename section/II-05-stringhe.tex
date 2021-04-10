@@ -112,10 +112,10 @@ end
 print(#s) -- # funziona anche per le stringhe!
 \end{lines}
 
-Ma cosa succede in dettaglio? Perché questo codice non è efficiente?
-Ad ogni concatenazione viene creata una nuova stringa. La prima volta vengono
-copiati due byte per dare la stringa \verb|"**"|. La seconda iterazione la
-memoria copiata sarà di 4 byte, e alla terza di 6 byte, eccetera.
+Ma cosa succede in dettaglio? Perché questo codice non è efficiente? A ogni
+concatenazione viene creata una nuova stringa. La prima volta vengono copiati
+due byte per dare la stringa \verb|"**"|. La seconda iterazione la memoria
+copiata sarà di 4 byte, e alla terza di 6 byte, eccetera.
 
 A ogni iterazione la memoria copiata cresce di due byte con il risultato che per
 produrre una stringa di 200 asterischi (200 byte) avremo copiato in totale la

@@ -18,13 +18,12 @@ end
 Testo
 
 \directlua{
-local tline = {}
 local jobname = tex.jobname..".tex"
-tline[1] = jobname
-tline[2] = lfs.attributes(jobname).size
-tline[3] = os.date()
-tline[4] = os.clock() - register.start
-tline[5] = status.luatex_engine
-register:append(tline)
-}
+register:append{
+    jobname,                      % 1
+    lfs.attributes(jobname).size, % 2
+    os.date(),                    % 3
+    os.clock() - register.start,  % 4
+    status.luatex_engine,         % 5
+}}
 \bye

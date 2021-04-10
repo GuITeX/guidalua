@@ -48,7 +48,7 @@ print(string.match(s, pattern))
 --->>>
 
 ---<<< pattern_two
--- occorrenza di un numero intero
+-- corrispondenza di un numero intero
 -- come una o più cifre consecutive
 print(string.match("l'intero 65 interno", "%d+"))
 print(string.match("l'intero 0065 interno", "%d+"))

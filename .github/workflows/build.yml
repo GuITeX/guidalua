@@ -5,7 +5,7 @@ on:
     tags:
       - 'v*'
 jobs:
-  build_latex:
+  build_and_upload_guidalua:
     runs-on: ubuntu-latest
     container:
       image: danteev/texlive:latest
@@ -19,7 +19,7 @@ jobs:
           lualatex --shell-escape guidalua
           lualatex --shell-escape guidalua
           mkdir assets
-          mv guidalua.pdf assets/guidalua.pdf
+          cp guidalua.pdf assets/guidalua.pdf
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
@@ -32,6 +32,6 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: "./assets"
+          local-dir: "./assets/"
           server-dir: "/httpdocs/home/images/doc/GuideGuIT"
           security: "strict"
