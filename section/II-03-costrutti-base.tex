@@ -18,14 +18,14 @@ obbligatorie \key{do} ed \key{end}. La variabile \key{i} interna al ciclo
 assumerà i valori da 1 fino al numero di elementi della tabella, ottenuto con
 l'operatore lunghezza \key{\#} valido anche per le stringhe.
 
-Per ciascuna iterazione con il costrutto condizionale \key{if} incrementeremo un
-contatore solo nel caso in cui l'elemento della tabella è pari. L'\key{if} ha
-anch'esso bisogno di definire il blocco di codice e lo fa con le parole chiavi
+Per ciascuna iterazione con il costrutto condizionale \key{if} incrementiamo un
+contatore solo se l'elemento della tabella è pari. L'\key{if} ha anch'esso
+bisogno di definire il blocco di codice e lo fa con le parole chiavi
 obbligatorie \key{then} ed \key{end}, mentre \key{else} o \key{elseif} sono rami
 di codice facoltativi.
 
-Il controllo di parità degli interi si basa sull'operatore modulo, resto della
-divisione intera \key{\%}. Infatti un numero pari è tale quando il resto della
+Il controllo di parità degli interi si basa sull'operatore modulo \key{\%},
+resto della divisione intera. Infatti un numero pari è tale se il resto della
 divisione per 2 è zero. 
 
 L'operatore di \emph{uguaglianza} è il doppio carattere di uguale \texttt{==} e
@@ -34,7 +34,7 @@ quello di \emph{disuguaglianza} è la coppia dei segni tilde e uguale
 \key{>=} e \key{<}, \key{<=}.
 
 
-\subsection{Operatore di lunghezza}
+\subsection{Operatore lunghezza}
 
 Ma come si comporta l'operatore di lunghezza \texttt{\#} per le tabelle array
 con indici non lineari? Per esempio, qual è il risultato del seguente codice:
@@ -51,18 +51,35 @@ local t = {}
 t[1000] = 123
 print(#t)
 \end{lines}
-
-Avrete certamente capito che l'operatore \texttt{\#} tiene conto solamente
-degli elementi con indici consecutivi a cominciare da 1 e s'interrompe quando
-incontra \texttt{nil}. Infatti, l'operatore di lunghezza \texttt{\#} considera
-per le tabelle il valore \texttt{nil} di un indice come termine dell'array.
-L'operatore è usato molto spesso per inserire progressivamente elementi:
+e ancora in questo caso con il costruttore?
 \begin{lines}
-local t = {}
-for i = 1, 100 do
-    t[#t+1] = i*i
-end
-print(t[100])
+local t1 = {nil, nil,  nil, nil, nil, nil, nil, 8}
+print(#t1)
+local t2 = {nil, nil,  nil, nil, nil, nil, nil, 8, nil}
+print(#t2)
+\end{lines}
+
+L'operatore \texttt{\#} restituisce la lunghezza di una tabella array come uno
+dei sui \emph{bordi}. Un bordo è la posizione di un valore non \key{nil} seguito
+da un valore \key{nil}, oppure zero se la posizione 1 è \key{nil}.
+
+Questo comportamento riflette la particolare e sofisticata implementazione della
+tabella di Lua. L'operatore lunghezza \texttt{\#} può restituire uno dei
+qualsiasi indici interi corrispondenti a un bordo della tabella, in funzione di
+come è stata creata o anche della presenza di chiavi non intere.
+
+Se la tabella è una \emph{sequenza}, cioè se non ci sono buchi di valori tra le
+posizioni intere partendo da 1 fino a \( n \), allora la tabella ha un solo
+bordo che vale \( n \). Se la tabella è vuota il suo bordo vale zero.
+
+L'operatore \texttt{\#} viene calcolato molto velocemente anche per tabelle
+array grandi, ed è usato per espressioni idiomatiche come quella usatissima per
+l'inserimento di un nuovo dato in coda a una sequenza:
+\begin{lines}
+#[run]
+local t = {101, 102, 103, 104, 105} -- una sequenza
+t[#t + 1] = 106
+print(#t, t[6])
 \end{lines}
 
 
