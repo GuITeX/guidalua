@@ -1,15 +1,14 @@
 
 \chapter{Funzioni}
 
-Le funzioni sono il principale mezzo di astrazione e lo strumento base per
-strutturare il codice.
+Le funzioni sono il principale mezzo di astrazione e organizzazione del codice.
 
-Coerentemente con il resto del linguaggio la sintassi di una funzione comprende
-due parole chiave che servono per delimitare il blocco di codice di
-definizione: \key{function} ed \key{end}. Una funzione può restituire dati
-tramite la parola chiave \key{return}.
+Coerentemente con il resto del linguaggio la sintassi dichiarativa di una
+funzione comprende due parole chiave che servono per delimitare il blocco di
+codice: \key{function} ed \key{end}. Una funzione può restituire dati tramite la
+parola chiave \key{return}.
 
-Come primo esempio, vi presento una funzione per calcolare l'ennesimo numero
+Come primo esempio, consideriamo una funzione per calcolare l'ennesimo numero
 della \href{http://it.wikipedia.org/wiki/Successione_di_Fibonacci}{serie di
 Fibonacci}. Un elemento si ottiene sommando i due precedenti elementi avendo
 posto uguale a 1 i primi due:
@@ -17,34 +16,30 @@ posto uguale a 1 i primi due:
 
 Con le regole dell'assegnazione multipla una funzione può accettare più
 argomenti. Se gli argomenti passati sono in eccesso rispetto a quelli che essa
-prevede, quelli in più verranno ignorati. Se viceversa, gli argomenti sono
+prevede, quelli in più verranno ignorati. Viceversa, se gli argomenti sono
 inferiori a quelli previsti allora a quelli mancanti verrà assegnato il valore
 \key{nil}.
 
-Ma questo vale anche per i dati di ritorno quando la funzione è usata come
-espressione in un'istruzione di assegnamento. Basta inserire dopo l'istruzione
+Le stesse regole valgono anche per i dati di ritorno quando la funzione è usata
+come espressione in un'istruzione di assegnamento. Si scrive dopo l'istruzione
 \key{return} la lista delle espressioni separate da virgole che saranno valutate
 e assegnate alle corrispondenti variabili.
 
-Per esempio, potremo modificare la funzione precedente per restituire la somma
-dei primi \( n \) numeri di Fibonacci oltre che l'ennesimo elemento della serie
-stessa e considerare un valore di default se l'argomento è \key{nil}:
-\sourcecode{
-    file = [[code/e2-001.lua]],
-    select = [[due]],
-    run = true,
-}
+Per esempio, potremo modificare la funzione precedente per restituire anche la
+somma dei primi \( n \) numeri di Fibonacci oltre che l'ennesimo elemento della
+serie stessa e considerare un valore di default se l'argomento è \key{nil}:
+\sourcecode{file = [[code/e2-001.lua]], select = [[due]], run = true,}
 
 
 \section{Funzioni: valori di prima classe, I}
 
-In Lua le funzioni sono un tipo. Possono essere assegnate a una variabile e
-possono essere passate come argomento a un'altra funzione, una proprietà che
-non si trova spesso nei linguaggi di scripting e che offre una nuova
-flessibilità al codice.
+In Lua le funzioni sono un tipo. Possono essere assegnate a una variabile,
+passate come argomento a un'altra funzione e restituite da una funzione come
+valore di ritorno, una proprietà che non si trova spesso nei linguaggi di
+scripting e che offre più flessibilità al codice.
 
-In realtà in Lua tutte le funzioni sono memorizzate in variabili. Per assegnare
-direttamente una funzione a una variabile esiste la sintassi anonima:
+A ben vedere in Lua tutte le funzioni sono memorizzate in variabili e di per se
+non hanno un nome. Il modo di definizione è quindi la \emph{sintassi anonima}:
 \begin{lines}
 add = function (a, b)
     return a + b
@@ -52,17 +47,18 @@ end
 print(add(45.4564, 161.486))
 \end{lines}
 
-Essendo le funzioni valori di prima classe ne consegue che in Lua le funzioni
-sono oggetti senza nome esattamente come lo sono gli altri tipi come i numeri e
-le stringhe. Inoltre, la sintassi classica di definizione:
+Questa importante proprietà si riassume dicendo che in Lua le funzioni sono
+valori di \emph{prima classe}: sono assegnate a variabili e non hanno un nome
+esattamente come non lo hanno gli altri tipi come numeri e stringhe.
+
+Per comodità il linguaggio ammette anche la sintassi classica di definizione:
 \begin{lines}
-function variable_name (args)
+function variable_name(args)
     -- function body
 end
 \end{lines}
-
-\noindent è solo \emph{zucchero sintattico} perché l'interprete Lua la tradurrà
-automaticamente nel codice equivalente in sintassi anonima:
+l'interprete Lua la tradurrà automaticamente nel codice equivalente in sintassi
+anonima, una caratteristica nascosta detta \emph{zucchero sintattico}:
 \begin{lines}
 variable_name = function (args)
     -- function body
@@ -72,19 +68,21 @@ end
 
 \section{Funzioni: valori di prima classe, II}
 
-Un esempio di funzione con un argomento funzione è il seguente, dove viene
-eseguito un numero di volte dato, la stessa funzione priva di argomenti:
+Un esempio di funzione con un argomento funzione è il seguente, dove si vuole
+eseguire per un certo numero di volte consecutivamente la funzione argomento:
 \sourcecode{
     file = [[code/e3-001.lua]],
     select = [[uno]],
 }
 
 Molto interessante. Nell'ultima riga di codice l'argomento è una funzione
-definita in sintassi anonima che verrà eseguita 12 volte.
+definita in sintassi anonima (che verrà eseguita 12 volte).
 
-Per prendere confidenza con il concetto di \emph{funzioni come valori di prima
-classe}, cambiamo il significato della funzione \fn{print}:
+Essendo le funzioni valori di prima classe è possibile riassegnare variabili per
+cambiarne il significato, come per esempio con la funzione predefinita
+\fn{print}:
 \begin{lines}
+#[run]
 local orig_print = print
 print = function (n)
     orig_print("Argomento funzione -> "..n)
@@ -112,15 +110,15 @@ anonima.
 }
 
 Con questo meccanismo una tabella può svolgere il ruolo di \emph{modulo}
-memorizzando funzioni utili a un certo scopo. In effetti la libreria standard
+memorizzando funzioni utili in un gruppo. In effetti la libreria standard
 di Lua si presenta all'utente proprio in questo modo.
-
 
 
 \section{Numero di argomenti variabile}
 
-Una funzione può ricevere un numero variabile di argomenti rappresentati da tre
-dot consecutivi \key{...}. Nel corpo della funzione i tre punti
+Una funzione può ricevere un numero variabile di argomenti rappresentati da
+\key{...} tre caratteri punto consecutivi\footnote{Questa caratteristica è
+chiamata \emph{variadic function}.}. Nel corpo della funzione i tre punti
 rappresenteranno la lista degli argomenti, dunque possiamo o costruire con essi
 una tabella oppure effettuare un'assegnazione multipla.
 
@@ -131,29 +129,34 @@ numerici:
     select = [[tre]],
 }
 
-Per inciso, anche la funzione base \fn{print} accetta un numero variabile di
-argomenti. Il meccanismo è ancora più flessibile perché tra i primi argomenti
-vi possono essere variabili ``fisse''. Per esempio il primo parametro potrebbe
-essere un moltiplicatore:
+Nell'ultima riga di codice si può notare che anche la funzione predefinita
+\fn{print} accetta un numero variabile di argomenti.
+
+Il meccanismo è ancora più flessibile perché tra i primi argomenti vi possono
+essere variabili "fisse". Per esempio il primo parametro potrebbe essere un
+moltiplicatore:
+
 \sourcecode{
     file = [[code/e3-001.lua]],
     select = [[quattro]],
 }
 
-Un'altra funzione predefinita \fn{select} consente di accedere alla lista degli
+La funzione predefinita \fn{select} consente di accedere alla lista degli
 argomenti in dettaglio. Infatti nel codice precedente, se tra gli argomenti
 compare un valore \key{nil} avremo problemi ad accedere ai valori successivi
-perché --- come sappiamo già --- l'operatore di lunghezza \key{\#} considera il
-\key{nil} come valore sentinella di fine array/tabella.
+perché --- come sappiamo già --- l'operatore di lunghezza \key{\#} determina la
+lunghezza della sequenza in base ai bordi cioè alle posizioni dei valori non
+nulli seguite da valori \key{nil} (maggiori dettagli alla sezione \S
+\ref{secFondLenOperator}).
 
 Il selettore prevede un primo parametro fisso seguito da una lista variabile di
 valori rappresentata dai tre punti \key{...}. Se questo parametro è un intero
 allora verrà considerato come indice per restituire l'argomento corrispondente.
 Se invece il parametro è la stringa \key\# allora la funzione restituisce il
-numero totale di argomenti, inclusi i \key{nil}.
+numero totale di argomenti \emph{inclusi} i \key{nil}.
 
 Il codice seguente preso pari pari dal \href{http://www.lua.org/pil/}{PIL} ne è
-un'applicazione:
+un esempio:
 \begin{lines}
 for i = 1, select("#", ...) do
     local arg = select(i, ...)
@@ -162,16 +165,11 @@ end
 \end{lines}
 
 
-\section{Omettere le parentesi se}
+\section{Omettere le parentesi}
 
 In Lua esiste la sintassi di chiamata a funzione semplificata che consiste nella
-possibilità di ommettere le parentesi tonde \key{()}, ammessa solo se:
-\begin{compactitemize}
-\item alla funzione si passa un unico argomento di tipo stringa;
-\item alla funzione si passa un unico argomento di tipo tabella.
-\end{compactitemize}
-
-Per esempio:
+possibilità di ommettere le parentesi tonde \key{()}. È ammessa solo se alla
+funzione si passa un unico argomento di tipo stringa o di tipo tabella:
 \sourcecode{
     file = [[code/e7-funzioni.lua]],
     select = [[anchequesto]],
@@ -181,11 +179,11 @@ Per esempio:
 \section{Closure}
 \label{secClosure}
 
-Chiudiamo il capitolo parlando con uno strano termine forse meglio noto agli
-sviluppatori dei linguaggi funzionali: la \emph{closure}.
+Chiudiamo il capitolo parlando di uno strano termine forse meglio noto agli
+sviluppatori nei linguaggi funzionali: la \emph{closure}.
 
 Questa proprietà di Lua amplia il concetto di funzione rendendo possibile
-l'accesso dall'interno di essa ai dati presenti nel contesto esterno. Ciò è
+l'accesso dall'interno di essa a dati presenti nel contesto esterno. Ciò è
 possibile perché alla chiamata di una funzione viene creato uno spazio di
 memoria del contesto esterno unico e indipendente.
 
@@ -214,11 +212,11 @@ accettare come parametro una funzione di confronto per stabilire l'ordine tra
 due elementi tramite l'accesso a una seconda tabella esterna contenente
 informazioni utili per l'ordinamento stesso.
 
-Nel prossimo esempio mettiamo in pratica l'idea. Il codice utilizza una
-funzione della libreria di Lua, che introdurremo nel prossimo capitolo, in
-particolare \fn{table.sort}, per applicare l'algoritmo di ordinamento alla
-tabella passata come argomento in base al criterio di ordine stabilito con la
-funzione passata come secondo argomento in sintassi anonima.
+Nel prossimo esempio mettiamo in pratica l'idea. Il codice utilizza la funzione
+\fn{table.sort} della libreria di Lua che introdurremo nel prossimo capitolo,
+per applicare l'algoritmo di ordinamento alla tabella primo argomento in
+base al criterio stabilito con la funzione passata come secondo
+argomento in sintassi anonima.
 \sourcecode{
     file = [[code/e7-funzioni.lua]],
     select = [[due]],
@@ -253,12 +251,17 @@ opzionale è \key{nil} oppure \verb|"rad"|, in gradi sessadecimali se
 \end{Exercise}
 
 \begin{Exercise}[label=fn-05]
-Scrivere una funzione che accetti come primo argomento una funzione \( f:
-ℝ \to ℝ \) (prende un numero e restituisce un numero), come
+Scrivere una funzione \fn{ordinates} che accetti come primo argomento una
+funzione \( f: ℝ \to ℝ \) (prende un numero e restituisce un numero), come
 secondo e terzo argomento i due valori dell'intervallo di calcolo e come quarto
-argomento il numero di punti in cui suddividere l'intervallo. La funzione dovrà
-stampare i valori che la funzione argomento assume nei punti d'ascissa così
-definiti.
+argomento il numero di punti \( n \geq 2 \) in cui suddividere equamente
+l'intervallo, e restituisca i valori in sequenza che la funzione \( f \) assume
+nei punti d'ascissa così definiti, in una tabella/array con indice iniziale 1.
+
+Verificare poi che le due tabelle calcolate da \fn{ordinates} con le funzioni di
+libreria \key{math.sin} e \key{math.cos}, nello stesso intervallo \( 0 \), \(
+\pi/2 \) con \( n = 101 \) contengano lo stesso valore nella posizione di indice
+51.
 \end{Exercise}
 
 

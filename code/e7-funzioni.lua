@@ -6,17 +6,17 @@ print "si è possibile anche questo..."
 -- e questo:
 local function is_empty(t)
     if #t == 0 then
-        return true
+        return print "vero"
     else
-        return false
+        return print "falso"
     end
 end
-print(is_empty{})
-print(is_empty{1, 2, 3})
+is_empty{}
+is_empty{1, 2, 3}
 
 -- invece di questo (sempre possibile):
-print(is_empty({}))
-print(is_empty({1, 2, 3}))
+is_empty({})
+is_empty({1, 2, 3})
 --->>>
 
 
@@ -55,7 +55,7 @@ local function sort_by_value(tab)
         [2002] = 12.9,
     }
     table.sort(tab,
-        function (a, b)
+        function (a, b) -- accesso alla closure
             return val[a] > val[b]
         end
     )
@@ -63,7 +63,6 @@ end
 
 local years = {1994, 1996, 1998, 2000, 2002}
 sort_by_value(years)
-
 for i = 1, #years do
     print(years[i])
 end
