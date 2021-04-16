@@ -1,0 +1,21 @@
+% filename: app-registro/logger.sty
+\NeedsTeXFormat{LaTeX2e}[2000/06/01]
+\ProvidesPackage{logger}[2021/04/12 Compile task logger]
+% load the Lua module
+\directlua{
+local lib_init = require "lib-logger"
+local llog, lreg = lib_init()
+
+lib_logger = {
+    logger = llog,
+    register = lreg,
+}
+}
+% register an infoline at the end of the history.log file
+\newcommand{\hl@logrun}{\directlua{
+   local line = lib_logger.register:log()
+   lib_logger.logger:append(line)
+}}
+\AtEndDocument{\hl@logrun}
+\endinput
+

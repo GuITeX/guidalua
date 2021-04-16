@@ -2,11 +2,12 @@
 *.log
 *.aux
 *.synctex.gz
+*.synctex(busy)
 *.out
 *.toc
 *.gz
 *.zip
-# no temporary lua file needed to sourcecode.sty
+# no temporary lua file made by sourcecode.sty
 tmp.lua
 # no PDF artifact except guidatematica documentation files
 *.pdf
@@ -14,7 +15,7 @@ tmp.lua
 !guidatematica.pdf
 # maintain all the image pdf files
 !image/*.pdf
-# no secondary file emitted by biber
+# no secondary file made by biber
 guidalua.bbl
 guidalua.bcf
 guidalua.blg

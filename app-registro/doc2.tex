@@ -1,0 +1,39 @@
+% !TeX program = LuaLaTeX
+% filename: app-registro/doc2.tex
+\documentclass{article}
+\usepackage{fontspec}
+\setmainfont{Libertinus Serif}
+\usepackage[italian]{babel}
+
+\usepackage{logger}
+\directlua{
+lib_logger.register:add_to_log({"EngineName", "upper"}, 1)
+lib_logger.register:add_to_log{
+    id = "CommentText",
+    info = "Compilazione di fase due"
+}
+
+local pw = {
+    id = "PageWidth",
+    info = function () return tex.pagewidth end,
+    fmt = {
+        point = function (pw, n)
+            n = n or 2
+            if n == 0 then
+                return tostring(p)
+            else
+                assert(type(n), "number")
+                assert(n>0)
+                local p = string.char(37)
+                local f1 = p..p.."0."..p.."df pt"
+                local f2 = f1:format(n)
+                return f2:format(pw/65536)
+            end
+        end
+    },
+}
+lib_logger.register:add_to_log({pw, "point", 3}, 2)
+}
+\begin{document}
+Testo
+\end{document}

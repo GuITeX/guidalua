@@ -177,25 +177,549 @@ macro utente ma un aggiunta al codice di chiusura del documento con la macro
 \sourcecode{file = [[app-registro/historylog.sty]]}
 
 Basta caricare il pacchetto e tutte le compilazioni del sorgente verranno
-registrate come per questo file sorgente compilabile con Lua\LaTeX{}.
-Compilatelo più volte e controllate poi il file locale \file{history.log}:
+registrate come per questo file sorgente per Lua\LaTeX{}. Compilatelo più volte
+e controllate poi il file locale \file{history.log}:
 \sourcecode{file = [[app-registro/doc.tex]]}
+
+Il file di registro conterrà informazioni simili a queste:
+\begin{Verbatim}[numbers=none,xleftmargin=0pt]
+03.tex, 141, Sat Apr 10 17:31:35 2021, 0.00073999999999996, luatex
+03.tex, 141, Sat Apr 10 17:31:38 2021, 0.00083600000000006, luatex
+03.tex, 141, Sat Apr 10 17:31:40 2021, 0.00073299999999998, luatex
+\end{Verbatim}
 
 
 \section{Sviluppo}
 
-Abbiamo costruito passo passo un modulo Lua per inserire in un registro alcune
+Abbiamo costruito da zero un modulo Lua per inserire in un registro alcune
 informazioni sulle compilazioni dei sorgenti. Le funzionalità sono minime ma si
 tratta di un buon punto di partenza per dare risposta a nuove domande: quale
 struttura dovremo dare al modulo in modo che sia semplice aggiungere nuove
 funzionalità, come permettere all'utente di modificare le informazioni
 registrabili.
 
-A poco a poco prende forma e si precisa la struttura di un \emph{framework}.
+A poco a poco prende forma e si precisa la struttura di un \emph{framework}
+grazie all'attività di progettazione del software a passi successivi. Ciò che
+era molto meno evidente con lo sviluppo dei pacchetti \LaTeX{} è invece chiaro
+con i moduli Lua: la necessità di ricercare soluzioni convenienti ai problemi di
+organizzazione del codice.
 
-%Per esempio, se si vuole che la data sia trascritta nel formato ISO
-%\code{yyyy-mm-dd} oppure che la dimensione del file riporti unità di misura
-%che si adattano a seconda della magnitudo del valore.
+
+\subsection{Dati per descrivere dati}
+
+
+Nel registro ogni linea contiene informazioni ma nel codice non ne esiste una
+rappresentazione di alto livello, un oggetto che si possa aggiungere o
+eliminare, o stampare in un diverso formato.
+
+I concetti espressi sono due: dare la possibilità di scegliere le informazioni
+da registrare e il loro formato, e rendere indipendente il registro dalle
+informazioni. Ciò si risolve con l'introduzione di oggetti \code{Info}, insieme
+di:
+\begin{compactitemize}
+\item un identificativo,
+\item l'informazione testuale da registrare,
+\item una serie di possibili regole di formato.
+\end{compactitemize}
+
+Il costruttore di tabelle è una struttura in grado di rappresentare ogni tipo di
+dato e la seguente è la diretta descrizione dei componenti di questo tipo di
+dato:
+\begin{lines}
+{
+    id = "EngineName",
+    info = status.luatex_engine,
+    fmt = {
+        upper = function (engine_name)
+            return engine_name:upper()
+        end,
+    }
+}
+\end{lines}
+
+In questo codice l'informazione registrabile è il nome del compositore. I nomi
+dei campi dovranno essere sempre gli stessi così che il componente del registro
+possa elaborarli. Intenderemo il valore associato al campo \key{info} di tipo
+stringa o di tipo funzione. In quest'ultimo caso la funzione dovrà attendersi
+l'oggetto stesso come argomento e dovrà restituire un valore stringa.
+
+Per esempio, nell'oggetto \key{ElapsedTime} che misura gran parte del tempo di
+compilazione, il campo \key{info} è una funzione definita secondo le regole
+appena enunciate:
+\begin{lines}
+{
+    id = "ElapsedTime",
+    info = function (t)
+        return tostring(os.clock() - t._start)
+    end,
+    _start = os.clock(),
+    fmt = {
+        second = function (t) ... end,
+    }
+}
+\end{lines}
+
+
+\subsection{Nuova implementazione del registro}
+
+Una volta stabilito il tipo di dato non rimane che implementare il codice che
+gestisce gli oggetti \code{Info}. Le operazioni fondamentali sono:
+\begin{compactitemize}
+\item installazione di un oggetto \key{Info} nel registro, metodo \fn{install};
+\item aggiungere un oggetto a una lista di registrazione specificando una
+eventuale funzioni di formato da applicare, metodo \fn{add\_to\_log};
+\item rimuovere un oggetto \key{Info} dalla lista di uscita, metodo
+\fn{remove\_from\_log};
+\item generare una lista di uscita di registrazione o caricarne una predefinita,
+metodo costruttore con sintassi di chiamata di funzione;
+\item impostare un formato tra quelli disponibili di un oggetto \key{Info} nella
+lista di uscita, metodo \fn{set\_format};
+\item ottenere il testo formattato pronto per la registrazione, metodo
+\key{log}.
+\end{compactitemize}
+
+Non spiegherò tutti i dettagli per non eccedere con la descrizione del codice,
+tratterò solo i punti salienti lasciando libero il lettore di consultare il
+codice completo nel file \file{app-registro/lib\_logger.lua}.
+
+Di base, la possibilità di selezionare l'insieme di informazioni da registrare
+comporta il dover distinguere la lista di oggetti disponbili che chiameremo
+\key{\_iArchive} da quella degli oggetti che saranno inseriti nell'output di
+nome \key{\_logList}. La nuova implementazione del registro inizia con il
+definire le due liste interne di oggetti \key{Info}:
+\begin{lines}
+local register = {
+    _iArchive = {},
+    _logList = {},
+}
+\end{lines}
+Stiamo usando la convenzione che i nomi dei campi privati inizino tutti con un
+carattere di trattino basso.
+
+Esaminiamo il metodo \fn{install} chen come stabilito dall'interfaccia pubblica,
+ha il compito di verificare la struttura attesa di un generico oggetto
+\code{Info} e in caso di successo di memorizzarla nell'archivio interno:
+\begin{lines}
+-- check and install a new `Info` object
+function register:install(itab)
+    local id = assert(itab.id) -- mandatory string field `id`
+    assert(type(id) == "string")
+    -- have we an `id` already saved?
+    local arch = self._iArchive
+    assert(not arch[id], "id '"..id.."' is not new")
+    -- check `info` field
+    assert(itab.info, "`info` field not found for '"..id.."'")
+    -- check `fmt` field
+    local fmt = itab.fmt
+    if fmt then
+        assert(type(fmt) == "table")
+        local flag = false
+        for k, f in pairs(fmt) do
+            flag = true
+            assert(type(k) == "string")
+            assert(type(f) == "function")
+        end
+        assert(flag, "Empty format function table")
+    end
+    arch[id] = itab
+    return self
+end
+\end{lines}
+
+L'archivio d'installazione è una tabella dizionario indicizzata con il valore
+del campo \key{id} presente nella tabella dell'oggetto \key{Info} stesso. In
+alternativa, avrei potuto rendere esterno il nome dell'oggetto passandolo come
+parametro esplicito al metodo \fn{install}.
+
+Come forma di verifica dei dati abbiamo usato la funzione \fn{assert}, e non una
+più sofisticata gestione degli errori poiché contiamo sul fatto che chi utilizza
+la libreria non abbia esigenze d'impostazione frequenti ma intervenga di tanto
+in tanto nel modificare le registrazioni delle compilazioni.
+
+Più complessa è la struttura che definisce la lista delle informazioni da
+registrare. Il motivo è che il codice deve essere eseguito in due distinti
+momenti: al caricamento del pacchetto e alla fine del documento, altrimenti non
+potremo registrare l'intervallo di tempo trascorso che in difetto corrisponde al
+tempo di compilazione.
+
+Quando il codice è caricato, l'oggetto \key{ElapsedTime} è installato assieme a
+tutti gli altri tra i predefiniti della libreria, e in conseguenza in quel
+momento viene letto l'orologio di sistema. 
+
+Alla fine del processo di compilazione, le informazioni verranno calcolate e,
+se presente in output l'oggetto \key{ElapsedTime}, rileggerà l'orologio
+misurando il tempo trascorso.
+
+Nulla vieta di implementare altre strategie come quella di rendere la lettura
+dell'orologio al caricamento della libreria, un dato del registro stesso e poi
+dare accesso a questo tipo di parametri comuni a tutti gli oggetti \key{Info}.
+Sono scelte di progettazione molto importanti che divengono chiare durante lo
+sviluppo a cui si può dare risposta con criteri di semplicità ma che certamente
+sono il campo dell'ingegneria del software.
+
+Nell'ambito di questa seconda iterazione di sviluppo, tornando cioé alla
+strategia di oggetti \key{Info} autonomi cioé in grado di fornire l'informazione
+senza dover accedere a parametri del registro, descriviamo la forma
+della lista di selezione.
+
+Per ciascuna informazione, i dati utili sono il nome identificativo e i dati di
+eventuali funzioni di formato composti dal nome della funzione seguito da
+possibili parametri. Uno schema aiuta a disegnare e implementare la lista:
+\begin{lines}
+{
+    { <id_info>, <id_fmtFunc>, <param>, <param>, ...},
+    { <id_info>, <id_fmtFunc>, <param>, <param>, ...},
+    ...
+}
+\end{lines}
+
+Per esempio, se volessimo registrare in prima posizione il nome del compositore
+utilizzato per la compilazione, oggetto \key{EngineName}, con un testo tutto in
+maiuscolo, formato \key{upper}, all'indice 1 della lista \key{\_logList} ci
+dovrebbe essere la tabella:
+\begin{lines}
+{
+    {"EngineName", "upper"},
+    ...
+}
+\end{lines}
+
+Il limite di questa struttura dati è che viene considerata un'unica eventuale
+funzione formato, anche se con eventuali parametri secondari. Non è possibile
+applicare quindi una funzione formato su un dato già formattato, limitazione
+eliminabile modificando la struttura dati.
+
+Cominciamo con il metodo \fn{remove\_from\_log}. Serve a eliminare
+un'informazione dalla lista:
+\begin{lines}
+function register:remove_from_log(id_info)
+    assert(type(id_info) == "string")
+    local t = self._logList
+    local i = assert(
+        self:_find_index(t, id_info), id_info.." not found"
+    )
+    table.remove(t, i)
+    return self
+end
+\end{lines}
+
+Il metodo si basa su una funzione di utilità \fn{\_find\_index} che scorre la
+lista e restituisce, se esiste, la posizione di un oggetto \key{Info}:
+\begin{lines}
+function register:_find_index(t, id_name)
+    local i = 1
+    local res
+    while t[i] do
+        if t[i][1] == id_name then
+            res = i
+            break
+        end
+        i = i + 1
+    end
+    return res
+end
+\end{lines}
+
+Per evitare la creazione di una closure la funzione ausiliaria è stata definita
+come membro della libreria, tuttavia la si può sostituire con un dizionario
+identificatore/posizione da memorizzare nella tabella del registro e aggiornare
+ogni volta che si modifica la lista.
+
+Esaminiamo ora il codice del metodo \fn{add\_to\_log} che aggiunge
+un'informazione tra quelle da registrare in uscita inserendola nella posizione
+giusta nella lista:
+\begin{lines}
+function register:add_to_log(info, index)
+    local ll = self._logList
+    local len = #ll
+    local arch = self._iArchive
+    local is_pos
+    local log_entry = {} -- final data
+    if type(info) == "string" then
+        is_pos = self:_find_index(ll, info)
+        log_entry[1] = info
+    else
+        assert(type(info) == "table")
+        local id = info.id
+        if id then -- info is a `Info` object
+            self:install(info) -- check and install
+            log_entry[1] = id
+        else
+            -- [index 1] expected a `Info` tab or a string
+            local o = info[1]
+            local id
+            if type(o) == "string" then
+                is_pos = self:_find_index(ll, o)
+                log_entry[1] = o
+                id = o
+            else
+                assert(type(o) == "table")
+                self:install(o) -- check and install
+                log_entry[1] = o.id
+                id = o.id
+            end
+            -- format function?
+            local id_fmt = info[2] -- name of the format function
+            if id_fmt then
+                assert(type(id_fmt) == "string")
+                -- check if the fmt function exists
+                local fmt_repo = arch[id].fmt
+                if fmt_repo then
+                    assert(fmt_repo[id_fmt])
+                else
+                    error(
+                        "No format function available for '"..
+                        id.."' Info"
+                    )
+                end
+                log_entry[2] = id_fmt
+                local i = 3
+                while info[i] do
+                    log_entry[i] = info[i]
+                    i = i + 1
+                end
+            end
+        end
+    end
+    local id = log_entry[1]
+    assert(arch[id], "`Info` id '"..id.."' not found")
+    if is_pos == nil then -- insert or append
+        if index then
+            assert(type(index) == "number")
+            assert(index >= 1 and index <= len + 1)
+            table.insert(ll, index, log_entry)
+        else
+            ll[#ll + 1] = log_entry
+        end
+    else -- update an existing log entry
+        if index then
+            assert(type(index) == "number")
+            assert(index >= 1 and index <= len)
+            if not (index == is_pos) then
+                local o = table.remove(ll, is_pos)
+                table.insert(ll, index, o)
+                is_pos = index
+            end
+        end
+        local id_fmt = log_entry[2]
+        local fmt_repo = arch[id].fmt
+        if fmt_repo then
+            if id_fmt then
+                assert(
+                    fmt_repo[id_fmt],
+                    "format funcion '"..id_fmt.."' not found"
+                )
+                local entry = ll[is_pos]
+                entry[2] = id_fmt
+                local i = 3
+                while log_entry[i] do -- copy parameters
+                   entry[i] = log_entry[i]
+                   i = i + 1
+                end
+                entry[i] = nil -- safe breaking the param list
+            else
+                -- rise eventually a warning message
+                -- "unuseful insertion calling"
+            end
+        else
+            error(
+                "Info '"..id..
+                "' doesn't have any format function"
+            )
+        end
+    end
+    return self
+end
+\end{lines}
+
+Il metodo è piuttosto articolato perché prevede un elevato grado di polimorfismo
+degli argomenti. Con esso possiamo non solo inserire in uscita un'informazione
+specificandone o meno la posizione, ma anche installarne e inserirne una nuova
+dandone la definizione, e indicare o meno una funzione di formato con o senza
+parametri.
+
+In fondo, si installa un nuovo oggetto \key{Info} solo per utilizzarlo e di
+questo la libreria tiene conto permettendo all'utente di chiamare un solo
+metodo. In altre parole, sarebbe assurdo che l'utente installi un tipo di
+informazione senza poi farne uso.
+
+Il codice di \fn{add\_to\_log} è diviso in due parti, nella prima viene
+esaminato il dato di input e nella seconda viene modificata la lista di
+informazioni di registro. Vediamone alcuni esempi d'uso.
+
+Per spostare in posizione 1 con il formato \key{upper} l'informazione
+\key{EngineName} si chiama:
+\begin{lines}
+reg:add_to_log({"EngineName", "upper"}, 1)
+\end{lines}
+e per aggiungere un testo di commento in fondo alla lista creando un nuovo
+oggetto \key{Info}:
+\begin{lines}
+reg:add_to_log{
+    id = "CommentText",
+    info = "Compilazione di fase due"
+}
+\end{lines}
+e ancora per inserire in posizione 2 un nuovo tipo di informazione con la
+larghezza di pagina in punti a tre decimali:
+\begin{lines}
+local pw = {
+    id = "PageWidth",
+    info = function () return tex.pagewidth end,
+    fmt = {
+        point = function (pw, n)
+            n = n or 2
+            if n == 0 then
+                return tostring(p)
+            else
+                assert(type(n), "number")
+                assert(n>0)
+                local f1 = "%%0.%df pt"
+                local f2 = f1:format(n)
+                return f2:format(pw/65536) 
+            end
+        end
+    },
+}
+reg:add_to_log({pw, "point", 3}, 2)
+\end{lines}
+
+Esaminiamo infine il metodo \fn{log}. Non fa altro che leggere la lista delle
+informazioni e per ciascuna di esse richiamarne la definizione ottenendo il
+valore stringa da registrare su cui eventualmente applicare la funzione di
+formato. Il risultato non è la stringa di testo da memorizzare nel file di
+registro, ma ancora un tipo strutturato, cioè la lista delle coppie
+identificatore oggetto e informazione. Infatti, come vedremo nelle prossime
+sezioni il componente che gestisce gli oggetti \key{Info} non si occupa di
+interagire con file esterni.
+\begin{lines}
+function register:log()
+    local tline = {}
+    local arch = self._iArchive
+    for pos, info in ipairs(self._logList) do
+        local id = info[1]
+        local iobj = assert(arch[id])
+        local datalog = assert(iobj.info)
+        if type(datalog) == "function" then
+            datalog = assert(datalog(iobj))
+        end
+        datalog = assert(tostring(datalog))
+        local id_fmt = info[2]
+        if id_fmt then
+            assert(type(id_fmt) == "string")
+            local fn_fmt = assert(
+                iobj.fmt[id_fmt], id_fmt.." field not found"
+            )
+            assert(type(fn_fmt)=="function")
+            datalog = fn_fmt(datalog, table.unpack(info, 3))
+        end
+        tline[#tline + 1] = {id, datalog}
+    end
+    return tline
+end
+\end{lines}
+
+\subsection{Inizializzare la libreria}
+
+Il registro può essere inizializzato o con la lista utente di informazioni in
+uscita, oppure se questa non è fornita con una lista di default, tuttavia
+l'utente potrebbe dimenticare di inizializzare la lista. Per questo motivo, è
+possibile imporre l'inizializzazione nascondendo dietro a una chiamata di
+funzione il riferimento del modulo del registro.
+
+Con il metametodo \fn{\_\_call} e le closure di Lua si fa in modo che l'oggetto
+restituito al caricamento della libreria non sia il modulo atteso \key{register}
+ma un oggetto vuoto con l'unica via della chiamata di inizializzazione:
+\begin{lines}
+#[tex]
+\directlua{
+local lib_init = require "lib-logger"
+local register = lib_init("EngineName", "ElapsedTime", ...)
+}
+\end{lines}
+
+Se l'utente non fornisce alcuna lista sarà restituito il riferimento al modulo
+con la lista di default, altrimenti con la lista utente, come nell'esempio
+sopra.
+
+Questo comportamento si affida alla tecnica delle metatabelle ed è possibile
+anche l'alternativa diretta che non esamineremo. Dovreste poter riconoscere il
+punto nel codice che richiede la costruzione della closure:
+\begin{lines}
+local mt = {
+    __call = function (_, ilist)
+        return register:_define_or_default(ilist)
+    end
+}
+
+local lib = {}
+setmetatable(lib, mt)
+return lib
+\end{lines}
+
+La funzione ausiliria, sempre dal nome che inizia con un trattino basso a
+indicare un membro privato, è la seguente che sfrutta il metodo
+\fn{add\_to\_log} perciò l'utente è libero di creare qualsiasi composizione di
+informazioni, sia con oggetti \key{Info} predefiniti sia con quelli di propria
+definizione, con o senza funzioni di formato:
+\begin{lines}
+function register:_define_or_default(i_list)
+    i_list = i_list or self._default_log_entry_list
+    assert(type(i_list) == "table")
+    for _, info in ipairs(i_list) do
+        self:add_to_log(info)
+    end
+    return self
+end
+\end{lines}
+
+
+\subsection{Metodi di uscita}
+
+Dal registro le informazioni possono essere inviate al file esterno ma nulla
+vieta di creare un modulo indipendente che implementi diversi formati e
+destinazioni. Per questo nel file \file{lib-logger.lua} si trova il modulo
+\key{loglib} che mette a disposizione una o più modalità di output.
+
+I metodi del modulo si attendono in ingresso la lista delle coppie
+identificatore e informazione, sempre lo stesso tipo di dato, per poi creare una
+nuova linea di testo in un file nel formato CSV\footnote{Comma Separated
+Value.}, l'unico effettivamente implementato in questa seconda iterazione di
+sviluppo, oppure inviare i dati a un database, o spedirli in un messaggio di
+posta elettronica.
+
+
+\subsection{Il punto di vista dell'utente}
+
+Per usare la libreria l'utente carica il relativo file, inizializza il registro
+con la lista di default o con una personalizzata, e seleziona la modalità di
+output. Solamente in caso di nuovi oggetti \key{Info} l'utente dovrebbe scrivere
+l'opportuno codice Lua.
+
+Si possono fare esperimenti scaricando il pacchetto di seconda generazione
+\file{app-registro/logger.sty} e il file di prova \file{app-registro/doc2.tex},
+secondo le istruzioni della sezione~\ref{secIntroNote}.
+
+Una terza iterazione di sviluppo, potrebbe porsi lo scopo di minimizzare il
+numero di righe di codice necessarie a implementare un nuovo oggetto \key{Info},
+consentendo di evitare ripetizioni. Su questa idea, il punto chiave potrebbe
+essere l'inserire gli oggetti \key{Info} in una gerarchia di classi,
+implementando in una classe base funzioni di formato che i singoli oggetti
+ereditano automaticamente.
+
+
+\section{Conclusioni}
+
+Dalla progettazione della libreria del registro abbiamo imparato due cose: la
+prima è l'importanza di realizzare gli schemi delle strutture dati perché ciò
+aiuta sia nel definirle sia nell'implementarne i metodi. In Lua infatti possiamo
+contare solo sulla tabella.
+
+La seconda, è che lo sviluppo genera non solo risposte ma anche nuove domande, e
+che perciò la complessità del problema può essere affrontata in successive
+iterazioni dove una nuova struttura del codice prende il posto di quella dello
+stadio precedente, fino a raggiungere il framework che risponde ai migliori
+criteri.
+
 
 % end of file
-
