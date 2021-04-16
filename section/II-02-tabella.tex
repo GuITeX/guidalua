@@ -4,30 +4,32 @@
 \label{iChTabella}
 
 In questo capitolo parleremo della \emph{tabella}, l'unico tipo strutturato
-predefinito di Lua. Diamone subito la definizione: la tabella è un
-\emph{dizionario} cioè l'insieme non ordinato di coppie chiavi/valore e, allo
-stesso tempo, anche un \emph{array} cioè una sequenza ordinata di valori.
+predefinito di Lua e il suo costruttore. Diamone subito la definizione: la
+tabella è un \emph{dizionario} cioè l'insieme non ordinato di coppie
+chiavi/valore e, allo stesso tempo, anche un \emph{array} cioè una sequenza
+ordinata di valori.
 
 In Lua ne è previsto quindi un uso molteplice: se le chiavi sono numeri interi
 la tabella sarà un array, se le chiavi sono di altro tipo, per esempio stringhe,
-avremo un dizionario.
+sarà un dizionario.
 
 Le chiavi possono essere di tutti i tipi previsti da Lua tranne che \key{nil},
 mentre i valori possono appartenere a qualsiasi tipo. Nulla vieta che in una
 stessa tabella coesistano chiavi di tipo diverso.
 
-Dal punto di vista sintattico, una tabella di Lua è un oggetto racchiuso tra
-parentesi graffe. La più semplice quella vuota, si crea così:
+Per creare una tabella si usa il \emph{costruttore}. Come vedremo tra poco, la
+sua forma più semplice è quella che corrisponde a una tabella vuota e consiste
+in una coppia di parentesi graffe:
 \begin{lines}
-local t = {} -- una tabella vuota
+local t = {}      -- una tabella vuota
 \end{lines}
 
 Per assegnare e ottenere il valore associato a una chiave si utilizzano le
 parentesi quadre, l'operatore di indicizzazione, ecco un esempio:
 \begin{lines}
-local t = {}
-t["key"] = "val"
-print(t["key"]) --> stampa "val"
+local t = {}      -- tabella vuota
+t["key"] = "val"  -- nuovo elemento chiave/valore
+print(t["key"])   --> stampa "val"
 \end{lines}
 
 Stando alla definizione che abbiamo dato, una tabella può avere chiavi anche di

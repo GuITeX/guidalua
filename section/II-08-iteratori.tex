@@ -232,10 +232,26 @@ Scrivere la versione \emph{stateless} dell'iteratore dell'esercizio precedente.
 \end{Exercise}
 
 \begin{Exercise}[label=iter-05]
-Scrivere la versione \emph{stateless} dell'iteratore \fn{ipairs}. È possibile
+Scrivere la versione stateless dell'iteratore \fn{ipairs}. È possibile
 implementarlo in modo che la funzione d'iterazione restituisca per il ciclo
 generic for solamente l'elemento della tabella e non anche l'indice?
 \end{Exercise}
 
+\begin{Exercise}[label=iter-06]
+Definire un iteratore stateless attraverso la funzione \fn{Range} che,
+funzionando con il generic for, simuli invece il ciclo for numerico a variabile
+intera, iterando su un intervallo con un dato passo.
+
+Gli argomenti della funzione possono variare da uno a tre secondo questo schema:
+\begin{lines}
+Range(7)       --> 1, 2, 3, 4, 5, 6, 7
+Range(2, 7)    --> 2, 3, 4, 5, 6, 7
+Range(2, 7, 2) --> 2, 4, 6
+\end{lines}
+
+Il passo può essere negativo? Quali vantaggi potrebbe avere un iteratore di
+questo tipo rispetto al ciclo for numerico? Suggerimento: considerare che le
+funzioni in Lua sono valori di prima classe.
+\end{Exercise}
 
 % end of file

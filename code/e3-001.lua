@@ -1,13 +1,13 @@
 
 ---<<< uno
-local function print_five()
-    print(5)
-end
-
 local function do_many(fn, n)
-    for i=1, n or 1 do
+    for i = 1, n or 1 do
         fn()
     end
+end
+
+local function print_five()
+    print(5)
 end
 
 do_many(print_five)
@@ -19,30 +19,24 @@ do_many(function () print("---") end, 12)
 
 ---<<< due
 -- primo caso
-local function tipo_i()
+local function foo()
     -- body
 end
-
 local t = {}
-t.func_1 = tipo_i
+t.foo = foo
 
 -- secondo caso
 local t = {}
-t.func_2 = function ()
+t.foo = function ()
     -- body
 end
 
--- terzo caso con più di una funzione
+-- terzo caso con più funzioni
 local t = {
-    func_3_i = function ()
+    foo = function ()
         -- body
-    end,
-    
-    func_3_ii = function ()
-        -- body
-    end,
-    
-    func_3_iii = function ()
+    end,   
+    hoo = function ()
         -- body
     end,
 }
@@ -51,14 +45,14 @@ local t = {
 
 
 ---<<< tre
--- per un massimo di 3 argomenti
-local function add_three(...)
-    local n1, n2, n3 = ...
-    return (n1 or 0) + (n2 or 0) + (n3 or 0)
+-- per un massimo di 5 argomenti
+local function add(...)
+    local n1, n2, n3, n4, n5 = ...
+    return n1 + n2 + (n3 or 0) + (n4 or 0) + (n5 or 0)
 end
 
 -- con tutti gli argomenti
-local function add_all(...)
+local function add_many(...)
     local t = {...} -- collecting args in a table
     local sum = 0
     for i = 1, #t do
@@ -67,9 +61,9 @@ local function add_all(...)
     return sum
 end
 
-print(add_three(40, 20))
-print(add_all(45, 48, 5456))
-print(add_three(14, 15), add_all(-89, 45.6))
+print(add(40, 20))
+print(add_many(45, 48, 54, 56, -58, 20))
+print(add(14, 15, 6), add_all(-89, 45))
 --->>>
 
 
