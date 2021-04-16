@@ -1,4 +1,4 @@
--- filename: app-registro/mod-history.lua
+-- filename: app-reg/mod-history.lua
 local register = {
     start = os.clock(),
     sep = ", ",

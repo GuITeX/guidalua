@@ -44,7 +44,7 @@ ogni caso otterremo il file aperto in scrittura.
 
 La funzione \fn{append} può essere provata in un sorgente plain \LuaTeX{}
 compilabile come in questo:
-\sourcecode{file = [[app-registro/01.tex]]}
+\sourcecode{file = [[app-reg/01.tex]]}
 
 
 \section{Dati di compilazione}
@@ -66,7 +66,7 @@ un dato alla volta in un blocco \cs{directlua} posizionato immediatamente prima
 del termine del sorgente. Come prima istruzione invece, inseriremo il blocco di
 codice Lua che definirà alcuni parametri come il nome del file del registro e il
 separatore di campo testuale, e la funzione \fn{append}:
-\sourcecode{file = [[app-registro/02.tex]]}
+\sourcecode{file = [[app-reg/02.tex]]}
 
 
 \subsection{La variabile \code{jobname}}
@@ -151,7 +151,7 @@ Questa separazione non è solo utile al processo di sviluppo, facilitando
 l'accesso alle funzionalità da parte degli utenti indipendentemente dal formato.
 
 Allo stato attuale dello sviluppo del codice, il modulo Lua è il seguente:
-\sourcecode{file = [[app-registro/mod-history.lua]]}
+\sourcecode{file = [[app-reg/mod-history.lua]]}
 
 Tutte le funzionalità sono incluse in un unica tabella Lua chiamata
 \code{register}. Dall'esterno, caricando il modulo con la funzione \fn{require}
@@ -165,7 +165,7 @@ il codice ed elimina la necessità di creare una closure con un piccolo
 incremento delle prestazioni per includere il riferimento alla tabella stessa.
 
 Il sorgente in plain \LuaTeX{} si semplifica in questo:
-\sourcecode{file = [[app-registro/03.tex]]}
+\sourcecode{file = [[app-reg/03.tex]]}
 
 Per compilarlo correttamente il file Lua del modulo chiamato
 \code{mod-history.lua} deve essere nel percorso di ricerca. La soluzione più
@@ -174,12 +174,12 @@ semplice è copiarlo in locale nella directory del sorgente.
 A questo punto è facile creare un pacchetto per \LaTeX{}. Non ci sarà alcuna
 macro utente ma un aggiunta al codice di chiusura del documento con la macro
 \cs{AtEndDocument}. Ecco il codice:
-\sourcecode{file = [[app-registro/historylog.sty]]}
+\sourcecode{file = [[app-reg/historylog.sty]]}
 
 Basta caricare il pacchetto e tutte le compilazioni del sorgente verranno
 registrate come per questo file sorgente per Lua\LaTeX{}. Compilatelo più volte
 e controllate poi il file locale \file{history.log}:
-\sourcecode{file = [[app-registro/doc.tex]]}
+\sourcecode{file = [[app-reg/doc.tex]]}
 
 Il file di registro conterrà informazioni simili a queste:
 \begin{Verbatim}[numbers=none,xleftmargin=0pt]
@@ -195,18 +195,15 @@ Abbiamo costruito da zero un modulo Lua per inserire in un registro alcune
 informazioni sulle compilazioni dei sorgenti. Le funzionalità sono minime ma si
 tratta di un buon punto di partenza per dare risposta a nuove domande: quale
 struttura dovremo dare al modulo in modo che sia semplice aggiungere nuove
-funzionalità, come permettere all'utente di modificare le informazioni
-registrabili.
+funzionalità o modificare la lista delle informazioni registrabili.
 
 A poco a poco prende forma e si precisa la struttura di un \emph{framework}
-grazie all'attività di progettazione del software a passi successivi. Ciò che
-era molto meno evidente con lo sviluppo dei pacchetti \LaTeX{} è invece chiaro
-con i moduli Lua: la necessità di ricercare soluzioni convenienti ai problemi di
-organizzazione del codice.
+grazie all'attività di progettazione in passi successivi. Ciò che era molto meno
+evidente con lo sviluppo dei pacchetti \LaTeX{} è invece chiaro con i moduli
+Lua: la necessità di ricercare soluzioni con l'organizzazione del codice.
 
 
 \subsection{Dati per descrivere dati}
-
 
 Nel registro ogni linea contiene informazioni ma nel codice non ne esiste una
 rappresentazione di alto livello, un oggetto che si possa aggiungere o
@@ -223,8 +220,7 @@ di:
 \end{compactitemize}
 
 Il costruttore di tabelle è una struttura in grado di rappresentare ogni tipo di
-dato e la seguente è la diretta descrizione dei componenti di questo tipo di
-dato:
+dato e la seguente è la diretta descrizione dei componenti di \code{Info}:
 \begin{lines}
 {
     id = "EngineName",
@@ -280,7 +276,7 @@ lista di uscita, metodo \fn{set\_format};
 
 Non spiegherò tutti i dettagli per non eccedere con la descrizione del codice,
 tratterò solo i punti salienti lasciando libero il lettore di consultare il
-codice completo nel file \file{app-registro/lib\_logger.lua}.
+codice completo nel file \file{app-reg/lib-logger.lua}.
 
 Di base, la possibilità di selezionare l'insieme di informazioni da registrare
 comporta il dover distinguere la lista di oggetti disponbili che chiameremo
@@ -697,7 +693,7 @@ output. Solamente in caso di nuovi oggetti \key{Info} l'utente dovrebbe scrivere
 l'opportuno codice Lua.
 
 Si possono fare esperimenti scaricando il pacchetto di seconda generazione
-\file{app-registro/logger.sty} e il file di prova \file{app-registro/doc2.tex},
+\file{app-reg/logger.sty} e il file di prova \file{app-reg/doc2.tex},
 secondo le istruzioni della sezione~\ref{secIntroNote}.
 
 Una terza iterazione di sviluppo, potrebbe porsi lo scopo di minimizzare il

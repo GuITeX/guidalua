@@ -1,4 +1,4 @@
--- filename: app-registro/lib-logger.lua
+-- filename: app-reg/lib-logger.lua
 
 local register = {
     _iArchive = {},

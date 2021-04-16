@@ -18,6 +18,9 @@
 \usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{guidalua.bib}
 
+%\indexsetup{noclearpage,level=\section*,toclevel=section}
+\makeindex[options={-s guidatematica.ist},title=Indice Analitico]
+
 \fvset{
     fontsize=\small,
     numbers=left,
@@ -214,5 +217,10 @@ License}, versione 1.3 o successive ed è curata dall'autore.}
 
 % bibliografia
 \input{section/Z-90-biblio.tex}
+
+% indexes
+\printindex
+%\printindex[lua]
+
 \end{document}
 
