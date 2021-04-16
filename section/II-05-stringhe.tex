@@ -126,7 +126,7 @@ In Java e negli altri linguaggi con stringhe immutabili normalmente si corre ai
 ripari mettendo a disposizione una struttura dati o una funzione che risolve il
 problema, per esempio un tipo \key{StringBuffer}. In Lua la soluzione è una
 funzione della libreria \key{table} che, anticipando rispetto alle nostre
-chiaccherate è \fn{table.concat}:
+chiaccherate è \fn{table.concat}\luastd{table.concat}:
 \begin{lines}
 local t = {}
 for i = 1, 100 do
@@ -136,8 +136,8 @@ end
 print(#table.concat(t))
 \end{lines}
 
-Nel caso specifico avremo dovuto usare la funzione \fn{string.rep} anche se
-\fn{table.concat} è più generale.
+Nel caso specifico avremo dovuto usare la funzione
+\fn{string.rep}\luastd{string.rep} anche se \fn{table.concat} è più generale.
 
 
 \section{Esercizi}

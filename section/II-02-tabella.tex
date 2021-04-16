@@ -13,9 +13,9 @@ In Lua ne è previsto quindi un uso molteplice: se le chiavi sono numeri interi
 la tabella sarà un array, se le chiavi sono di altro tipo, per esempio stringhe,
 sarà un dizionario.
 
-Le chiavi possono essere di tutti i tipi previsti da Lua tranne che \key{nil},
-mentre i valori possono appartenere a qualsiasi tipo. Nulla vieta che in una
-stessa tabella coesistano chiavi di tipo diverso.
+Le chiavi possono essere di tutti i tipi previsti da Lua tranne che
+\key{nil}\luak{nil}, mentre i valori possono appartenere a qualsiasi tipo. Nulla
+vieta che in una stessa tabella coesistano chiavi di tipo diverso.
 
 Per creare una tabella si usa il \emph{costruttore}. Come vedremo tra poco, la
 sua forma più semplice è quella che corrisponde a una tabella vuota e consiste
@@ -125,10 +125,10 @@ local t = { 30, 8, 500 }
 print(t[1] + t[2] + t[3]) --> stampa 538
 \end{lines}
 
-Non è tutto. L'efficacia sintattica del costruttore è completata dalla
-\emph{dot notation}, valida solamente per le chiavi di tipo stringa:
-il valore associato a una chiave stringa si ottiene scrivendo la chiave dopo
-il nome del riferimento della tabella, separato dal carattere \key{.}:
+Non è tutto. L'efficacia sintattica del costruttore è completata dalla \emph{dot
+notation}, valida solamente per le chiavi di tipo stringa: il valore associato a
+una chiave stringa si ottiene scrivendo la chiave dopo il nome del riferimento
+della tabella, separato dal carattere \key{.}\luas{.}:
 \begin{lines}
 local t = { chiave = "123" }
 assert(t.chiave == t["chiave"])

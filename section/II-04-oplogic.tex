@@ -2,13 +2,14 @@
 
 \chapter{Operatori logici}
 
-In Lua un'espressione è vera se essa corrisponde al valore booleano \key{true}
-oppure a un valore che non è \key{nil}.
+In Lua un'espressione è vera se essa corrisponde al valore booleano
+\key{true}\luak{true} oppure a un valore che non è \key{nil}\luak{nil}.
 
-Gli operatori logici \key{and}, \key{or} e \key{not} danno luogo ad alcune
-espressioni idiomatiche di Lua. Cominciamo con \key{or}: è un operatore logico
-binario. Se il primo operando è vero lo restituisce altrimenti restituisce il
-secondo. Per esempio nel seguente codice \key{a} vale 123.
+Gli operatori logici \key{and}\luak{and}, \key{or}\luak{or} e
+\key{not}\luak{not} danno luogo ad alcune espressioni idiomatiche di Lua.
+Cominciamo con \key{or}: è un operatore logico binario. Se il primo operando è
+vero lo restituisce altrimenti restituisce il secondo. Per esempio nel seguente
+codice \key{a} vale 123.
 \begin{lines}
 local a = 123 or "mai assegnato"
 \end{lines}

@@ -30,11 +30,15 @@ fornisce tutte le informazioni di dettaglio sulla libreria standard di Lua~5.3.
 \section{Libreria matematica}
 
 Nella libreria memorizzata nella tabella \key{math} ci sono le funzioni
-trigonometriche \fn{sin}, \fn{cos}, \fn{tan}, \fn{asin} eccetera --- che come
-di consueto lavorano in radianti --- le funzioni esponenziali \fn{exp},
-\fn{log}, \fn{log10}, quelle di arrotondamento \fn{ceil}, \fn{floor}, e quelle
-per la generazione pseudocasuale di numeri come \fn{random}, e \fn{randomseed}.
-Oltre a funzioni, la tabella include campi numerici come la costante \( \pi \).
+trigonometriche \fn{sin}\luastd{math.sin}, \fn{cos}\luastd{math.cos},
+\fn{tan}\luastd{math.tan}, \fn{asin}\luastd{math.asin} eccetera --- che come di
+consueto lavorano in radianti --- le funzioni esponenziali
+\fn{exp}\luastd{math.exp}, \fn{log}\luastd{math.log},
+\fn{log10}\luastd{math.log10}, quelle di arrotondamento
+\fn{ceil}\luastd{math.ceil}, \fn{floor}\luastd{math.floor}, e quelle per la
+generazione pseudocasuale di numeri come \fn{random}\luastd{math.random}, e
+\fn{randomseed}\luastd{math.randomseed}. Oltre a funzioni, la tabella include
+campi numerici come la costante \( \pi \)\luak{math.pi}.
 
 Un esempio introduttivo è questo dove nella funzione \fn{one} viene definita una
 funzione locale:
@@ -52,9 +56,10 @@ porzioni di testo.
 \subsection{Funzione \fn{string.format}}
 \label{secFondStringFormat}
 
-La funzione più semplice è quella di formattazione \fn{string.format}. Essa
-restituisce una stringa prodotta con il formato definito dal primo argomento
-dei dati forniti dal secondo argomento in poi.
+La funzione più semplice è quella di formattazione
+\fn{string.format}\luastd{string.format}. Essa restituisce una stringa prodotta
+con il formato definito dal primo argomento dei dati forniti dal secondo
+argomento in poi.
 
 Il formato è esso stesso specificato come una stringa contenente dei segnaposto
 creati con il simbolo percentuale e uno specificatore di tipo. Per esempio
@@ -90,9 +95,9 @@ Il pattern è una stringa che può contenere campi chiamati \emph{classi} simili
 a quelli per la funzione di formato visti in precedenza, che stavolta però si
 riferiscono al singolo carattere, e questa differenza è essenziale.
 
-La funzione di base che accetta pattern è \fn{string.match} che restituisce
-la prima corrispondenza trovata in una stringa primo argomento corrispondente
-al pattern dato come secondo argomento.
+La funzione di base che accetta pattern è \fn{string.match}\luastd{string.match}
+che restituisce la prima corrispondenza trovata in una stringa primo argomento
+corrispondente al pattern dato come secondo argomento.
 
 Per esempio, possiamo ricercare in un numero di tre cifre intere all'interno di
 un testo con il pattern \verb|"%d%d%d"|:
@@ -162,9 +167,9 @@ saranno restituiti:
 
 Abbiamo appena cominciato a scoprire le funzionalità dedicate al testo
 disponibili nella libreria standard di Lua. Diamo solo un altro sguardo
-presentando la funzione \fn{string.gsub}. Il suo nome sta per \emph{global
-substitution}, ovvero la sostituzione di tutte le parti di un testo che
-corrispondono a uno schema.
+presentando la funzione \fn{string.gsub}\luastd{string.gsub}. Il suo nome sta
+per \emph{global substitution}, ovvero la sostituzione di tutte le parti di un
+testo che corrispondono a uno schema.
 
 Per individuare le parti da sostituire è naturale pensare di utilizzare un
 pattern e che sia possibile utilizzare le capture nel testo di sostituzione, per

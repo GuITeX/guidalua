@@ -13,32 +13,35 @@ Creiamo la tabella con il costruttore in linea e iteriamo con un ciclo
 \key{for}:
 \sourcecode{file = [[code/e1-001.lua]], run = true}
 
-Il corpo del ciclo \key{for} di Lua è il blocco compreso tra le parole chiave
-obbligatorie \key{do} ed \key{end}. La variabile \key{i} interna al ciclo
-assumerà i valori da 1 fino al numero di elementi della tabella, ottenuto con
-l'operatore lunghezza \key{\#} valido anche per le stringhe.
+Il corpo del ciclo \key{for}\luak{for} di Lua è il blocco compreso tra le parole
+chiave obbligatorie \key{do}\luak{do} ed \key{end}. La variabile \key{i} interna
+al ciclo assumerà i valori da 1 fino al numero di elementi della tabella,
+ottenuto con l'operatore lunghezza \key{\#} valido anche per le stringhe.
 
-Per ciascuna iterazione con il costrutto condizionale \key{if} incrementiamo un
-contatore solo se l'elemento della tabella è pari. L'\key{if} ha anch'esso
-bisogno di definire il blocco di codice e lo fa con le parole chiavi
-obbligatorie \key{then} ed \key{end}, mentre \key{else} o \key{elseif} sono rami
-di codice facoltativi.
+Per ciascuna iterazione con il costrutto condizionale \key{if}\luak{if}
+incrementiamo un contatore solo se l'elemento della tabella è pari. L'\key{if}
+ha anch'esso bisogno di definire il blocco di codice e lo fa con le parole
+chiavi obbligatorie \key{then}\luak{then} ed \key{end}\luak{end}, mentre
+\key{else}\luak{else} o \key{elseif}\luak{elseif} sono rami di codice
+facoltativi.
 
-Il controllo di parità degli interi si basa sull'operatore modulo \key{\%},
-resto della divisione intera. Infatti un numero pari è tale se il resto della
-divisione per 2 è zero. 
+Il controllo di parità degli interi si basa sull'operatore modulo
+\key{\%}\luas{\%}, resto della divisione intera. Infatti un numero pari è tale
+se il resto della divisione per 2 è zero. 
 
-L'operatore di \emph{uguaglianza} è il doppio carattere di uguale \texttt{==} e
-quello di \emph{disuguaglianza} è la coppia dei segni tilde e uguale
-\verb|~=|. Naturalmente funzionano anche gli operatori di confronto \key{>},
-\key{>=} e \key{<}, \key{<=}.
+L'operatore di \emph{uguaglianza} è il doppio carattere di uguale
+\key{==}\luas{==} e quello di \emph{disuguaglianza} è la coppia dei segni tilde
+e uguale \verb|~=|\luas{~=}. Naturalmente funzionano anche gli operatori di
+confronto \key{>}\luas{>}, \key{>=}\luas{>=} e \key{<}\luas{<},
+\key{<=}\luas{<=}.
 
 
 \subsection{Operatore lunghezza}
 \label{secFondLenOperator}
 
-Ma come si comporta l'operatore di lunghezza \texttt{\#} per le tabelle array
-con indici non lineari? Per esempio, qual è il risultato del seguente codice:
+Ma come si comporta l'operatore di lunghezza \key{\#}\luas{\#} per le
+tabelle array con indici non lineari? Per esempio, qual è il risultato del
+seguente codice:
 \begin{lines}
 local t = {}
 t[1] = 1
@@ -60,12 +63,12 @@ local t2 = {nil, nil,  nil, nil, nil, nil, nil, 8, nil}
 print(#t2)
 \end{lines}
 
-L'operatore \texttt{\#} restituisce la lunghezza di una tabella array come uno
-dei sui \emph{bordi}. Un bordo è la posizione di un valore non \key{nil} seguito
-da un valore \key{nil}, oppure zero se la posizione 1 è \key{nil}.
+L'operatore \key{\#} restituisce la lunghezza di una tabella array come uno dei
+sui \emph{bordi}. Un bordo è la posizione di un valore non \key{nil} seguito da
+un valore \key{nil}, oppure zero se la posizione 1 è \key{nil}.
 
 Questo comportamento riflette la particolare e sofisticata implementazione della
-tabella di Lua. L'operatore lunghezza \texttt{\#} può restituire uno dei
+tabella di Lua. L'operatore lunghezza \key{\#} può restituire uno dei
 qualsiasi indici interi corrispondenti a un bordo della tabella, in funzione di
 come è stata creata o anche della presenza di chiavi non intere.
 
@@ -73,8 +76,8 @@ Se la tabella è una \emph{sequenza}, cioè se non ci sono buchi di valori tra l
 posizioni intere partendo da 1 fino a \( n \), allora la tabella ha un solo
 bordo che vale \( n \). Se la tabella è vuota il suo bordo vale zero.
 
-L'operatore \texttt{\#} viene calcolato molto velocemente anche per tabelle
-array grandi, ed è usato per espressioni idiomatiche come quella usatissima per
+L'operatore \key{\#} viene calcolato molto velocemente anche per tabelle array
+grandi, ed è usato per espressioni idiomatiche come quella usatissima per
 l'inserimento di un nuovo dato in coda a una sequenza:
 \begin{lines}
 #[run]
@@ -92,10 +95,10 @@ numero. Fatelo per esercizio e poi confrontate il codice seguente che utilizza
 l'operatore modulo \key{\%}:
 \sourcecode{file = [[code/e1-002.lua]], run = true}
 
-Così abbiamo introdotto anche il ciclo \key{while} perfettamente coerente con
-la sintassi dei costrutti visti fino a ora: il blocco di codice ripetuto fino a
-che la condizione è vera, è obbligatoriamente definito da due parole chiave,
-quella di inizio è \key{do} e quella di fine è \key{end}.
+Così abbiamo introdotto anche il ciclo \key{while}\luak{while}
+perfettamente coerente con la sintassi dei costrutti visti fino a ora: il blocco
+di codice ripetuto fino a che la condizione è vera, è obbligatoriamente definito
+da due parole chiave, quella di inizio è \key{do} e quella di fine è \key{end}.
 
 Le variabili definite come locali nei blocchi del ciclo \key{for}, nei rami del
 condizionale \key{if} e nel ciclo \key{while}, non sono visibili all'esterno.
@@ -126,10 +129,10 @@ ovvero che gode della proprietà che le cifre decimali sono simmetriche come per
 esempio avviene per il numero 123321. Confrontate poi questa soluzione:
 \sourcecode{file = [[code/e1-003.lua]], select = [[prima_sol]], run = true}
 
-La soluzione utilizza una tabella per memorizzare le cifre in ordine inverso
-del numero da verificare, che vengono poi utilizzate successivamente nel ciclo
-\key{for} dall'ultima --- la cifra più significativa --- fino alla prima per
-ricalcolare il valore. Se il numero iniziale è palindromo allora il
+La soluzione utilizza una tabella per memorizzare le cifre in ordine inverso del
+numero da verificare, che vengono poi utilizzate successivamente nel ciclo
+\key{for}\luak{for} dall'ultima --- la cifra più significativa --- fino alla
+prima per ricalcolare il valore. Se il numero iniziale è palindromo allora il
 corrispondente numero a cifre invertite è uguale al numero di partenza.
 
 Nel ciclo \key{for} il terzo parametro opzionale -1 imposta il passo per la
@@ -147,20 +150,20 @@ intero. Ancora una volta, confrontate il codice proposto solo dopo aver cercato
 una vostra soluzione.
 \sourcecode{file = [[code/e1-004.lua]]}
 
-Questo esempio mostra in azione l'\key{if} a più rami che in Lua svolge la
-funzione del costrutto \key{switch} presente in altri linguaggi, con una nuova
-parola chiave: \key{elseif}.
+Questo esempio mostra in azione l'\key{if}\luak{if} a più rami che in Lua svolge
+la funzione del costrutto \key{switch} presente in altri linguaggi, con una
+nuova parola chiave: \key{elseif}.
 
 L'esempio è interessante anche per come viene introdotta la variabile
 \key{digits}, cioè senza inizializzarla per poi assegnarla nel ramo opportuno
 dell'\key{if}. Infatti una variabile interna a un blocco non sopravvive oltre,
 per questo motivo dichiararla all'interno dell'\key{if} non è sufficiente.
 
-Come è necessario \emph{non} premettere \key{local} nelle assegnazioni nei rami
-del condizionale: in questo caso verrebbe creata una nuova variabile locale al
-blocco che \emph{oscurerebbe} quella esterna con lo stesso nome. In altre
-parole, al termine del condizionale \key{digits} varrebbe ancora \key{nil}, il
-valore che assume nel momento della dichiarazione.
+Come è necessario \emph{non} premettere \key{local}\luak{local} nelle
+assegnazioni nei rami del condizionale: in questo caso verrebbe creata una nuova
+variabile locale al blocco che \emph{oscurerebbe} quella esterna con lo stesso
+nome. In altre parole, al termine del condizionale \key{digits} varrebbe ancora
+\key{nil}, il valore che assume nel momento della dichiarazione.
 
 
 \section{Esercizi}

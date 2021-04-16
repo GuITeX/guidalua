@@ -85,7 +85,7 @@ chiave nell'intenzione di introdurre un nuovo campo/metodo porta a errori.
 
 \section{Colon notation}
 
-Da questo momento entra in scena l'operatore \key{:} --- che chiameremo
+Da questo momento entra in scena l'operatore \key{:}\luas{:} --- che chiameremo
 \emph{colon notation}. L'operatore \key{:} fa in modo che le seguenti due
 espressioni siano perfettamente equivalenti anche se le rende differenti dal
 punto di vista concettuale agli occhi del programmatore:
@@ -96,10 +96,10 @@ punto di vista concettuale agli occhi del programmatore:
 
 Questo operatore è il primo nuovo elemento che Lua introduce per facilitare la
 programmazione orientata agli oggetti. Se si accede a un metodo memorizzato in
-una tabella con l'operatore due punti \key{:} anziché con l'operatore \key{.}
-allora l'interprete aggiungerà implicitamente un primo parametro chiamandolo
-\key{self} con il riferimento alla tabella stessa, insomma puro zucchero
-sintattico.
+una tabella con l'operatore due punti \key{:} anziché con l'operatore
+\key{.}\luas{.} allora l'interprete aggiungerà implicitamente un primo parametro
+chiamandolo \key{self}\luak{self} con il riferimento alla tabella stessa,
+insomma puro zucchero sintattico.
 
 
 \section{Metatabelle}
@@ -137,11 +137,10 @@ metametodi.
 
 \section{Il metametodo \fn{\_\_tostring}}
 
-Il metametodo più semplice di tutti è \fn{\_\_tostring}. Esso viene
-invocato se una tabella è data come argomento alla funzione \fn{print} per
-ottenere il valore stringa da stampare. Se non esiste una metatabella
-associata con questo metametodo verrà stampato l'indirizzo di memoria della
-tabella:
+Il metametodo più semplice di tutti è \fn{\_\_tostring}. Esso viene invocato se
+una tabella è data come argomento alla funzione \fn{print}\luastd{print} per
+ottenere il valore stringa da stampare. Se non esiste una metatabella associata
+con questo metametodo verrà stampato l'indirizzo di memoria della tabella:
 \sourcecode{
     file = [[code/e10-oop.lua]],
     select = [[tostring]],
@@ -152,9 +151,9 @@ tabella:
 \label{secFondMetaIndex}
 
 Il metametodo che interessa la programmazione a oggetti in Lua è
-\key{\_\_index}. Esso interviene quando viene chiamato un campo di una tabella
-che non esiste e che normalmente restituirebbe il valore \key{nil}. Un esempio
-di codice chiarirà il meccanismo:
+\key{\_\_index}\luak{\_\_index}. Esso interviene quando viene chiamato un campo
+di una tabella che non esiste e che normalmente restituirebbe il valore
+\key{nil}. Un esempio di codice chiarirà il meccanismo:
 \sourcecode{
     file = [[code/e10-oop.lua]],
     select = [[index]],
@@ -242,7 +241,7 @@ Nella sezione del codice utente viene dapprima creato un cerchio senza fornire
 alcun valore per il raggio. Ciò significa che quando stampiamo il valore del
 raggio con la successiva istruzione otteniamo \( 0 \) che è il valore di default
 del raggio dell'oggetto \key{Cerchio}, per effetto della chiamata a
-\key{\_\_index} della metatabella.
+\key{\_\_index}\luak{\_\_index} della metatabella.
 
 Fino a questo momento la tabella dell'oggetto \key{o} non contiene alcun campo
 \key{radius}. Cosa succede allora quando è chiamato il comando

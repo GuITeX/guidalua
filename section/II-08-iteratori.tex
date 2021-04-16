@@ -6,7 +6,7 @@ volta gli elementi di una collezione di dati. Vi dedicheremo un capitolo proprio
 perché sono molto utili per scrivere codice efficiente ed elegante.
 
 Il linguaggio Lua prevede il ciclo d'iterazione \emph{generic for} che
-introduce la nuova parola chiave \key{in} secondo questa sintassi:
+introduce la nuova parola chiave \key{in}\luak{in} secondo questa sintassi:
 \begin{lines}
 for <lista variabili> in iterator_function() do
 -- codice
@@ -15,8 +15,8 @@ end
 
 Le tabelle di Lua sono oggetti che possono essere impiegati per rappresentare
 degli array oppure dei dizionari. In entrambe i casi Lua mette a disposizione
-due iteratori predefiniti rispettivamente tramite le funzioni \fn{ipairs} e
-\fn{pairs}.
+due iteratori predefiniti rispettivamente tramite le funzioni
+\fn{ipairs}\luastd{ipairs} e \fn{pairs}\luastd{pairs}.
 
 Queste funzioni restituiscono un iteratore conforme alle specifiche del generic
 for. Mentre impareremo più tardi a scrivere iteratori personalizzati,
@@ -28,7 +28,7 @@ per le tabelle.
 
 La funzione \fn{ipairs} restituisce un iteratore che a ogni ciclo genera due
 valori: l'indice dell'array e il valore corrispondente. L'iterazione comincia
-dalla posizione 1 e termina quando il valore è \key{nil}:
+dalla posizione 1 e termina fino a quando il valore diventa \key{nil}:
 \begin{lines}
 -- una tabella array
 local t = {45, 56, 89, 12, 0, 2, -98}
@@ -114,8 +114,8 @@ che tra l'altro in questo caso ricrea l'iteratore \fn{ipairs} visto poco fa.
 
 Infatti, la funzione \fn{iter\_fn} mantiene nella closure lo stato
 dell'iteratore --- l'indice \key{i} e la tabella \key{t} --- e restituisce uno
-dopo l'altro gli elementi della tabella. Il ciclo \key{while} infinito,
-s'interrompe quando il valore è \key{nil}.
+dopo l'altro gli elementi della tabella. Il ciclo \key{while}\luak{while}
+infinito, s'interrompe quando il valore è \key{nil}.
 
 Tuttavia, data l'importanza degli iteratori, Lua introduce il nuovo costrutto
 chiamato \emph{generic for} che si aspetta una funzione proprio come la
@@ -146,12 +146,12 @@ Per definire un iteratore sui numeri pari di un intervallo dobbiamo creare una
 funzione che restituisce a sua volta una funzione in grado di generare la
 sequenza. L'iterazione termina quando giunti all'ultimo elemento, la funzione
 restituirà il valore nullo \key{nil}, cosa che succede in automatico senza dover
-esplicitare un'istruzione di \key{return}.
+esplicitare un'istruzione di \key{return}\luak{return}.
 
 Potremo fare così: dato il numero iniziale per prima cosa potremo calcolare il
-primo numero pari dell'intervallo usando l'operatore modulo \key{\%} e poi
-creare la funzione di iterazione in sintassi anonima che prima incrementa di 2
-la variabile di ciclo --- ed ecco perché dovremo inizialmente sottrarle la
+primo numero pari dell'intervallo usando l'operatore modulo \key{\%}\luas{\%} e
+poi creare la funzione di iterazione in sintassi anonima che prima incrementa di
+2 la variabile di ciclo --- ed ecco perché dovremo inizialmente sottrarle la
 stessa quantità --- e, se questo è inferiore all'estremo superiore
 dell'intervallo ritornare indice e numero pari della sequenza. Ecco il codice
 completo:
@@ -179,8 +179,8 @@ Una seconda versione del generatore di numeri pari può essere un buon esempio
 di un iteratore in Lua che non necessita di una closure, per un risultato ancora
 più efficiente, implementando uno \emph{stateless iterator}.
 
-Per capire come ciò sia possibile dobbiamo conoscere nel dettaglio come
-funziona il generic for in Lua; dopo la parola chiave \key{in} esso si aspetta
+Per capire come ciò sia possibile dobbiamo conoscere nel dettaglio come funziona
+il generic for in Lua; dopo la parola chiave \key{in}\luak{in} esso si aspetta
 altri due parametri oltre alla funzione da chiamare a ogni ciclo: una variabile
 che rappresenta lo stato invariante e la variabile di controllo.
 \begin{lines}

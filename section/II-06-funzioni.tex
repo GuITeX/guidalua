@@ -18,12 +18,12 @@ Con le regole dell'assegnazione multipla una funzione può accettare più
 argomenti. Se gli argomenti passati sono in eccesso rispetto a quelli che essa
 prevede, quelli in più verranno ignorati. Viceversa, se gli argomenti sono
 inferiori a quelli previsti allora a quelli mancanti verrà assegnato il valore
-\key{nil}.
+\key{nil}\luak{nil}.
 
 Le stesse regole valgono anche per i dati di ritorno quando la funzione è usata
 come espressione in un'istruzione di assegnamento. Si scrive dopo l'istruzione
-\key{return} la lista delle espressioni separate da virgole che saranno valutate
-e assegnate alle corrispondenti variabili.
+\key{return}\luak{return} la lista delle espressioni separate da virgole che
+saranno valutate e assegnate alle corrispondenti variabili.
 
 Per esempio, potremo modificare la funzione precedente per restituire anche la
 somma dei primi \( n \) numeri di Fibonacci oltre che l'ennesimo elemento della
@@ -117,10 +117,10 @@ di Lua si presenta all'utente proprio in questo modo.
 \section{Numero di argomenti variabile}
 
 Una funzione può ricevere un numero variabile di argomenti rappresentati da
-\key{...} tre caratteri punto consecutivi\footnote{Questa caratteristica è
-chiamata \emph{variadic function}.}. Nel corpo della funzione i tre punti
-rappresenteranno la lista degli argomenti, dunque possiamo o costruire con essi
-una tabella oppure effettuare un'assegnazione multipla.
+\key{...}\luas{...} tre caratteri punto consecutivi\footnote{Questa
+caratteristica è chiamata \emph{variadic function}.}. Nel corpo della funzione i
+tre punti rappresenteranno la lista degli argomenti, dunque possiamo o costruire
+con essi una tabella oppure effettuare un'assegnazione multipla.
 
 Un esempio è una funzione che restituisce la somma di tutti gli argomenti
 numerici:
@@ -141,18 +141,18 @@ moltiplicatore:
     select = [[quattro]],
 }
 
-La funzione predefinita \fn{select} consente di accedere alla lista degli
-argomenti in dettaglio. Infatti nel codice precedente, se tra gli argomenti
-compare un valore \key{nil} avremo problemi ad accedere ai valori successivi
-perché --- come sappiamo già --- l'operatore di lunghezza \key{\#} determina la
-lunghezza della sequenza in base ai bordi cioè alle posizioni dei valori non
-nulli seguite da valori \key{nil} (maggiori dettagli alla sezione \S
+La funzione predefinita \fn{select}\luastd{select} consente di accedere alla
+lista degli argomenti in dettaglio. Infatti nel codice precedente, se tra gli
+argomenti compare un valore \key{nil} avremo problemi ad accedere ai valori
+successivi perché --- come sappiamo già --- l'operatore di lunghezza \key{\#}
+determina la lunghezza della sequenza in base ai bordi cioè alle posizioni dei
+valori non nulli seguite da valori \key{nil} (maggiori dettagli alla sezione \S
 \ref{secFondLenOperator}).
 
 Il selettore prevede un primo parametro fisso seguito da una lista variabile di
 valori rappresentata dai tre punti \key{...}. Se questo parametro è un intero
 allora verrà considerato come indice per restituire l'argomento corrispondente.
-Se invece il parametro è la stringa \key\# allora la funzione restituisce il
+Se invece il parametro è la stringa \key{\#} allora la funzione restituisce il
 numero totale di argomenti \emph{inclusi} i \key{nil}.
 
 Il codice seguente preso pari pari dal \href{http://www.lua.org/pil/}{PIL} ne è
@@ -168,8 +168,8 @@ end
 \section{Omettere le parentesi}
 
 In Lua esiste la sintassi di chiamata a funzione semplificata che consiste nella
-possibilità di ommettere le parentesi tonde \key{()}. È ammessa solo se alla
-funzione si passa un unico argomento di tipo stringa o di tipo tabella:
+possibilità di ommettere le parentesi tonde \key{()}\luas{()}. È ammessa solo se
+alla funzione si passa un unico argomento di tipo stringa o di tipo tabella:
 \sourcecode{
     file = [[code/e7-funzioni.lua]],
     select = [[anchequesto]],
