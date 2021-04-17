@@ -73,8 +73,9 @@ end
 \begin{lines}
 #[tex]
 #[tcolorbox]
+#[indexfile=app-tut/E0-003-tab.tex]
 % !TeX program = LuaLaTeX
-% filename: app-start/E0-003-tab.tex
+% filename: app-tut/E0-003-tab.tex
 \documentclass{article}
 % preambolo non riportato
 \begin{document}
@@ -111,11 +112,11 @@ All'interno dell'ambiente \amb{tabular} c'è solo codice Lua: costruito l'oggett
 si può verificare dall'implementazione con il paradigma a oggetti che segue, è
 proprio \fn{next} a chiamare a ogni passo la funzione di generazione:
 
-\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\CLRmarginpar{%
 Metametodo \key{\_\_index}\\
-\gotosec{} \ref{secFondMetaIndex}}
+\gotosec{} \ref{secFondMetaIndex}}[true]
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+12mm\relax]{%
+\CLRmarginpar{%
 Costruttore\\
 \gotosec{} \ref{secFondCostruttore}}
 %
@@ -197,8 +198,9 @@ invece derivabile dai dati.
 \begin{lines}
 #[tex]
 #[tcolorbox]
+#[indexfile=app-tut/E0-004-tab.tex]
 % !TeX program = LuaLaTeX
-% filename: app-start/E0-004-tab.tex
+% filename: app-tut/E0-004-tab.tex
 \documentclass{article}
 % preambolo non riportato
 \begin{document}
@@ -280,19 +282,19 @@ quello definito dalla funzione \fn{row\_func}.
 Per implementare il template di riga, basta aggiungere alla classe \code{Row} un
 iteratore che a ogni passo ritorni la stringa di codice della riga di tabella:
 
-\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\CLRmarginpar{%
 \fn{string.gsub}\\
-\gotosec{} \ref{secFondGsub}}
+\gotosec{} \ref{secFondGsub}}[true]
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
+\CLRmarginpar{%
 Pattern\\
 \gotosec{} \ref{secFondPattern}}
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
+\CLRmarginpar{%
 Capture\\
 \gotosec{} \ref{secFondCapture}}
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+27mm\relax]{%
+\CLRmarginpar{%
 Stateless iterator\\
 \gotosec{} \ref{secFondStatelessIter}}
 %
@@ -319,7 +321,7 @@ end
 
 Al di la di considerazioni di efficienza legate all'uso della funzione di
 libreria \fn{gsub}, l'iteratore in effetti funziona come dimostra il seguente
-codice per \LuaLaTeX{} estratto dal file \file{app-start/E0-005-tab.tex} parte
+codice per \LuaLaTeX{} estratto dal file \file{app-tut/E0-005-tab.tex} parte
 della guida. Abbiamo inserito la macro \cs{noexpand} per bloccare l'espansione
 delle control sequence\footnote{Certo mi ostino ancora a non utilizzare il
 pacchetto \pack{luacode}.}:
@@ -384,6 +386,7 @@ tmpl = [[\noexpand\textbf{<1>} & <2> & <3>\noexpand\\]]
 }
 e il risultato è:
 \begin{center}
+\small
 \begin{tabular}{lrr}
 \directlua{
 for _, s in row:iter_template(tmpl) do
@@ -502,7 +505,7 @@ ridisegnato:
 \end{tabular}
 \end{lines}
 
-Il progetto completato si trova nel file \file{app-start/E0-006-tab.tex}, dove ho
+Il progetto completato si trova nel file \file{app-tut/E0-006-tab.tex}, dove ho
 aggiunto alla tabella la colonna con il calcolo della superficie laterale delle
 barre.
 

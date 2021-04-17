@@ -2,6 +2,11 @@
 
 -- aux functions
 
+local function sendindex_file(path, prt)
+    local fmt = [=[\index{file!%s@\filestyle{%s}|textsc}]=]
+    prt(fmt:format(path, path))
+end
+
 local function sendcode_to_latexenv(buf, stop, style, tcb, prt)
     assert(stop > 0)
     local tcb_s
@@ -111,6 +116,7 @@ local sourcecode = {
         tex       = "_tex",
         lua       = "_lua",
         tcolorbox = "_tcb",
+        indexfile = "_indexfile",
     },
     _ext_style = {
         tex = "sourcecodelatex",
@@ -127,13 +133,17 @@ function sourcecode.process_input_buffer(line)
             -- attribute processing (partial impl of ECMA-335)
             local attr = line:match "%s*#%[%s*(.-)%s*%]"
             if attr then
+                local _rk, lv = attr:match "(%S+)%s*=%s*(%S+)"
+                if _rk then
+                    attr = _rk
+                end
                 local field = sourcecode._opt_key[attr]
                 if field then
                     assert(
                         not sourcecode[field],
                         "Duplicate attribute entry '"..attr.."'"
                     )
-                    sourcecode[field] = true
+                    sourcecode[field] = lv and lv or true
                 else
                     error("Attribute '"..attr.."' not found")
                 end
@@ -164,6 +174,7 @@ function sourcecode:reset()
     self._tex = nil
     self._lua = nil
     self._tcb = nil
+    self._indexfile = nil
     return self
 end
 
@@ -175,6 +186,14 @@ function sourcecode:option(opt)
             error("Option key '"..k.."' not found")
         end
         self[inner_k] = val
+    end
+    return self
+end
+
+function sourcecode:index_file()
+    local file = self._file
+    if file then
+        self._indexfile = file
     end
     return self
 end
@@ -211,6 +230,7 @@ end
 -- tex         = "_tex",
 -- lua         = "_lua",
 -- tcolorbox = "_tcb",
+-- indexfile = "_indexfile",
 function sourcecode:typeset()
     local buffer = self._buffer
     local counter = self._counter
@@ -238,6 +258,10 @@ function sourcecode:typeset()
     local code_style = assert(self._ext_style[ext])
     -- we are inside a tcolorbox?
     local tcb = self._tcb
+    local path = self._indexfile
+    if path then
+        sendindex_file(path, prt)
+    end
     sendcode_to_latexenv(buffer, counter, code_style, tcb, prt)
     if self._run then
         local term_output

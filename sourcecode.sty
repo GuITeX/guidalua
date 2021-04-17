@@ -42,7 +42,8 @@ sourcecodelib._tkprint = tex.print
 
 % option run = true via attributes #[run]
 % option tex via attributes #[tex]
-% option tex via attributes #[lua]
+% option lua via attributes #[lua]
+% option index file attributes #[indexfile=<path>]
 \newenvironment{lines}{\directlua{
     luatexbase.add_to_callback(
         'process_input_buffer',
@@ -63,6 +64,7 @@ sourcecodelib._tkprint = tex.print
 \newcommand\sourcecode[1]{\directlua{
     sourcecodelib
         :option{#1}
+        :index_file()
         :load_file()
         :trim_tail()
         :typeset()

@@ -8,7 +8,7 @@
 %%   ________________________________________
 %%   The guidatematica class for typesetting books in the GuIT series
 %%   "Guide Tematiche"
-%%   Copyright (C) 2012-2019 GuIT,
+%%   Copyright (C) 2012-2021 GuIT,
 %%      Gruppo utilizzatori Italiani di TeX e LaTeX
 %%   All rights reserved
 %% 
@@ -18,8 +18,8 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[2009/01/01]
 \ProvidesClass{guidatematica}%
-   [2020-04-29 v.2.1.00 Classe simmetrica per comporre testi della collana
-   Guide Tematiche del GuIT]
+   [2021-04-12 v.2.2.00 Classe simmetrica per comporre testi della
+   collana Guide Tematiche del GuIT]
 \AtBeginDocument{\@ifpackageloaded{hyperref}{\hypersetup{colorlinks,linkcolor={blue},
   citecolor={blue!80!black},urlcolor={blue}}}{}}
 
@@ -40,9 +40,9 @@
 \LoadClassWithOptions{memoir}
 \RequirePackage{iftex}
 \ifPDFTeX
-  \RequirePackage[T1]{fontenc}
   \RequirePackage[utf8]{inputenc}
-  \RequirePackage[italian]{babel}
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[greek.ancien,english,italian]{babel}
   \RequirePackage[tt={oldstyle=false,tabular,monowidth}]{cfr-lm}
 \else
   \RequirePackage{fontspec}
@@ -59,6 +59,8 @@
   \setmathfont{Latin Modern Math}
   \RequirePackage{polyglossia}
   \setmainlanguage[babelshorthands]{italian}
+%  \setotherlanguage{english}
+%  \setotherlanguage[variant=ancient]{greek}
   \ifx\tmspace\@undefined
     \newlength{\tmspace}\tmspace=\z@
   \fi
@@ -69,12 +71,16 @@
 \RequirePackage{microtype}
 \RequirePackage{etoolbox}
 \RequirePackage{xcolor}
+% inactivated due to an incompatibility with biblatex
+% \RequirePackage{natbib}
 \RequirePackage{multicol}
 \RequirePackage{imakeidx}
 \RequirePackage{fancyvrb}
 \RequirePackage{afterpage}
 \RequirePackage{enumitem}
 \RequirePackage[right]{eurosym}
+% duplicated package loading
+%\RequirePackage{fancyvrb}
 \RequirePackage{listings}
 \lstloadlanguages{[LaTeX]TeX}
 \normalfont
@@ -160,6 +166,11 @@
 \providecommand*\Ars{%
   \textsf{\lower -.48ex\hbox{\rotatebox{-20}{A}}\kern -.3em{rs}}\hskip0pt%
   \kern -.05em\TeX\hskip0pt\kern -.17em\lower -.357ex\hbox{nica}}
+
+\providecommand\@@title{\ClassError{guidatematica}{\MessageBreak%
+I comandi per la pagina del titolo\MessageBreak
+vanno dati dopo \string\begin{document}}%
+{Premi S <return>, ma aspettati messaggi d'errore}}
 
 \AtBeginDocument{\let\originaltitle\title
 \renewcommand\title[1]{%
@@ -300,6 +311,7 @@ Copyright \textcopyright\ \ifcsvoid{@@Copyright}{\the\year}{\@@Copyright}, %
     \cftchapterformatpnum{#1}%
     \cftchapterafterpnum\par\nobreak}
 \setlength{\cftbeforechapterskip}{1.0em \@plus 2\p@}
+\setlength{\cftfigurenumwidth}{2.5em}
 \captiondelim{\quad}
 \captionnamefont{\small\scshape}
 \captiontitlefont{\small}
@@ -335,38 +347,33 @@ style=sameline,noitemsep,partopsep=\z@,topsep=.25\onelineskip}
    \settocdepth{subsection}\maxsecnumdepth{subsection}
    \maxtocdepth{subsection}}
 \unless\ifcsname virgoladecimale\endcsname
-\unless\ifPDFTeX
- \AtBeginDocument{\ifcsstring{xpg@main@language}{english}{\relax}{%
-    \mathcode`\,=\string"8000}%
-     \DeclareMathSymbol{\virgola}{\mathpunct}{letters}{"3B}%
-     \DeclareMathSymbol{\virgoladecimale}{\mathord}{letters}{"3B}%
-}
-\else
- \AtBeginDocument{\ifcsstring{languagename}{english}{\relax}{%
-    \mathcode`\,=\string"8000}}
-\fi
-{\catcode `,=\active \gdef,{\futurelet\let@token\m@thcomma}}%
-\AtEndPreamble{%
-\gdef\m@thcomma#1{%
-\unless\ifcat\noexpand\let@token*%
-  \virgola
-\else
-  \expandafter\expandafter\expandafter
-      \ifcsname\expandafter\@gobble\string#1\endcsname
-    \virgola
-  \else
-    \ifnum`#1<`0\relax
-      \virgola
-    \else
-      \ifnum`#1>`9\relax
+  \unless\ifPDFTeX% non pdflatex
+    \AtEndPreamble{\ifcsstring{xpg@main@language}{english}{\relax}{%
+      \mathcode`\,=\string"8000}%
+       \DeclareMathSymbol{\virgola}{\mathpunct}{letters}{"3B}%
+       \DeclareMathSymbol{\virgoladecimale}{\mathord}{letters}{"3B}%
+    }
+  \else% pdflatex
+    \AtEndPreamble{\ifcsstring{languagename}{english}{\relax}{%
+      \mathcode`\,=\string"8000}}
+  \fi
+  {\catcode `,=\active \gdef,{\futurelet\let@token\m@thcomma}}%
+  \AtEndPreamble{%
+    \unless\ifcsname m@thcomma\endcsname\providecommand\m@thcomma{}\fi
+      \renewcommand\m@thcomma[1]{%
+      \unless\ifcat\noexpand\let@token*%
         \virgola
       \else
-        \virgoladecimale
-      \fi
-    \fi
-  \fi
-\fi#1}%
-}\fi
+        \edef\tempA{\expandafter\@gobble\string#1}%
+        \ifx\tempA\@empty
+          \virgoladecimale
+        \else
+          \virgola
+        \fi
+      \fi#1%
+    }%
+  }%
+\fi
 \AtEndPreamble{%
 \providecommand\IntelligentComma{}
 \providecommand\NoIntelligentComma{}
@@ -390,7 +397,7 @@ style=sameline,noitemsep,partopsep=\z@,topsep=.25\onelineskip}
 {%
     \end{multicols}\gdef\imki@idxprologue{}\clearpage
 }
-% the next line was excluded because in conflict with biber/biblatex
+% inactiveted due to incompatibility with biblatex
 %\AtBeginDocument{\bibliographystyle{guidatematica}}%
 \unless\ifPDFTeX
    \ifcsstring{xpg@main@language}{italian}%
@@ -512,11 +519,50 @@ style=sameline,noitemsep,partopsep=\z@,topsep=.25\onelineskip}
     (-1.8,0) .. controls (-1.8,-2.4) and (1.8,-2.4) .. (1.8,0);
 \end{tikzpicture}
 }
+\NewDocumentCommand\LRmarginpar{s m}{% per le note marginali
+   \marginparmargin{inner}%
+   \marginpar[\raggedleft#2]{\raggedright#2}%
+}
+
+\newbox\colormarginbox
+\definecolor{sfondo}{rgb}{1,1,1}
+\definecolor{bordo}{rgb}{1,1,1}
+
+\newdimen\dimadjust
+\newcommand{\fntsz}{\scriptsize}
+\NewDocumentCommand\marginframe{m m m}{%
+  \setbox\colormarginbox\hbox{\fboxsep=0pt\fboxrule=0pt
+    \colorbox{#2}{\parbox[t]{\marginparwidth}{\fntsz #1}}}%
+    {\arrayrulewidth=1pt
+    {\color{#3}\tabular[t]{@{}c@{}}
+    \hline
+    \colorbox{#2}{\box\colormarginbox}\\
+    \hline
+    \endtabular}%
+  }%
+}
+
+\directlua{globdata = {} }
+\NewDocumentCommand\CLRmarginpar{m O{false} O{sfondo} O{bordo}}{% per note marginali
+  \directlua{
+    local flag = #2; if flag then
+       tex.dimen['dimadjust'] = 65536*16
+       globdata.flag = true
+    end
+  }\marginparmargin{inner}
+  \marginpar[\vspace*{\dimadjust}\hbox{\kern-6pt\marginframe{\raggedright#1}{#3}{#4}}]%
+            {\vspace*{\dimadjust}\hbox{\marginframe{\raggedright#1}{#3}{#4}}}\directlua{
+    if globdata.flag then
+        tex.dimen['dimadjust'] = 0
+        globdata.flag = false
+    end
+}}
+
 \newenvironment{pdfxmetadata}{%
 \VerbatimOut{\jobname.xmpdata}}{\endVerbatimOut}
 
 %% ƒ
-%% Copyright 2012, 2013-2019 GuIT,
+%% Copyright 2012, 2013-2020 GuIT,
 %%    Gruppo utilizzatori Italiani di TeX e LaTeX
 %% 
 %%   Distributable under the LaTeX Project Public License,

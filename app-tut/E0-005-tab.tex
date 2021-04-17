@@ -1,6 +1,7 @@
 % !TeX program = LuaLaTeX
-% filename: app-start/E0-004-tab.tex
+% filename: app-tut/E0-005-tab.tex
 \documentclass{article}
+
 \directlua{
 Row = {}
 Row.__index = Row
@@ -43,41 +44,47 @@ function Row:next()
         return true
     end
 end
+
+function Row:iter_template(tmpl)
+    local iter_fn = function(row, i)
+        if not i then
+            i = row.start
+        else
+            i = i + row.step
+        end
+        if i <= self.stop then
+            self.fn_next(i, self)
+            local perc = string.char(37)
+            local s = tmpl:gsub("<("..perc.."d+)>", function (s)
+                local n = tonumber(s)
+                return row[n]
+            end)
+            return i, s
+        end
+    end
+    return iter_fn, self, nil
+end
 }
 
 \directlua{
-data = {
-    {"files.txt"    ,  4710},
-    {"lib.lua"      ,   330},
+local data = {
+    {"files.txt"     ,  4710},
+    {"lib.lua"       ,   330},
     {"liteparse.txt",  6451},
-    {"parse.lua"    , 50995},
-    {"path.txt"     ,  2150},
-}}
+    {"parse.lua"     , 50995},
+    {"path.txt"      ,  2150},
+    {"shapes.txt"    ,  4812},
+    {"signature.txt" ,  1228},
+}
+row = Row:new(data)
+}
 
 \begin{document}
 \begin{tabular}{lr}
 \directlua{
-local function row_func(counter, row)
-    row[1] = data[counter][1]
-    row[2] = data[counter][2]
-end
-local row = Row:new(row_func, 5)
-local p = string.char(92)..string.char(92)
-while row:next() do
-tex.print(row[1].."&"..row[2]..p)
-end
-}
-\end{tabular}
-
-\bigskip\textbf{Codice alternativo:}
-\medskip
-
-\begin{tabular}{lr}
-\directlua{
-local row = Row:new(data)
-local p = string.char(92)..string.char(92)
-while row:next() do
-tex.print(row[1].."&"..row[2]..p)
+local tmpl = [[\noexpand\textbf{<1>} & <2>\noexpand\\]]
+for i, s in row:iter_template(tmpl) do
+   tex.print(s)
 end
 }
 \end{tabular}

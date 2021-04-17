@@ -159,6 +159,7 @@ Queste sono le nuove funzioni: \fn{next\_level} calcola la riga del triangolo
 rispetto a quella precedente, e \fn{tartaglia} genera il triangolo fino al
 livello specificato in una scatola verticale:
 \begin{lines}
+#[indexfile=app-tartaglia/05.tex]
 -- filename: app-tartaglia/05.tex
 local function next_level(t, row)
     t[row+1] = 1
@@ -232,6 +233,7 @@ e in coda per ogni riga del triangolo è sempre 1.
 
 Il listato completo della funzione \fn{pack\_level} è il seguente:
 \begin{lines}
+#[indexfile=app-tartaglia/06.tex]
 -- filename: app-tartaglia/06.tex
 local function pack_level(t, diff_level, k_left, k_right)
     local a = tex.sp "24pt"
@@ -283,6 +285,7 @@ l'allineamento a sinistra. I parametri \( k_\mathrm{left} \) e \(
 k_\mathrm{right} \) sono definiti dalla funzione principale \fn{tartaglia} a
 seconda del parametro \code{align}. Il listato è il seguente:
 \begin{lines}
+#[indexfile=app-tartaglia/06.tex]
 -- filename: app-tartaglia/06.tex
 local function tartaglia(level, align)
     assert(type(level)=="number")
@@ -361,6 +364,7 @@ un esempio è proprio far espandere la scatola in una macro \cs{node} del
 pacchetto grafico TikZ:
 \begin{lines}
 #[tex]
+#[indexfile=app-tartaglia/07.tex]
 % !TeX program = LuaTeX
 % filename: app-tartaglia/07.tex
 \input tikz.tex
@@ -441,6 +445,7 @@ Aggiungere una distanza fissa è molto semplice. Sappiamo che il nodo \code{hbox
 scorrere i soli nodi \code{glue} significa saltare un nodo e quindi preparare il
 prossimo riferimento con il campo \code{glue.next.next}:
 \begin{lines}
+#[indexfile=app-tartaglia/08.tex]
 -- filename app-tartaglia/08.tex
 local function add_distance(hbox, d)
     assert(hbox and hbox.id == 0)
@@ -461,6 +466,7 @@ funzione \fn{add\_distance} per modificare le lunghezze non solo dei nodi
 intermedi tra un numero e l'altro, ma anche per gli eventuali spazi di
 allineamento citati, in questo modo:
 \begin{lines}
+#[indexfile=app-tartaglia/09.tex]
 -- filename app-tartaglia/09.tex
 local
 function add_distance(hbox, d, k_left, k_right, level, totlevel)

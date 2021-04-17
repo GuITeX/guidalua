@@ -26,22 +26,20 @@ o peggio a mano.
 Tentiamo qualcosa di molto semplice con Lua, assegnare l'espressione a una
 variabile per poi stamparla nel documento:
 
-\tcbdocmarginnote[enlarge top initially by=\margindown]{%
-Lua in \TeX\\
-\gotosec{} \ref{secLuaInLuaLaTeX}}
+\CLRmarginpar{Lua in \TeX\\
+\gotosec{} \ref{secLuaInLuaLaTeX}}[true]% true option means +16pt of vspace
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
-Variabili locali\\
+\CLRmarginpar{Variabili locali\\
 \gotosec{} \ref{secGlobaleLocale}, \gotosec{} \ref{secFondLocaleGlobale}}
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
-\fn{tex.print}\\
+\CLRmarginpar{\fn{tex.print}\\
 \gotosec{} \ref{secPassaggioDati}}
 %
 \begin{lines}
 #[tex]
+#[indexfile=app-tut/E0-001-expr.tex]
 % !TeX program = LuaLaTeX
-% filename: app-start/E0-001-expr.tex
+% filename: app-tut/E0-001-expr.tex
 \documentclass{article}
 \newcommand\expr[1]{\directlua{
     local result = #1
@@ -85,15 +83,15 @@ espressioni booleane. Proviamo:
 E se si volessero sostituire le rappresentazioni testuali dei valori vero e
 falso? Ecco la modifica:
 
-\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\CLRmarginpar{%
 Ciclo \key{if}\\
-\gotosec{} \ref{secFondCicloIf}}
+\gotosec{} \ref{secFondCicloIf}}[true]
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
+\CLRmarginpar{%
 Tipo \key{boolean}\\
 \gotosec{} \ref{secFondManciataTipi}}
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+18mm\relax]{%
+\CLRmarginpar{%
 Operatore ternario\\
 \gotosec{} \ref{secFondOperatoreTernario}}
 %
@@ -134,10 +132,10 @@ Un semplice test ci conforterà sulla correttezza del codice e si funziona:
 Vorrei poter regolare l'arrotondamento del risultato numerico della calcolatrice
 ricorrendo a un argomento opzionale separato dall'espressione da una virgola:
 
-\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\begin{center}
+\CLRmarginpar{%
 \fn{string.format}\\
-\gotosec{} \ref{secFondStringFormat}}
-%
+\gotosec{} \ref{secFondStringFormat}}[true]%
 \begin{lines}
 #[tex]
 \newcommand\expr[1]{\directlua{
@@ -153,6 +151,7 @@ ricorrendo a un argomento opzionale separato dall'espressione da una virgola:
     tex.print(tostring(result))
 }}
 \end{lines}
+\end{center}
 
 \renewcommand\expr[1]{\directlua{
     local result, dec = #1
@@ -277,11 +276,11 @@ rendere visibili simboli di costanti è lo stesso che quello di rendere
 disponibili nell'espressione le funzioni matematiche con nomi abbreviati.
 Facciamo un tentativo ripartendo con il codice da zero:
 
-\tcbdocmarginnote[enlarge top initially by=\margindown]{%
+\CLRmarginpar{%
 Tipo \code{table}\\
-\gotosec{} \ref{iChTabella}}
+\gotosec{} \ref{iChTabella}}[true]
 %
-\tcbdocmarginnote[enlarge top initially by=\dimexpr\margindown+9mm\relax]{%
+\CLRmarginpar{%
 Iteratore \fn{pairs}\\
 \gotosec{} \ref{secFondPairsIterator}}
 %
