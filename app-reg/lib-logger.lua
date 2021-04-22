@@ -188,7 +188,7 @@ function register:add_to_log(info, index)
                 entry[i] = nil -- safe breaking the parameters list
             else
                 -- rise eventually a warning message
-                -- "unuseful insertion calling"
+                -- "unuseful insertion call"
             end
         else
             error("Info '"..id.."' doesn't have any format function")

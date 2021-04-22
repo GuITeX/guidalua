@@ -88,19 +88,20 @@ Esistono due strumenti di base, il primo è il \emph{pattern} e il secondo è la
 \emph{capture}.
 
 
-\subsection{Pattern}
+\subsection{Pattern I}
 \label{secFondPattern}
 
 Il pattern è una stringa che può contenere campi chiamati \emph{classi} simili
 a quelli per la funzione di formato visti in precedenza, che stavolta però si
-riferiscono al singolo carattere, e questa differenza è essenziale.
+riferiscono al \emph{singolo carattere} e questa differenza è essenziale.
 
-La funzione di base che accetta pattern è \fn{string.match}\luastd{string.match}
-che restituisce la prima corrispondenza trovata in una stringa primo argomento
-corrispondente al pattern dato come secondo argomento.
+La funzione di base che accetta un pattern è
+\fn{string.match}\luastd{string.match}. Essa restituisce la prima corrispondenza
+trovata in una stringa data come primo argomento che corrispondente al pattern
+dato come secondo argomento.
 
-Per esempio, possiamo ricercare in un numero di tre cifre intere all'interno di
-un testo con il pattern \verb|"%d%d%d"|:
+Per esempio, possiamo ricercare un gruppo di tre cifre intere all'interno di un
+testo con il pattern \verb|"%d%d%d"|:
 \sourcecode{
     file = [[code/e8-libstd.lua]],
     select = [[pattern_one]],
@@ -138,7 +139,7 @@ Esempio:
     run = true,
 }
 
-\section{Capture}
+\subsection{Capture}
 \label{secFondCapture}
 
 Il pattern può essere arricchito non solo per trovare corrispondenze ma anche
@@ -160,6 +161,66 @@ saranno restituiti:
    select = [[capture_two]],
    run = true,
 }
+
+
+\subsection{Pattern II}
+
+Mentre il carattere percento unito a una lettera forma una delle classi
+carattere elencate alla sezione~\ref{secFondPattern}, la stessa lettera scritta
+in maiuscolo rappresenta la classe carattere negazione.
+
+La classe \verb|"%D"| rappresenta un carattere che non sia una cifra decimale,
+così come \verb|"%S"| corrisponde al carattere che non ha corrispondenza con
+\verb|"%s"|. Per esempio, per catturare una prima sequenza di eventuali
+caratteri spazio in una stringa si può usare il pattern di ricerca
+\verb|"(%s*)%S?"|. 
+
+Due ulteriori caratteri speciali \verb|^| per l'inizio riga e \key{\$} per la
+fine riga, svolgono il ruolo di ancoraggio del pattern. Possono essere usati
+entrambi per esempio per eliminare da una stringa i caratteri spazio iniziali o
+finali:
+\begin{lines}
+local pattern = "^%s*(.-)%s*$"
+print("|"..string.match("ok", pattern).."|" )      --> "|ok|"
+print("|"..string.match(" ok", pattern).."|" )     --> "|ok|"
+print("|"..string.match(" ok ", pattern).."|" )    --> "|ok|"
+print("|"..string.match(" ok ok ", pattern).."|" ) --> "|ok ok|"
+\end{lines}
+
+Passiamo ora ai \emph{char-set}. Si tratta di classi definite dall'utente
+racchiudendo tra parentesi quadre caratteri o classi di carattere già definiti.
+Per esempio, per estrarre da una stringa una sequenza di \( 0 \) e \( 1 \)
+possiamo definire una nuova classe carattere che corrisponde o alla prima o alla
+seconda cifra con \verb|[01]|.
+
+Per esempio, per trovare corrispondenze di \emph{identificatori}, cioè sequenze
+di caratteri alfanumerici che comprendono il trattino basso e che non iniziano
+con una cifra, potremo usare il pattern \verb|"^[_%a][_%w]*"|:
+\begin{lines}
+local pattern = "^[_%a][_%w]*"
+print(string.match("1var", pattern))    --> nil
+print(string.match("_", pattern))       --> "_"
+print(string.match("var", pattern))     --> "var"
+print(string.match("_var", pattern))    --> "_var"
+print(string.match("1var", pattern))    --> nil
+print(string.match("var1_=5", pattern)) --> "var1_"
+print(string.match("0", pattern))       --> nil
+\end{lines}
+
+Ulteriore esempio è la ricerca di corrispondenze per numeri interi con segno:
+\begin{lines}
+local pattern = "[+-]?%d+"
+print(string.match("56", pattern))   --> "56"
+print(string.match("+56", pattern))  --> "+56"
+print(string.match("-56", pattern))  --> "-56"
+print(string.match("-+56", pattern)) --> "+56"
+print(string.match("0000", pattern)) --> "0000"
+\end{lines}
+
+In un pattern, tra parentesi quadre è ammesso l'uso del carattere trattino per
+definire intervalli. Il pattern \verb|"[012345]"| che corrisponde a una classe
+carattere per le prime sei cifre decimali, può essere definito anche con
+\verb|"[0-5]"|.
 
 
 \subsection{La funzione \fn{string.gsub}}
@@ -201,6 +262,13 @@ Tutte queste funzioni restituiscono una stringa costruita ex-novo e non
 modificano la stringa originale di ricerca. In Lua le stringhe sono dati
 immutabili.
 
+Infine, le funzioni della libreria \key{string} possono essere chiamate su
+variabili stringa usando la \emph{colon notation} che introdurremo alla
+sezione~\ref{secFondColonNotation}, grazie ai metametodi:
+\begin{lines}
+string.match(s, pattern) -- equivalente a:
+s:match(pattern)
+\end{lines}
 
 
 \section{Esercizi}
