@@ -45,12 +45,43 @@ funzione locale:
 \sourcecode{file = [[code/e8-libstd.lua]], select = [[one]]}
 
 
+\section{Libreria tabelle}
+
+Per le tabelle la libreria standard fornisce funzionalità attraverso la tabella
+\key{table}. Tra le funzioni più importanti troviamo
+\fn{table.concat}\luastd{table.concat} che concatena tutti i valori nelle
+posizioni sequenza in una stringa. Per esempio:
+\begin{lines}
+#[run]
+-- table.concat(list [, sep [, i [, j]]])
+print(table.concat{1,2,3,4,5,6})
+\end{lines}
+
+Ci sono anche utili argomenti opzionali: un secondo argomento stringa che sarà
+usato come separatore dei vari elementi, un terzo argomento intero che è
+l'indice dal quale gli elementi saranno raccolti e un quarto argomento come
+indice finale.
+
+Questa funzione è molto importante nelle applicazioni perché consente di
+concatenare stringhe in un modo efficiente quando il loro numero è maggiore di
+una decina\footnote{L'ordine di grandezza del numero delle stringhe da
+concatenare per cui conviene l'uso di \fn{table.concat} dovrebbe essere una
+decina ma non ho fatto benchmark in proposito.}.
+
+Altre funzioni molto utili sono \fn{table.insert}\luastd{table.insert} con la
+sua controparte \fn{table.remove}\luastd{table.remove}, e
+\fn{table.sort}\luastd{table.sort} per riordinare gli elementi della sequenza di
+una tabella secondo criteri definibili di cui un esempio si trova nella
+sezione~\ref{secClosure}.
+
+
 \section{Libreria stringhe}
 
 La libreria per le stringhe è memorizzata nella tabella \key{string} ed è una
-delle più utili. Con essa si possono formattare campi e compiere operazioni di
-ricerca e sostituzione. In effetti, in Lua non è infrequente elaborare grandi
-porzioni di testo.
+delle più utili per questo l'approfondiremo più in dettaglio rispetto alle
+altre. Con essa si possono formattare campi e compiere operazioni di ricerca e
+sostituzione. In effetti, in Lua non è infrequente elaborare grandi porzioni di
+testo.
 
 
 \subsection{Funzione \fn{string.format}}
@@ -270,6 +301,31 @@ string.match(s, pattern) -- equivalente a:
 s:match(pattern)
 \end{lines}
 
+\subsection{La funzione \fn{string.gmatch}}
+
+Con la funzione \fn{string.gmatch}\luastd{string.gmatch} è possibile iterare
+tutte le corrispondenze di un pattern in una stringa in un ciclo generic for.
+Gli argomenti da fornire sono la stringa e il pattern che può contenere delle
+capture. Vediamo un primo esempio:
+\begin{lines}
+#[run]
+local s = "trova le vocali"
+for vowel in string.gmatch(s, "[aeiou]") do
+    print(vowel)
+end
+\end{lines}
+
+Se invece il pattern contiene delle capture, ad ogni iterazione altrettante
+variabili di ciclo assumeranno i valori stringa delle catture:
+\begin{lines}
+#[run]
+local s = "da A=(1,9) a B=(-9,5) passando per C=(0,3)"
+local pattern = "([A-Z])=%(([+-]?%d+),([+-]?%d+)%)"
+for p, x, y in string.gmatch(s, pattern) do
+    print(p, tonumber(x), tonumber(y))
+end
+\end{lines}
+
 
 \section{Esercizi}
 
@@ -308,7 +364,8 @@ anno di una data presente in una stringa nel formato \verb|"dd/mm/yyyy"|?
 
 \begin{Exercise}[label=libstd-07]
 Creare un esempio che utilizzi \fn{string.gsub} con una funzione in sintassi
-anonima a due argomenti corrispondenti a due capture nel pattern di ricerca.
+anonima a due argomenti corrispondenti ad altrettante capture nel pattern di
+ricerca.
 \end{Exercise}
 
 
