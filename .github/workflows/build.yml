@@ -33,5 +33,5 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "./assets/"
-          server-dir: "/httpdocs/home/images/doc/GuideGuIT"
+          server-dir: "/httpdocs/home/images/doc/GuideGuIT/"
           security: "strict"
