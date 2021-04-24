@@ -44,6 +44,27 @@ Un esempio introduttivo è questo dove nella funzione \fn{one} viene definita un
 funzione locale:
 \sourcecode{file = [[code/e8-libstd.lua]], select = [[one]]}
 
+Acconto a funzioni matematiche vere e proprie troviamo la funzione
+\fn{math.type}\luastd{{math.type}} che esamina l'argomento e restituisce
+\verb|"integer"| o \verb|"float"| a seconda se esso è un intero o un numero in
+virgola mobile, oppure \key{nil} se non si tratta di un numero. Questa funzione
+è utile per eseguire il controllo di validità dei parametri in ingresso.
+
+La funzione \fn{math.tointeger}\luastd{math.tointeger} è, come la precedente,
+utile per verificare se l'argomento è un intero. Essa infatti tenta di
+convertire l'argomento in intero e se non ci riesce restituisce \key{nil}
+altrimenti ritorna l'intero. Accettando anche stringhe è simile alla funzione
+\fn{tonumber}\luastd{tonumber} ma solo per i valori interi:
+\begin{lines}
+#[run]
+print(tonumber(123), math.tointeger(123))
+print(tonumber(-89), math.tointeger(-89))
+print(tonumber(40.5 * 2), math.tointeger(40.5 * 2))
+print(tonumber(40.5 * 3), math.tointeger(40.5 * 3))
+print(tonumber("89"), math.tointeger("89"))
+print(tonumber("89.6"), math.tointeger("89.6"))
+\end{lines}
+
 
 \section{Libreria tabelle}
 
@@ -52,9 +73,8 @@ Per le tabelle la libreria standard fornisce funzionalità attraverso la tabella
 \fn{table.concat}\luastd{table.concat} che concatena tutti i valori nelle
 posizioni sequenza in una stringa. Per esempio:
 \begin{lines}
-#[run]
 -- table.concat(list [, sep [, i [, j]]])
-print(table.concat{1,2,3,4,5,6})
+assert(table.concat{1,2,3,4,5,6} == "123456")
 \end{lines}
 
 Ci sono anche utili argomenti opzionali: un secondo argomento stringa che sarà
@@ -301,6 +321,7 @@ string.match(s, pattern) -- equivalente a:
 s:match(pattern)
 \end{lines}
 
+
 \subsection{La funzione \fn{string.gmatch}}
 
 Con la funzione \fn{string.gmatch}\luastd{string.gmatch} è possibile iterare
@@ -324,6 +345,37 @@ local pattern = "([A-Z])=%(([+-]?%d+),([+-]?%d+)%)"
 for p, x, y in string.gmatch(s, pattern) do
     print(p, tonumber(x), tonumber(y))
 end
+\end{lines}
+
+\subsection{Altre funzioni utili}
+
+Nominiamo per prima la funzione \fn{string.find}\luastd{string.find}. Essa
+ritorna la posizione della corrispondenza nella stringa di ricerca come il
+doppio indice di inizio e di fine. La ricerca può cominciare da una posizione
+qualsiasi in virtù del terzo argomento opzionale mentre se il pattern contiene
+una capture la corrispondenza verrà restituita come terzo risultato:
+\begin{lines}
+#[run]
+-- string.find(s, pattern [, init [, plain]])
+local s = "Un intero 123 e un secondo 456!"
+local i, j = string.find(s, "123")
+print(string.find(s, "(%d+)", j+1))
+\end{lines}
+
+Altre due funzioni utili che è bene citare per esempio per poter usare il
+simbolo di percento in codice Lua interno a sorgenti \TeX{}, sono
+\fn{string.byte}\luastd{string.byte} e \fn{string.char}\luastd{string.char}: la
+prima da una lista di numeri ritorna la stringa codificata con essi e la secoda
+ritorna i codici dei caratteri della stringa argomento.
+Per esempio:
+\begin{lines}
+#[run]
+-- string.byte(s [, i [, j]])
+-- string.char(···)
+local s = "LuaTeX"
+local t = {string.byte(s, 1, -1)}
+assert(table.concat(t, ", ") == "76, 117, 97, 84, 101, 88")
+assert(string.char(76, 117, 97, 84, 101, 88) == s)
 \end{lines}
 
 
