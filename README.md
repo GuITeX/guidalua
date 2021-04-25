@@ -1,3 +1,10 @@
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/GuITeX/guidalua?label=current%20version)
+![GitHub Workflow Status (event)](https://img.shields.io/github/workflow/status/GuITeX/guidalua/Compile%20LuaLaTeX%20main%20file%20guidalua.tex?style=plastic)
+![GitHub issues](https://img.shields.io/github/issues/GuITeX/guidalua)
+![Lines of code](https://img.shields.io/tokei/lines/github/GuITeX/guidalua)
+![GitHub Repo stars](https://img.shields.io/github/stars/GuITeX/guidalua?style=social)
+![License](https://img.shields.io/badge/licence-LPPL%20%3E%3D1.3-green)
+
 Guida al linguaggio Lua per LuaTeX
 ==================================
 
