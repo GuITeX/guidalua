@@ -13,7 +13,7 @@ sorgente \TeX.
 Un sorgente \TeX{} contiene testo e macro. Il testo formerà i capoversi, i
 titoli e il resto del documento, mentre le macro ne stabiliranno l'aspetto e la
 struttura. I \emph{motori di composizione} costruiscono il documento eseguendo
-macro dette \emph{primitive}, sono cioé implementate in modo nativo per svolgere
+macro dette \emph{primitive}, sono cioè implementate in modo nativo per svolgere
 compiti elementari, e macro definite con esse per svolgere sequenze ricorrenti.
 
 Le macro sequenze dette di alto livello, possono costituire una vera e propria
@@ -53,7 +53,10 @@ $ pdflatex mydoc
 
 Quando il nome del formato corrisponde al nome del programma scorciatoia, non li
 si deve confondere: il programma \prog{latex} utilizza ancora il compositore
-\prog{pdftex} con il formato \LaTeX{} e uscita in DVI.
+\prog{pdftex} con il formato \LaTeX{} con uscita in DVI\footnote{DVI sta per
+Device Indipendent e oggi è in disuso a favore del formato PDF. Tuttavia è utile
+far notare che un programma compositore può fornire anche più formati di
+uscita.}.
 
 I file binari dei formati sono usualmente generati o rigenerati in automatico
 dalle utility della distribuzione nel momento dell'installazione o quando
@@ -61,11 +64,12 @@ l'utente esegue un aggiornamento del sistema che contiene modifiche alle macro
 del formato, perciò è molto raro che ci si trovi nella situazione di doverne
 generare uno.
 
-Riassumendo, i motori di composizione sono programmi tipografici mentre i
-formati sono insiemi coerenti di macro basate sulle primitive del compositore. I
-nomi dei programmi disponibili nel sistema \TeX{} possono confondere se non si
-conosce questa importante distinzione: alcuni di essi sono comandi scorciatoia
-per eseguire un motore di composizione con un particolare formato.
+Riassumendo, i motori di composizione sono programmi di composizione tipografica
+mentre i formati sono insiemi coerenti di macro basate sulle primitive del
+compositore. I nomi dei programmi disponibili nel sistema \TeX{} possono
+confondere se non si conosce questa importante distinzione: alcuni di essi sono
+infatti comandi scorciatoia per eseguire un motore di composizione con un
+particolare formato.
 
 
 \subsection{Compositori Lua-powered}
@@ -214,10 +218,10 @@ fattoriale del numero argomento:
 
 Quando \TeX{} incontra una macro utente con un segnaposto\footnote{Fate
 riferimento ha una buona guida per \LaTeX{} per saperne di più sulla definizione
-di macro utente.} lo sostituisce con i dati corrispondenti token singolo o
-gruppo di token tra parentesi graffe. Per questo quando nel sorgente scriviamo
-\cs{fattoriale}\code{\{5\}}, dopo la sostituzione il codice Lua effettivamente
-eseguito sarà:
+di macro utente.} lo sostituisce con i dati corrispondenti a un singolo token
+oppure a un gruppo di token tra parentesi graffe. Per questo quando nel sorgente
+scriviamo \cs{fattoriale}\code{\{5\}}, dopo la sostituzione il codice Lua
+effettivamente eseguito sarà:
 \begin{lines}
 local n = 5
 tex.print(tostring(fact(n)))
@@ -286,7 +290,7 @@ Lua è possibile ottenere la data e l'ora corrente.
 \section{Caratteri speciali}
 
 Alcuni simboli hanno un diverso significato per \TeX{} e per Lua, per esempio il
-carattere cancelletto, la stessa backslash o il simbolo di percento. \LuaTeX{}
+carattere cancelletto, lo stesso backslash o il simbolo di percento. \LuaTeX{}
 non si occupa direttamente di modificare il significato dei simboli che si
 sovrappongono.
 
@@ -321,7 +325,7 @@ all'interprete come un unica linea di codice perciò il commento dopo un doppio
 trattino si estenderebbe non solo a fine riga ma a tutto il codice che segue.
 
 Per fortuna la grammatica Lua a differenza di Python, consente la libera
-scrittura e identazione del codice altrimenti questo meccanismo non potrebbe
+scrittura e i rientri del codice altrimenti questo meccanismo non potrebbe
 funzionare.
 
 
@@ -334,7 +338,7 @@ elementi tipografici che chiameremo librerie interne, e funzionalità generiche
 che chiameremo librerie esterne.
 
 Tutte queste librerie formano un nutrito elenco come riporta dettagliatamente il
-manuale del compositore. Tra quelle interne più note ricordiamo:
+manuale dell'utente. Tra quelle interne più note ricordiamo:
 \begin{compactitemize}
 \item \code{node}, gestione dei nodi tipografici;
 \item \code{token}, scansione dei token per la raccolta di argomenti, creazione

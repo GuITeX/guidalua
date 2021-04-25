@@ -13,8 +13,8 @@ che danno la possibilità di essere programmati con esso dall'utente.
 
 Lua è stato ideato da un gruppo di programmatori esperti
 dell'\href{http://www.puc-rio.br/index.html}{Università Cattolica di Rio de
-Janeiro} in Brasile. ``Lua'' si pronuncia LOO-ah e significa ``Luna'' in
-portoghese!
+Janeiro} in Brasile. In portoghese ``Lua'' si pronuncia LOO-ah e significa
+``Luna''!
 
 
 \section{L'assegnamento}
@@ -34,21 +34,23 @@ a = 123
 
 Durante l'esecuzione di questo codice, Lua determina dinamicamente il tipo del
 valore letterale `123' --- un numero --- creandolo in memoria col nome di
-`\texttt{a}'.
+`\key{a}'.
 
 L'istruzione di assegnamento omette il tipo di dato non essendone prevista una
-dichiarazione esplicita. In altre parole, i dati hanno un tipo, ma ciò entra in
-gioco solamente a tempo di esecuzione.
+dichiarazione esplicita. In altre parole, i dati hanno un tipo, determinabile
+con la funzione \fn{type}\luastd{type}, ma ciò non ha rilevanza semantica ed è
+solo in fase di esecuzione che l'interprete determina il tipo di dato e in
+funzione di questo ne memorizza il valore in memoria.
 
 Altro concetto importante di Lua è che le variabili sono tutte globali a meno
-che non si dichiari il contrario.
+che non le si dichiari locali al blocco di codice.
 
 
 \subsection{Locale o globale?}
 \label{secFondLocaleGlobale}
 
 Una proprietà dell'assegnamento è che se non diversamente specificato Lua
-istanzia i simboli nell'ambiente globale del codice in esecuzione. Se si
+crea i simboli nell'ambiente globale del codice in esecuzione. Se si
 desidera creare una variabile locale rispetto al blocco di codice in cui è
 definita, occorre premettere alla definizione la parola chiave \key{local}.
 
@@ -66,17 +68,36 @@ fino a che il blocco in cui è definita la variabile locale non termina.
 
 \subsection{Assegnazioni multiple}
 
-In Lua possono essere assegnate più variabili alla volta nella stessa
-istruzione. Questo significa che l'assegnamento è in realtà più complesso di
-quello presentato fino a ora perché è possibile scrivere una lista di variabili
-separate da virgole che assumeranno i valori corrispondenti della lista di
-espressioni, sempre separate da virgole che compare dopo il segno di uguale:
+In Lua possono essere assegnate più variabili alla volta nella stessa istruzione
+con una sintassi in realtà più complessa di quella presentata fino a ora. A
+sinistra del simbolo di uguale è ammessa una lista di variabili separate da
+virgole e a destra una lista di espressioni sempre separate da virgole che, una
+volta valutate, saranno assegnate in ordine.
+
+Se si premette la parola chiave \key{local} tutte le variabili saranno locali.
+La sintassi generale dell'assegmento multiplo è la seguente:
+\begin{lines}
+[local] var_1, var_2, var_3, ... = expr_1, expr_2, expr_3, ...
+\end{lines}
+perfettamente equivalente a:
+\begin{lines}
+[local] var_1 = expr_1
+[local] var_2 = expr_2
+[local] var_3 = expr_3
+\end{lines}
+
+Così
 \begin{lines}
 local a, b = 0.45 + 0.23, "text" -- a = 0.68; b = "text"
 \end{lines}
+è equivalente a:
+\begin{lines}
+local a = 0.45 + 0.23
+local b = "text"
+\end{lines}
 
-Quando il numero delle variabili non corrispondono a quello delle espressioni,
-Lua assegnerà automaticamente valori \texttt{nil} o ignorerà le espressioni in
+Quando il numero delle variabili non corrisponde a quello delle espressioni, Lua
+assegnerà automaticamente valori \texttt{nil} o ignorerà le espressioni in
 eccesso. Per esempio:
 \begin{lines}
 local a, b, c = 0.45, "text"  -- c vale nil
@@ -143,7 +164,7 @@ chiamato \key{nil}\luak{nil}. Il tipo nullo ha un solo valore possibile,
 anch'esso chiamato \key{nil}. Il nome è così sia l'unico valore possibile che il
 tipo.
 
-Leggere una variabile non istanziata non è un errore perché Lua restituisce
+Leggere una variabile che non esiste non è un errore perché Lua restituisce
 semplicemente \key{nil}, mentre assegnare il valore nullo a una variabile la
 distrugge:
 \begin{lines}
@@ -181,8 +202,9 @@ per non rendere il listato più a rischio di errori.
 Sono invece da evitare i nomi che iniziano con un doppio trattino basso, che
 potrebbero collidere con quelli dei metametodi (vedi il capitolo
 \ref{chFondOop}) e quelli che pur iniziando con un singolo trattino basso hanno
-poi lettere tutte in maiuscolo come per esempio \key{\_VERSION}\luak{\_VERSION},
-perché potrebbero collidere con i nomi predefiniti di Lua.
+poi lettere tutte in maiuscolo come per esempio
+\key{\_VERSION}\luastd{\_VERSION}, perché potrebbero collidere con i nomi
+predefiniti di Lua.
 
 
 \section{Il Garbage Collector}
@@ -201,9 +223,10 @@ liberate.
 \section{Esercizi}
 
 \begin{Exercise}[label=fond-01]
-Scrivere il codice Lua che instanzi due variabili \key{x} e \key{y} al valore
-12.34. Si assegni alle altre due variabili \key{sum} e \key{prod} la somma e il
-loro prodotto delle prime. Si stampi in console i risultati.
+Usando due sole istruzioni, scrivere il codice Lua che crea due variabili
+\key{x} e \key{y} di valore 12.34 e assegni alle altre due variabili \key{sum} e
+\key{prod} rispettivamente la somma e il prodotto delle prime due. Si stampino
+in console i risultati.
 \end{Exercise}
 
 \begin{Exercise}[label=fond-02]

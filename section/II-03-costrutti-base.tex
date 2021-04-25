@@ -107,14 +107,14 @@ condizionale \key{if} e nel ciclo \key{while}, non sono visibili all'esterno.
 \section{Intermezzo}
 
 In Lua non è obbligatorio inserire un carattere delimitatore sintattico ma è
-facoltativo il \key{;}. I caratteri spazio, tabulazione e ritorno a capo vengono
-considerati dalla grammatica come separatori, perciò si è liberi di formattare
-il codice come si desidera inserendo per esempio più istruzioni sulla stessa
-linea. Solitamente non si utilizzano i punti e virgola finali, ma se ci sono due
-assegnazioni sulla stessa linea --- stile sconsigliabile perché poco leggibile
---- li si può separare almeno con un \key{;}. Come sempre una forma stilistica
-chiara e semplice vi aiuterà a scrivere codice più comprensibile anche a
-distanza di tempo.
+facoltativo il segno \key{;}. I caratteri spazio, tabulazione e ritorno a capo
+vengono considerati dalla grammatica come separatori, perciò si è liberi di
+formattare il codice come si desidera inserendo per esempio più istruzioni sulla
+stessa linea. Solitamente non si utilizzano i punti e virgola finali, ma se ci
+sono due assegnazioni sulla stessa linea --- stile sconsigliabile perché poco
+leggibile --- li si può separare almeno con un segno \key{;}. Come sempre una
+forma stilistica chiara e semplice vi aiuterà a scrivere codice più
+comprensibile anche a distanza di tempo.
 
 Generalmente è buona norma definire le nuove variabili il più vicino possibile
 al punto in cui verranno utilizzate per la prima volta, un beneficio per la
@@ -180,8 +180,8 @@ riportato alla sezione~\ref{secCicloWhile} per includerne la molteplicità.
 \end{Exercise}
 
 \begin{Exercise}[label=cos-03]
-Instanziare la tabella seguente con tre tabelle/array di tre numeri e calcolarne
-il determinante della matrice corrispondente.
+Calcolare il determinante della matrice corrispondente alla seguente tabella,
+che contiene tre tabelle/array con tre numeri in sequenza.
 \begin{lines}
 local t = {
     { 0,  5, -1},

@@ -7,7 +7,7 @@
 
 Per dare l'idea di come si possa usare Lua all'interno del sistema di
 composizione \TeX{}, questa prima parte della guida è in forma di
-\emph{tutorial} cioé di brevi resoconti dei progressi compiuti da un ipotetico
+\emph{tutorial} cioè di brevi resoconti dei progressi compiuti da un ipotetico
 utente \LuaLaTeX{} indaffarato nel risolvere alcuni problemi con i suoi
 documenti: fare calcoli con una calcolatrice o comporre una tabella ripetitiva.
 
@@ -187,8 +187,8 @@ Mettiamo alla prova la modifica alla macro \cs{expr}:
 \subsection{Funzioni matematiche}
 
 Potremo trovare una sintassi un po' più chiara per indicare il numero di cifre a
-cui arrontondare il risultato, tuttavia c'è di un problema più urgente: poter
-usare funzioni matematiche come seno e coseno. Se scrivessimo
+cui arrontondare il risultato, tuttavia c'è di mezzo un problema più urgente:
+poter usare funzioni matematiche come seno e coseno. Se scrivessimo
 \verb=\expr{sin(1)^2 + cos(1)^2}= non otterremo il valore unitario ma un errore.
 Dovremo infatti usare la scomoda notazione
 \code{math.}\meta{funzione}/\meta{costante} come in

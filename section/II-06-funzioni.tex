@@ -21,10 +21,10 @@ prevede, quelli in più verranno ignorati. Viceversa, se gli argomenti sono
 inferiori a quelli previsti allora a quelli mancanti verrà assegnato il valore
 \key{nil}\luak{nil}.
 
-Le stesse regole valgono anche per i dati di ritorno quando la funzione è usata
-come espressione in un'istruzione di assegnamento. Si scrive dopo l'istruzione
-\key{return}\luak{return} la lista delle espressioni separate da virgole che
-saranno valutate e assegnate alle corrispondenti variabili.
+Le stesse regole valgono anche per i dati di uscita quando la funzione è usata
+come espressione in un'istruzione di assegnamento. Dopo l'istruzione
+\key{return}\luak{return} si può scrivere una lista delle espressioni separate
+da virgole che saranno assegnate alle corrispondenti variabili.
 
 Per esempio, potremo modificare la funzione precedente per restituire anche la
 somma dei primi \( n \) numeri di Fibonacci oltre che l'ennesimo elemento della
@@ -36,8 +36,8 @@ serie stessa e considerare un valore di default se l'argomento è \key{nil}:
 
 In Lua le funzioni sono un tipo. Possono essere assegnate a una variabile,
 passate come argomento a un'altra funzione e restituite da una funzione come
-valore di ritorno, una proprietà che non si trova spesso nei linguaggi di
-scripting e che offre più flessibilità al codice.
+valore, una proprietà che non si trova spesso nei linguaggi di scripting e che
+offre più flessibilità al codice.
 
 A ben vedere in Lua tutte le funzioni sono memorizzate in variabili e di per se
 non hanno un nome. Il modo di definizione è quindi la \emph{sintassi anonima}:
@@ -58,7 +58,7 @@ function variable_name(args)
     -- function body
 end
 \end{lines}
-l'interprete Lua la tradurrà automaticamente nel codice equivalente in sintassi
+L'interprete Lua la tradurrà automaticamente nel codice equivalente in sintassi
 anonima, una caratteristica nascosta detta \emph{zucchero sintattico}:
 \begin{lines}
 variable_name = function (args)

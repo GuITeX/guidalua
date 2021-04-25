@@ -31,30 +31,31 @@ fornisce tutte le informazioni di dettaglio sulla libreria standard di Lua~5.3.
 
 Nella libreria memorizzata nella tabella \key{math} ci sono le funzioni
 trigonometriche \fn{sin}\luastd{math.sin}, \fn{cos}\luastd{math.cos},
-\fn{tan}\luastd{math.tan}, \fn{asin}\luastd{math.asin} eccetera --- che come di
-consueto lavorano in radianti --- le funzioni esponenziali
-\fn{exp}\luastd{math.exp}, \fn{log}\luastd{math.log},
-\fn{log10}\luastd{math.log10}, quelle di arrotondamento
-\fn{ceil}\luastd{math.ceil}, \fn{floor}\luastd{math.floor}, e quelle per la
-generazione pseudocasuale di numeri come \fn{random}\luastd{math.random}, e
-\fn{randomseed}\luastd{math.randomseed}. Oltre a funzioni, la tabella include
-campi numerici come la costante \( \pi \)\luak{math.pi}.
+\fn{tan}\luastd{math.tan}, \fn{asin}\luastd{math.asin} eccetera --- che lavorano
+in radianti --- le funzioni esponenziali \fn{exp}\luastd{math.exp},
+\fn{log}\luastd{math.log}, \fn{log10}\luastd{math.log10}, quelle di
+arrotondamento \fn{ceil}\luastd{math.ceil}, \fn{floor}\luastd{math.floor}, e
+quelle per la generazione pseudocasuale di numeri come
+\fn{random}\luastd{math.random}, e \fn{randomseed}\luastd{math.randomseed}.
+Oltre a funzioni, la tabella include campi numerici come la costante \( \pi
+\)\luak{math.pi}.
 
 Un esempio introduttivo è questo dove nella funzione \fn{one} viene definita una
 funzione locale:
 \sourcecode{file = [[code/e8-libstd.lua]], select = [[one]]}
 
-Acconto a funzioni matematiche vere e proprie troviamo la funzione
+Accanto a funzioni matematiche vere e proprie troviamo la funzione
 \fn{math.type}\luastd{{math.type}} che esamina l'argomento e restituisce
 \verb|"integer"| o \verb|"float"| a seconda se esso è un intero o un numero in
 virgola mobile, oppure \key{nil} se non si tratta di un numero. Questa funzione
 è utile per eseguire il controllo di validità dei parametri in ingresso.
 
 La funzione \fn{math.tointeger}\luastd{math.tointeger} è, come la precedente,
-utile per verificare se l'argomento è un intero. Essa infatti tenta di
-convertire l'argomento in intero e se non ci riesce restituisce \key{nil}
-altrimenti ritorna l'intero. Accettando anche stringhe è simile alla funzione
-\fn{tonumber}\luastd{tonumber} ma solo per i valori interi:
+utile per verificare se l'argomento è un intero. Essa infatti tenta la
+conversione e nel caso non sia possibile il risultato sarà \key{nil}. 
+
+L'argomento può essere anche un numero o una stringa, e in questo è simile alla
+funzione \fn{tonumber}\luastd{tonumber} ma solo per i valori interi:
 \begin{lines}
 #[run]
 print(tonumber(123), math.tointeger(123))
@@ -347,27 +348,28 @@ for p, x, y in string.gmatch(s, pattern) do
 end
 \end{lines}
 
+
 \subsection{Altre funzioni utili}
 
 Nominiamo per prima la funzione \fn{string.find}\luastd{string.find}. Essa
-ritorna la posizione della corrispondenza nella stringa di ricerca come il
-doppio indice di inizio e di fine. La ricerca può cominciare da una posizione
-qualsiasi in virtù del terzo argomento opzionale mentre se il pattern contiene
-una capture la corrispondenza verrà restituita come terzo risultato:
+restituisce la posizione della corrispondenza nella stringa di ricerca, nella
+forma della coppia d'indici di inizio e di fine della sequenza. La ricerca può
+cominciare da una posizione qualsiasi in virtù del terzo argomento opzionale, e
+se il pattern contiene una capture la corrispondenza verrà restituita come
+ulteriore terzo risultato:
 \begin{lines}
 #[run]
 -- string.find(s, pattern [, init [, plain]])
 local s = "Un intero 123 e un secondo 456!"
-local i, j = string.find(s, "123")
+local i, j = string.find(s, "123") -- i = 11, j = 13
 print(string.find(s, "(%d+)", j+1))
 \end{lines}
 
-Altre due funzioni utili che è bene citare per esempio per poter usare il
-simbolo di percento in codice Lua interno a sorgenti \TeX{}, sono
+Conviene citare altre due funzioni utili per esempio per poter usare il simbolo
+di percentuale nel codice Lua interno a sorgenti \TeX{}. Sono
 \fn{string.byte}\luastd{string.byte} e \fn{string.char}\luastd{string.char}: la
-prima da una lista di numeri ritorna la stringa codificata con essi e la secoda
-ritorna i codici dei caratteri della stringa argomento.
-Per esempio:
+prima da una lista di interi positivi calcola la stringa codificata con essi e
+la seconda calcola i codici dei caratteri della stringa argomento. Per esempio:
 \begin{lines}
 #[run]
 -- string.byte(s [, i [, j]])

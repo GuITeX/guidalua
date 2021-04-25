@@ -49,8 +49,8 @@ compilabile come in questo:
 
 \section{Dati di compilazione}
 
-Costruite le fondamenta stabiliamo quali dati inserire nel registro: l'utente 
-mano a mano che il lavoro sul documento procede eseguirà senza dubbio delle
+Costruite le fondamenta stabiliamo quali dati inserire nel registro: l'utente,
+mano a mano che il lavoro sul documento procede, eseguirà senza dubbio delle
 compilazioni intermedie perciò registreremo le seguenti informazioni di base:
 \begin{compactenumerate}
 \item il nome del file sorgente,
@@ -263,9 +263,9 @@ gestisce gli oggetti \code{Info}. Le operazioni fondamentali sono:
 \begin{compactitemize}
 \item installazione di un oggetto \key{Info} nel registro, metodo \fn{install};
 \item aggiungere un oggetto a una lista di registrazione specificando una
-eventuale funzioni di formato da applicare, metodo \fn{add\_to\_log};
-\item rimuovere un oggetto \key{Info} dalla lista di uscita, metodo
-\fn{remove\_from\_log};
+eventuale funzione di formato da applicare, metodo \fn{add\_to\_log};
+\item rimuovere un oggetto \key{Info} dalla lista di uscita verso il registro,
+metodo \fn{remove\_from\_log};
 \item generare una lista di uscita di registrazione o caricarne una predefinita,
 metodo costruttore con sintassi di chiamata di funzione;
 \item impostare un formato tra quelli disponibili di un oggetto \key{Info} nella
@@ -353,8 +353,8 @@ Sono scelte di progettazione molto importanti che divengono chiare durante lo
 sviluppo a cui si può dare risposta con criteri di semplicità ma che certamente
 sono il campo dell'ingegneria del software.
 
-Nell'ambito di questa seconda iterazione di sviluppo, tornando cioé alla
-strategia di oggetti \key{Info} autonomi cioé in grado di fornire l'informazione
+Nell'ambito di questa seconda iterazione di sviluppo, tornando cioè alla
+strategia di oggetti \key{Info} autonomi cioè in grado di fornire l'informazione
 senza dover accedere a parametri del registro, descriviamo la forma
 della lista di selezione.
 
@@ -693,8 +693,8 @@ output. Solamente in caso di nuovi oggetti \key{Info} l'utente dovrebbe scrivere
 l'opportuno codice Lua.
 
 Si possono fare esperimenti scaricando il pacchetto di seconda generazione
-\file{app-reg/logger.sty} e il file di prova \file{app-reg/doc2.tex},
-secondo le istruzioni della sezione~\ref{secIntroNote}.
+\file{app-reg/logger.sty} e il file di prova \file{app-reg/doc2.tex}, secondo le
+istruzioni della sezione Note di lettura del capitolo di apertura della guida.
 
 Una terza iterazione di sviluppo, potrebbe porsi lo scopo di minimizzare il
 numero di righe di codice necessarie a implementare un nuovo oggetto \key{Info},

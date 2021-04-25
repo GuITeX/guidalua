@@ -62,10 +62,16 @@ t[1] = t[1] + t[2] -- modifichiamo t
 assert(t[1] == other[1])
 \end{lines}
 
-Con la funzione \fn{assert} si può esprimere l'equivalenza logica tra due
-espressioni. Essa ritorna l'argomento se questo è \key{true} oppure se non è
-\key{nil}, altrimenti termina l'esecuzione del programma riportando l'errore
-descritto eventualmente da un secondo argomento testuale.
+Con la funzione \fn{assert}\luastd{assert} si può dichiarare l'equivalenza
+logica tra due espressioni oppure imporre la verità di un'espressione prima di
+assegnarla a una variabile. Se l'argomento è vero essa si comporta in modo
+neutro restituendo l'argomento stesso, ma se è falso, essa termina l'esecuzione
+del programma stampando la descrizione d'errore opzionalmente fornita dal
+secondo argomento stringa.
+
+Come vedremo nel capitolo \ref{chFondOpLogic}, un'espressione è vera se vale
+\key{true} oppure non è \key{nil}, e falsa se vale \key{false} oppure è
+\key{nil},
 
 I tipi come i numeri invece non sono oggetti e assegnare una variabile che li
 contiene a un'altra comporta la copia del dato, come si può verificare con un
@@ -89,7 +95,7 @@ Dunque la tabella è un tipo di dato molto flessibile, è un oggetto, ed è
 sufficientemente efficiente. Può essere usata in moltissime diverse situazioni
 ed è ancora più utile grazie all'efficacia del suo \emph{costruttore}.
 
-Ispirato al formato dei dati bibliografici di BibTeX, uno dei programmi storici
+Ispirato al formato dei dati bibliografici di \BibTeX, uno dei programmi storici
 del sistema \TeX{} usato per la gestione delle bibliografie nei documenti
 \LaTeX, il costruttore di Lua può creare tabelle da una sequenza di
 chiavi/valori inserite tra parentesi graffe:
