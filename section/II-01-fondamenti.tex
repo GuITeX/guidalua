@@ -72,17 +72,15 @@ quello presentato fino a ora perché è possibile scrivere una lista di variabil
 separate da virgole che assumeranno i valori corrispondenti della lista di
 espressioni, sempre separate da virgole che compare dopo il segno di uguale:
 \begin{lines}
-local a, b = 0.45 + 0.23, "text"
+local a, b = 0.45 + 0.23, "text" -- a = 0.68; b = "text"
 \end{lines}
 
 Quando il numero delle variabili non corrispondono a quello delle espressioni,
 Lua assegnerà automaticamente valori \texttt{nil} o ignorerà le espressioni in
 eccesso. Per esempio:
 \begin{lines}
-local a, b, c = 0.45, "text"    -- 'c' vale nil
-print(a, b, c)
-local x, y = "op", "qw", "lo"   -- "lo" è un dato ignorato
-print(x, y)
+local a, b, c = 0.45, "text"  -- c vale nil
+local x, y = "op", "qw", "lo" -- "lo" è un dato ignorato
 \end{lines}
 
 Nell'assegnazione Lua prima valuta le espressioni a destra e solo
@@ -116,16 +114,16 @@ utili con le funzioni e con gli iteratori di cui ci occuperemo in seguito.
 \section{Una manciata di tipi}
 \label{secFondManciataTipi}
 
-In Lua esistono una manciata di tipi. Essenzialmente, omettendone due, sono solo
-questi:
+In Lua esistono una manciata di tipi. Essenzialmente, omettendone due di uso
+avanzato, sono solo questi:
 \begin{compactitemize}
 \item \key{number} il tipo numerico\footnote{Solamente dalla versione 5.3 di Lua
 vengono internamente distinti gli interi e i numeri in virgola mobile};
-\item \key{string} il tipo stringa;
-\item \key{boolean} il tipo booleano;
-\item \key{table} il tipo tabella;
-\item \key{nil} il tipo nullo;
-\item \key{function} il tipo funzione.
+\item \key{string} il tipo stringa \( \to \) capitolo \ref{chFondStringhe};
+\item \key{boolean} il tipo booleano \( \to \) capitolo \ref{chFondOpLogic};
+\item \key{table} il tipo tabella \( \to \) capitolo \ref{chFondTabella};
+\item \key{nil} il tipo nullo \( to \) sezione \ref{secFondTipoNil};
+\item \key{function} il tipo funzione \( to \) capitolo \ref{chFondFunzioni}.
 \end{compactitemize}
 
 Il breve elenco suscita due osservazioni: tranne la tabella non esistono
@@ -137,6 +135,7 @@ spinto all'inclusione di concetti intelligenti e potenti.
 
 
 \subsection{Il tipo \key{nil}}
+\label{secFondTipoNil}
 
 Uno dei concetti più importanti che caratterizzano un linguaggio di
 programmazione è la presenza o meno del tipo nullo. In Lua esiste e viene
@@ -155,7 +154,38 @@ z = nil       --> distruzione della variabile
 \end{lines}
 
 
-\subsection{Il garbage collector}
+\section{Gli identificatori}
+
+I nomi che possiamo dare a variabili e funzioni, sono stringhe di lettere
+maiuscole o minuscole, numeri e trattini bassi \key{\_}\luas{\_} purché non
+comincino con una cifra e non corrispondano alle \emph{keyword}, le parole
+riservate del linguaggio.
+
+In Lua gli identificatori sono \emph{case sensitive} cioè le stesse lettere ma
+diverse nel maiuscolo o minuscolo, ne formano di distinti come \key{vaR} e
+\key{Var}.
+
+Si è quindi liberi di utilizzare nomi qualsiasi, tuttavia è conveniente aderire
+a qualche \emph{convenzione} che aggiunga al nome un significato di categoria.
+Per esempio, gli identificatori che iniziano con una lettera maiuscola si
+possono riservare agli oggetti come nel capitolo \ref{chFondOop}, oppure quelli
+che iniziano con un solo trattino basso, l'underscore \key{\_}, pur essendo
+identificatori come tutti gli altri, si possono riservare per i nomi che debbano
+intedersi come privati, spesso campi di tabella o funzioni ausiliarie.
+
+Per esempio, nel capitolo degli iteratori \ref{chFondIteratori} si fa uso
+dell'identificatore \key{\_} per le variabili di ciclo non utilizzate.
+L'importante è che se si utilizza una convenzione dei nomi la si rispetti sempre
+per non rendere il listato più a rischio di errori.
+
+Sono invece da evitare i nomi che iniziano con un doppio trattino basso, che
+potrebbero collidere con quelli dei metametodi (vedi il capitolo
+\ref{chFondOop}) e quelli che pur iniziando con un singolo trattino basso hanno
+poi lettere tutte in maiuscolo come per esempio \key{\_VERSION}\luak{\_VERSION},
+perché potrebbero collidere con i nomi predefiniti di Lua.
+
+
+\section{Il Garbage Collector}
 
 I dati non più utili come quelli di cui non esiste più un \emph{riferimento} a
 essi durante l'esecuzione, per esempio perché la variabile è stata riassegnata a

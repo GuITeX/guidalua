@@ -1,9 +1,16 @@
 
 
 \chapter{Operatori logici}
+\label{chFondOpLogic}
 
-In Lua un'espressione è vera se essa corrisponde al valore booleano
-\key{true}\luak{true} oppure a un valore che non è \key{nil}\luak{nil}.
+Il tipo \key{boolean}\luak{boolean} può assumere i valori \key{true}\luak{true}
+oppure \key{false}\luak{false}.
+
+A qualsiasi espressione Lua assegna un valore booleano se richiesto, per esempio
+in un condizionale \key{if}\luak{if} o in un ciclo \key{while}\luak{while}. In
+Lua un'espressione è vera se essa corrisponde al valore booleano
+\key{true}\luak{true} oppure a un valore che non è \key{nil}\luak{nil},
+altrimenti è falsa.
 
 Gli operatori logici \key{and}\luak{and}, \key{or}\luak{or} e
 \key{not}\luak{not} danno luogo ad alcune espressioni idiomatiche di Lua.
@@ -21,7 +28,7 @@ primo operando se esso è falso altrimenti restituisce il secondo operando.
 \label{secFondOperatoreTernario}
 
 Con \key{and} e \key{or} combinati otteniamo l'operatore ternario del C++ in
-Lua: Ecco l'espressione in un esempio: se \key{a} è vera il risultato è \key{b}
+Lua: ecco l'espressione in un esempio: se \key{a} è vera il risultato è \key{b}
 altrimenti \key{c}:
 \begin{lines}
 local val = (a and b) or c

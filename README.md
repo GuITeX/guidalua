@@ -3,11 +3,10 @@ Guida al linguaggio Lua per LuaTeX
 
 ![logo della guida tematica su Lua per LuaTeX](logoguidalua.svg)
 
-Questo repository contiene i sorgenti LaTeX della Guida alla programmazione Lua
-in LuaTeX. La guida fa parte del progetto *Guide Tematiche* per la diffusione di
-documentazione di alta qualità centrata su argomenti specifici e condotto
-dal Gruppo Italiano di utilizzatori di TeX
-[www.guitex.org](http://www.guitex.org).
+Questo repository contiene i sorgenti LaTeX della *Guida alla programmazione Lua
+in LuaTeX*. La guida fa parte del progetto *Guide Tematiche* per la diffusione
+di documentazione di alta qualità centrata su argomenti specifici, condotto dal
+Gruppo Italiano di utilizzatori di TeX [www.guitex.org](http://www.guitex.org).
 
 Le guide tematiche sono disponibili nella sezione documentazione del sito del
 GuIT a [questo link](https://www.guitex.org/home/it/documentazione). In
@@ -15,22 +14,27 @@ particolare, il file PDF precompilato di questa guida su Lua per LuaTeX può
 essere scaricato da questo
 [link diretto](http://www.guitex.org/home/images/doc/GuideGuIT/guidalua.pdf).
 
+Per sostenere questa iniziativa la cosa migliore è associarsi al GuIT
+consultando [questo
+link](https://guitex.org/home/it/diventa-socio/associarsi-a-guit).
+
 Contenuti
 ---------
 
 La *Guida al linguaggio Lua per LuaTeX* è suddivisa in tre parti. Nella parte
-prima alcuni *tutorial* offrono un prima rapida presentazione sugli impieghi
-pratici di Lua nei documenti TeX implementando una calcolatrice e la
-composizione automatica di tabelle.
+prima alcuni *tutorial* offrono una prima rapida presentazione sugli impieghi
+pratici di Lua nei documenti TeX con i capitoli sulla *calcolatrice* e la
+*composizione automatica di tabelle* e molto altro.
 
-Nella seconda parte sono trattate le basi del liguaggio e nella terza vengono
-presentati esempi applicativi dove il codice Lua risolve problemi specifici
-difficili da implementare con il tradizionale linguaggio macro.
+Nella seconda parte sono trattate le basi del liguaggio Lua in modo del tutto
+generale. Ogni fine capitolo contiene esercizi da svolgere mano a mano che si
+procede nello studio per raggiungere rapidamente i propri obiettivi di
+conoscenza.
 
-Ogni fine capitolo della parte seconda contiene esercizi da svolgere mano a mano
-che si procede nello studio per raggiungere rapidamente i propri obiettivi di
-conoscenza, in particolare per imparare usi nuovi e avanzati dei programmi di
-composizione tipografica del mondo TeX.
+Nella terza parte vengono presentati esempi applicativi in LuaTeX dove il codice
+Lua risolve problemi specifici difficili da implementare con il tradizionale
+linguaggio macro di (La)TeX, utili per imparare usi nuovi e avanzati dei
+programmi di composizione tipografica TeX.
 
 La guida non richiede una conoscenza approfondita della programmazione. Occorre
 tuttavia saper impartire comandi da terminale e aver installato sul proprio
@@ -55,8 +59,8 @@ Compilazione della guida
 
 Tutto il necessario per compilare la guida con LuaLaTeX è contenuto nel
 repository. Per farlo occorre una distribuzione TeX abbastanza recente e
-completa, per esempio una TeX Live 2020. La sequenza completa dei comandi di
-compilazione è:
+completa, per esempio una TeX Live 2020; una volta scaricato l'archivio del
+codice la sequenza completa dei comandi di compilazione è:
 
 ```bash
 lualatex --shell-escape guidalua
@@ -76,6 +80,6 @@ Ringraziamenti
 
 Ringrazio tutti quelli che hanno contribuito con suggerimenti, segnalazioni di
 refusi, e idee alla *Guida al linguaggio Lua per LuaTeX*. Alcuni amici sono
-citati all'interno della guida nella sezione *Ringraziamenti*.
+citati all'interno della guida nella sezione *Note finali*.
 
-Buona lettura!
+Buona lettura e Happy LuaTeXing!
