@@ -1,5 +1,5 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/GuITeX/guidalua?label=current%20version)
-![GitHub Workflow Status (event)](https://img.shields.io/github/workflow/status/GuITeX/guidalua/Compile%20LuaLaTeX%20main%20file%20guidalua.tex?style=plastic)
+![GitHub Workflow Status (event)](https://img.shields.io/github/workflow/status/GuITeX/guidalua/Compile%20LuaLaTeX%20main%20file%20guidalua.tex)
 ![Lines of code](https://img.shields.io/tokei/lines/github/GuITeX/guidalua)
 ![GitHub issues](https://img.shields.io/github/issues/GuITeX/guidalua)
 ![License](https://img.shields.io/badge/licence-LPPL%20%3E%3D1.3-green)
@@ -22,8 +22,8 @@ essere scaricato da questo
 [link diretto](http://www.guitex.org/home/images/doc/GuideGuIT/guidalua.pdf).
 
 Per sostenere questa iniziativa la cosa migliore è associarsi al GuIT
-consultando [questo
-link](https://guitex.org/home/it/diventa-socio/associarsi-a-guit).
+consultando [la pagina web delle tipologie di
+socio](https://guitex.org/home/it/diventa-socio/associarsi-a-guit).
 
 Contenuti
 ---------

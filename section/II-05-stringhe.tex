@@ -96,22 +96,21 @@ Il concetto importante riguardo alle stringhe è se queste siano o no immutabili
 Se non lo sono la concatenazione di stringhe non comporta la creazione di una
 nuova stringa ma la modifica in memoria.
 
-In Lua, come in molti altri linguaggi, le stringhe sono invece immutabili.
-Ciò significa che una volta create, le stringhe non possono essere modificate e
-nel codice precedente, l'operazione di concatenare il carattere punto in coda
+In Lua, come in molti altri linguaggi, le stringhe sono invece immutabili. Ciò
+significa che una volta create, le stringhe non possono più essere modificate.
+Nel codice precedente, l'operazione di concatenare il carattere punto in coda
 alla stringa \key{s2}, genera una nuova stringa che è assegnata alla stessa
-variabile.
+variabile al posto del valore originale.
 
 Per poche operazioni di concatenazione ciò non è un problema, ma in alcuni casi
 invece si. Consideriamo il seguente codice apparentemente innocuo:
 \begin{lines}
-local s = ""
-
+local s = ""  -- stringa vuota
 for i = 1, 100 do
     s = s .. "**"
 end
-print(#s) -- # funziona anche per le stringhe!
---             contandone i byte
+print(#s) -- l'operatore # funziona anche per le stringhe!
+--           contandone i byte
 \end{lines}
 
 Ma cosa succede in dettaglio? Perché questo codice non è efficiente? A ogni
@@ -125,20 +124,23 @@ memoria equivalente a 10100 byte!
 
 In Java e negli altri linguaggi con stringhe immutabili normalmente si corre ai
 ripari mettendo a disposizione una struttura dati o una funzione che risolve il
-problema, per esempio un tipo \key{StringBuffer}. In Lua la soluzione è una
-funzione della libreria \key{table} che, anticipando rispetto alle nostre
+problema, per esempio un tipo \key{StringBuffer} di Java. In Lua la soluzione è
+una funzione della libreria \key{table} che, anticipando rispetto alle nostre
 chiaccherate è \fn{table.concat}\luastd{table.concat}:
 \begin{lines}
 local t = {}
 for i = 1, 100 do
     t[#t + 1] = "**"
 end
-
-print(#table.concat(t))
+local s = table.concat(t)
+print(#s) --> stampa 200
 \end{lines}
 
-Nel caso specifico avremo dovuto usare la funzione
-\fn{string.rep}\luastd{string.rep} anche se \fn{table.concat} è più generale.
+Le singole stringhe \verb|"**"| sono state memorizzati come elementi di una
+tabella in sequenza. La funzione \fn{table.concat} li concatena in una sola
+stringa senza usare concatenazioni parziali quindi in modo efficiente. Nel caso
+specifico avremo dovuto usare la funzione \fn{string.rep}\luastd{string.rep}
+considerando \fn{table.concat} nel caso generale.
 
 
 \section{Esercizi}

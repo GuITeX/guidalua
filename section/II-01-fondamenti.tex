@@ -17,11 +17,11 @@ Janeiro} in Brasile. In portoghese ``Lua'' si pronuncia LOO-ah e significa
 ``Luna''!
 
 
-\section{L'assegnamento}
-\label{secFondAssegnamento}
+\section{L'assegnazione}
+\label{secFondAssegnazione}
 
 Ci occupiamo ora di uno degli elementi di base dei linguaggi informatici:
-l'istruzione di \emph{assegnamento}. Con questa operazione viene introdotto un
+l'istruzione di \emph{assegnazione}. Con questa operazione viene introdotto un
 \emph{simbolo} nel programma associandolo a un valore che apparterrà a uno
 dei possibili \emph{tipi} di dato.
 
@@ -36,7 +36,7 @@ Durante l'esecuzione di questo codice, Lua determina dinamicamente il tipo del
 valore letterale `123' --- un numero --- creandolo in memoria col nome di
 `\key{a}'.
 
-L'istruzione di assegnamento omette il tipo di dato non essendone prevista una
+L'istruzione di assegnazione omette il tipo di dato non essendone prevista una
 dichiarazione esplicita. In altre parole, i dati hanno un tipo, determinabile
 con la funzione \fn{type}\luastd{type}, ma ciò non ha rilevanza semantica ed è
 solo in fase di esecuzione che l'interprete determina il tipo di dato e in
@@ -49,7 +49,7 @@ che non le si dichiari locali al blocco di codice.
 \subsection{Locale o globale?}
 \label{secFondLocaleGlobale}
 
-Una proprietà dell'assegnamento è che se non diversamente specificato Lua
+Una proprietà dell'assegnazione è che se non diversamente specificato Lua
 crea i simboli nell'ambiente globale del codice in esecuzione. Se si
 desidera creare una variabile locale rispetto al blocco di codice in cui è
 definita, occorre premettere alla definizione la parola chiave \key{local}.
@@ -136,15 +136,15 @@ utili con le funzioni e con gli iteratori di cui ci occuperemo in seguito.
 \label{secFondManciataTipi}
 
 In Lua esistono una manciata di tipi. Essenzialmente, omettendone due di uso
-avanzato, sono solo questi:
+avanzato, sono solo questi sei:
 \begin{compactitemize}
 \item \key{number} il tipo numerico\footnote{Solamente dalla versione 5.3 di Lua
 vengono internamente distinti gli interi e i numeri in virgola mobile};
-\item \key{string} il tipo stringa \( \to \) capitolo \ref{chFondStringhe};
-\item \key{boolean} il tipo booleano \( \to \) capitolo \ref{chFondOpLogic};
 \item \key{table} il tipo tabella \( \to \) capitolo \ref{chFondTabella};
-\item \key{nil} il tipo nullo \( to \) sezione \ref{secFondTipoNil};
-\item \key{function} il tipo funzione \( to \) capitolo \ref{chFondFunzioni}.
+\item \key{boolean} il tipo booleano \( \to \) capitolo \ref{chFondOpLogic};
+\item \key{string} il tipo stringa \( \to \) capitolo \ref{chFondStringhe};
+\item \key{function} il tipo funzione \( \to \) capitolo \ref{chFondFunzioni}.
+\item \key{nil} il tipo nullo \( \to \) sezione \ref{secFondTipoNil};
 \end{compactitemize}
 
 Il breve elenco suscita due osservazioni: tranne la tabella non esistono
@@ -169,7 +169,7 @@ semplicemente \key{nil}, mentre assegnare il valore nullo a una variabile la
 distrugge:
 \begin{lines}
 print(z)      --> stampa nil, la variabile 'z' non esiste
-local z = 123 --> assegnamento di un tipo numerico
+local z = 123 --> assegnazione di un tipo numerico
 print(z)      --> stampa 123
 z = nil       --> distruzione della variabile
 \end{lines}
@@ -178,29 +178,29 @@ z = nil       --> distruzione della variabile
 \section{Gli identificatori}
 
 I nomi che possiamo dare a variabili e funzioni, sono stringhe di lettere
-maiuscole o minuscole, numeri e trattini bassi \key{\_}\luas{\_} purché non
+maiuscole o minuscole, numeri e trattini bassi \key{'\_'}\luas{\_} purché non
 comincino con una cifra e non corrispondano alle \emph{keyword}, le parole
 riservate del linguaggio.
 
-In Lua gli identificatori sono \emph{case sensitive} cioè le stesse lettere ma
-diverse nel maiuscolo o minuscolo, ne formano di distinti come \key{vaR} e
-\key{Var}.
+In Lua gli identificatori sono \emph{case sensitive}: le stesse lettere formano
+identificatori distinti se esse sono diverse nel maiuscolo o minuscolo, come per
+\key{vaR} e \key{Var}.
 
 Si è quindi liberi di utilizzare nomi qualsiasi, tuttavia è conveniente aderire
 a qualche \emph{convenzione} che aggiunga al nome un significato di categoria.
 Per esempio, gli identificatori che iniziano con una lettera maiuscola si
-possono riservare agli oggetti come nel capitolo \ref{chFondOop}, oppure quelli
-che iniziano con un solo trattino basso, l'underscore \key{\_}, pur essendo
-identificatori come tutti gli altri, si possono riservare per i nomi che debbano
-intedersi come privati, spesso campi di tabella o funzioni ausiliarie.
+possono riservare agli oggetti, come nel capitolo \ref{chFondOop}, oppure quelli
+che iniziano con un solo trattino basso, l'underscore \key{'\_'}, pur essendo
+identificatori come tutti gli altri, si possono riservare per dati privati come
+campi di tabella o funzioni ausiliarie.
 
-Per esempio, nel capitolo degli iteratori \ref{chFondIteratori} si fa uso
-dell'identificatore \key{\_} per le variabili di ciclo non utilizzate.
-L'importante è che se si utilizza una convenzione dei nomi la si rispetti sempre
-per non rendere il listato più a rischio di errori.
+Infatti nel capitolo \ref{chFondIteratori} degli iteratori si fa uso
+dell'identificatore \key{'\_'} per le variabili di ciclo non utilizzate.
+Qualsiasi sia la convenzione adottata per i nomi, l'importante è rispettarne
+sempre le regole per evitare errori o un listato meno chiaro.
 
-Sono invece da evitare i nomi che iniziano con un doppio trattino basso, che
-potrebbero collidere con quelli dei metametodi (vedi il capitolo
+Sono invece comunque da evitare i nomi che iniziano con un doppio trattino
+basso, che potrebbero collidere con quelli dei metametodi (vedi il capitolo
 \ref{chFondOop}) e quelli che pur iniziando con un singolo trattino basso hanno
 poi lettere tutte in maiuscolo come per esempio
 \key{\_VERSION}\luastd{\_VERSION}, perché potrebbero collidere con i nomi
@@ -219,6 +219,7 @@ di una piccola diminuzione delle prestazioni in fase di esecuzione.
 
 Al termine del programma tutte le risorse in memoria vengono automaticamente
 liberate.
+
 
 \section{Esercizi}
 
