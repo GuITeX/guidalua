@@ -134,12 +134,59 @@ contiene la lista dei nodi glifi e la larghezza della scatola stessa.
 Il sorgente compilabile diventa questo:
 \sourcecode{file = [[app-tartaglia/04.tex]]}
 
+\begin{figure}
+\includegraphics[scale=0.62]{image/nodetree-list-crop.pdf}
+\caption{Rappresentazione della lista dei nodi contenuta nella variabile
+\code{list} del listato \key{04.tex} modificato per l'utilizzo del pacchetto
+\code{nodetree}. Si può notare che i nodi glue tranne il primo hanno lunghezza
+di 11,5pt perchè le cifre adiacenti sono sempre di due e tre cifre, il che porta
+a calcolare sempre la stessa distanza per mantenere quella assiale di 24pt con
+cifre larghe 5pt.}
+\label{figNodetree}
+\end{figure}
+
 Se esageriamo con la grandezza dei numeri allora si sovrapporrano. Questo
 succede se la lunghezza elastica è negativa poiché la distanza assiale di 24pt
-(vedi la variabile locale \key{a}) è troppo piccola. A questo livello del
+(vedi la variabile locale \key{'a'}) è troppo piccola. A questo livello del
 codice, l'utente deve controllare che non ci siano sovrapposizioni specie
 all'ultima riga del triangolo dove si trovano i numeri più grandi.
 
+
+\subsection{Intermezzo: debug di una lista di nodi}
+
+Per visualizzare i nodi di una lista per scopi di debug è possibile usare il
+pacchetto \pack{nodetree} di Josef Friedrich. Uno dei modi è caricare la
+libreria omonima e usare la funzione \fn{nodetree.print}\luastd{nodetree.print}
+per stampare a terminale la rappresentazione dell'albero contenuta nel nodo
+passato come argomento:
+\begin{lines}
+local list = ...
+local nodetree = require "nodetree"
+nodetree.print(list)
+\end{lines}
+
+La documentazione del pacchetto fornisce i dettagli delle opzioni, per esempio
+per regolare la quantità d'informazioni tramite il parametro \opz{verbosity} o
+per impostare stili di stampa. L'output può essere dirottato verso un file,
+specie quando comprende numerose linee di testo.
+
+Con questa tecnica la stampa della rappresentazione dell'albero dei nodi della
+lista di numeri spaziati ottenuta alla sezione precedente con il codice del file
+\code{04.tex}, e contenuta nella variabile \key{list}, è riportata nella
+figura~\ref{figNodetree}.
+
+Con \code{nodetree} si possono incontrare problemi se il terminale non è
+compatibile con i codici di colori e con alcuni caratteri grafici usati per
+collegare i nodi.
+
+
+\begin{figure}[b]
+\centering
+\includegraphics{image/tart-left}
+\caption{Triangolo di Tartaglia allineato a sinistra, ottenuto con il listato
+\code{05.tex}.}
+\label{figTriangoloTartagliaLeft}
+\end{figure}
 
 \subsection{Sovrapposizione scatole}
 
@@ -189,10 +236,7 @@ local function tartaglia(level)
 end
 \end{lines}
 
-Il risultato è questo:
-\begin{center}
-\includegraphics{image/tart-left}
-\end{center}
+Il risultato è quello della figura~\ref{figTriangoloTartagliaLeft}.
 
 
 \subsection{Opzione allineamento}

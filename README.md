@@ -23,7 +23,7 @@ essere scaricato da questo
 
 Per sostenere questa iniziativa la cosa migliore è associarsi al GuIT
 consultando [la pagina web delle tipologie di
-socio](https://guitex.org/home/it/diventa-socio/associarsi-a-guit).
+adesione](https://guitex.org/home/it/diventa-socio/associarsi-a-guit).
 
 Contenuti
 ---------
