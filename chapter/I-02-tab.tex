@@ -1,13 +1,15 @@
+
 % secondo tutorial
 
-\section{La tabella dei pesi}
+\chapter{La tabella dei pesi}
+\label{iChTabellaPesi}
 
 Dopo la calcolatrice si presenta un altro problema compositivo: una tabella che
 riporta per vari diametri, area e peso della barra d'acciaio di lunghezza
-unitaria. I diametri variano da 6 a 32 millimetri con passo 2.
+unitaria con diametri che variano da 6 a 32 millimetri con passo 2.
 
 L'idea è definire una sorta di iteratore a due componenti. Per esempio, se
-volessimo una tabella con due colonne, la prima con gli interi da 1 a 10 e la
+volessimo una tabella a due colonne, la prima con gli interi da 1 a 10 e la
 seconda con i rispettivi quadrati, dovremo poter definire solo la regola di
 costruzione delle righe. Un secondo componente si occuperà di applicarla le
 volte necessarie.
@@ -172,7 +174,7 @@ Per fortuna ci sono altri modi più sicuri di delimitare i valori letterali dell
 stringhe in Lua in questi casi, proprie del linguaggio.
 
 
-\subsection{Dati tabellari}
+\section{Dati tabellari}
 
 La funzione generatrice è generale potendo costruire qualsiasi tipo di vista
 tabellare sui dati, sia essi ricavati con il calcolo come nel caso precedente
@@ -265,7 +267,7 @@ ne risente mentre invece se il polimorfismo fosse interno, non potremo evitare
 di modificare l'unico costruttore.
 
 
-\subsection{Template di riga}
+\section{Template di riga}
 
 Proseguiamo adesso con il migliorare il modo in cui generare il codice di riga
 nell'ambiente \key{tabular}. Stiamo infatti usando la concatenazione di
@@ -460,7 +462,7 @@ Molto importante è far corrispondere i numeri di cella dei segnaposto del
 template con i valori che la funzione di riga inserisce nella varie posizioni.
 
 
-\subsection{Composizione finale}
+\section{Composizione finale}
 
 L'ultimo passo è migliorare l'aspetto della tabella. Con il pacchetto
 \pack{booktabs} aggiungiamo un'intestazione e un filetto ogni tre righe per
@@ -566,14 +568,14 @@ generazione e il template di riga.}
 \end{tabular}
 \end{table}
 
-\subsection{Conclusioni}
+\section{Conclusioni}
 
 La nostra classe \code{Row} ci permette di costruire tabelle iterative in Lua in
 modo del tutto generale, compiendo calcoli numerici e ogni sorta di possibili
-elaborazioni. Molti altri affinamenti sono possibili come il caricamento di dati
-esterni oppure l'uso di pipeline di operatori all'interno dei segnaposto dei
-template. Anche questo tutorial si chiude perciò con una lista di nuove idee da
-implementare con Lua.
+elaborazioni. Molti altri affinamenti del codice sono possibili come il
+caricamento di dati esterni oppure l'uso di pipeline di operatori all'interno
+dei segnaposto dei template. Anche questo tutorial si chiude perciò con una
+lista di nuove idee da implementare con Lua.
 
 La tabella~\ref{tabTabPesi} mostra il risultato finale.
 

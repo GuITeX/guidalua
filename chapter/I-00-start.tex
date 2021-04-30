@@ -1,0 +1,195 @@
+
+% codename "magpie"
+
+\chapter{Let's start with Lua}
+\label{iChStart}
+
+Consideriamo un sorgente \LaTeX{} minimale:
+\begin{lines}
+#[tex]
+% !TeX program = LuaLaTeX
+\documentclass{article}
+\begin{document}
+\end{document}
+\end{lines}
+
+I suoi elementi sono l'utile commento che informa l'editor di quale compositore
+usare per la compilazione detto riga magica, la dichiarazione di classe e infine
+il corpo vuoto del documento.
+
+Essendo il compositore \LuaLaTeX{} abbiamo a disposizione la nuova primitiva
+\cs{directlua}. Potremo inserirla più volte in qualsiasi punto del sorgente. Se
+la inserissimo nel preambolo del sorgente minimo avremo:
+
+\CLRmarginpar{Lua in \LaTeX\\
+\gotosec{} \ref{secLuaInLuaLaTeX}}[true]% true option means +16pt of vspace
+%
+\CLRmarginpar{\code{\backslash directlua}\\
+\gotosec{} \ref{iSecDirectLua}}
+%
+\begin{lines}
+#[tex]
+% !TeX program = LuaLaTeX
+\documentclass{article}
+\directlua{<codice Lua>}
+\begin{document}
+\end{document}
+\end{lines}
+
+Qui sta il punto. La primitiva \cs{directlua} è come se commutasse il modo di
+compilazione da \LaTeX{} a Lua, un linguaggio di programmazione per scopi
+generali, efficiente e portabile. Qualsiasi cosa faccia il \code{<codice Lua>}
+racchiuso tra graffe esso sarà eseguito dall'interprete Lua e non da \TeX.
+
+Quali sono le conseguenze? Qual è l'utilità dell'interprete Lua?
+
+\CLRmarginpar{Passare a \LuaLaTeX\\
+\gotosec{} \ref{iSecPassareALuaTeX}}
+%
+La risposta a queste ottime domande è duplice. La prima è che il motore
+\prog{luatex} rispetto a \prog{pdftex} è stato migliorato in molti aspetti, per
+esempio è in grado di gestire i font di tipo Open Type nativamente. Solo questo
+lo rende molto interessante per l'utente.
+
+La seconda è che Lua può \emph{integrare} l'elaborazione \TeX{} eseguendo
+compiti complessi come il calcolo numerico, l'interrogazione di database,
+l'editing del testo, l'interazione con i servizi di rete, la costruzione di
+oggetti tipografici di complessità arbitraria, la grafica vettoriale, eccetera
+eccetera.
+
+
+\section{Un primo esempio}
+
+Desideriamo che nel nostro documento ci sia un testo allineato sulla diagonale
+della pagina. Per ottenerlo usando il comando \cs{rotatebox} del pacchetto
+\pack{graphicx} è necessario calcolare il valore dell'angolo di rotazione in
+gradi conoscendo la misura della larghezza e dell'altezza della pagina e questo
+implica il calcolo dell'arcotangente del rapporto:
+\[
+    \alpha = \frac{180}{\pi}\arctan{\frac{h}{w}}
+\]
+
+Applicando qualche metodo numerico o pacchetto, sono certo che \TeX{} sia in
+grado di calcolare l'angolo con sufficiente precisione pur non disponendo di
+alcuna libreria in virgola mobile. Con Lua invece è un calcolo diretto in
+floating point:
+
+\CLRmarginpar{Tabella di Lua\\
+\gotosec{} \ref{chFondTabella}}[true]% true option means +16pt of vspace
+%
+\CLRmarginpar{Libreria \code{math}\\
+\gotosec{} \ref{iiSecMathLibrary}}
+%
+\begin{lines}
+#[tex]
+#[indexfile=code/e0-001.tex]
+% filename: code/e0-001.tex
+\directlua{
+    local w = tex.pagewidth
+    local h = tex.pageheight
+    local alpha = (180/math.pi) * math.atan(h/w)
+    token.set_macro('angdeg', alpha)
+}
+\end{lines}
+
+Qualche commento sulle quattro linee di codice Lua\footnote{Il listato completo
+del sorgente è scaricabile dalla directory \code{code} con il nome di
+\file{e0-001.tex} dall'archivio dei sorgenti della guida.}: le prime due
+leggono le dimensioni della pagina in due variabili locali --- rappresentano
+perciò i dati di ingresso dell'elaborazione --- ma attenzione i campi
+\key{pagewidth} e \key{pageheight} della tabella \key{tex}, senza entrare ora
+nel dettaglio di cosa sia un campo o una tabella in Lua, non sono valori in sola
+lettura di valore pari a quello dei corrispondenti parametri dimensionali. Sono
+bensì le dimensioni \cs{pagewidth} e \cs{pageheight} stesse.
+
+La terza linea esegue il calcolo in virgola mobile in doppia
+precisione\footnote{Per questo documento il valore dell'angolo della diagonale
+di pagina vale \( \directlua{
+    local w = tex.pagewidth
+    local h = tex.pageheight
+    local angle = (180/math.pi) * math.atan(h/w)
+    tex.print(tostring(angle))
+}\) gradi.} e l'ultima crea una macro \cs{angdeg} con il valore dell'angolo ---
+rappresenta percò l'output dell'elaborazione --- esattamente come se fosse stata
+creata con \cs{def}.
+
+Nel motore di composizione, Lua ha accesso diretto ai registri dimensionali e ai
+contatori e può creare macro. Significa che l'implementazione del motore di
+composizione stesso è nativamente interfacciato con Lua.
+
+
+\newcommand{\ordinanomi}[1]{\directlua{
+    local list = {#1}
+    table.sort(list)
+    tex.print(table.concat(list, ', '))
+}}
+
+\section{Un secondo esempio}
+
+Abbiamo una lista dei nomi di partecipanti a un evento, ma vorremmo evitare di
+ordinarli a mano. La lista si presenta come un elenco separato da virgole dei
+nomi (già ordinati): \ordinanomi{'Giacomo', 'Tonio', 'Elena', 'Anna', 'Stefano',
+'Milena', 'Federico', 'Giovanni', 'Massimo', 'Basilio', 'Beatrice'}.
+
+In Lua bastano tre righe di codice per definire il comando \cs{ordina} che ha
+come unico argomento la lista:
+
+\CLRmarginpar{Libreria \code{table}\\
+\gotosec{} \ref{iiSecTableLibrary}}[true]% true option means +16pt of vspace
+%
+\CLRmarginpar{\fn{tex.print}\\
+\gotosec{} \ref{secPassaggioDati}}
+%
+\begin{lines}
+#[tex]
+#[indexfile=code/e0-002.tex]
+% filename: code/e0-002.tex
+\newcommand{\ordina}[1]{\directlua{
+    local list = {#1}
+    table.sort(list)
+    tex.print(table.concat(list, ", "))
+}}
+\end{lines}
+
+Il dato in ingresso, la lista dei nomi non ordinata, viene costruito grazie al
+meccanismo della sostituzione degli argomenti di una macro. Il dato in uscita,
+la lista dei nomi ordinata, perviene al compositore come testo in lettura come
+se fosse stato presente nel file sorgente.
+
+I tre passi del codice sono la costruzione della lista con una tabella,
+l'ordinamento degli elementi, e l'invio al buffer di lettura dei caratteri gli
+elementi concatenati e separati con una virgola.
+
+Anche qui, se non fosse chiaro quanto avete appena letto è perché vorrei
+introdurre prima come si definisce un comando \LaTeX{} che contiene solamente
+codice Lua rispetto ai concetti del linguaggio che comunque potete raggiungere
+con i riferimenti al margine ai capitoli della parte~\ref{partFoundation}.
+
+Nel documento un tale comando si usa in questo modo, con i nomi necessariamente
+da delimitare come stringhe:
+\begin{lines}
+#[tex]
+#[indexfile=code/e0-002.tex]
+% filename: code/e0-002.tex
+\ordina{"Giacomo", "Tonio", "Elena", "Anna", "Stefano",
+    "Milena", "Federico", "Giovanni", "Massimo", "Basilio",
+    "Beatrice"}
+\end{lines}
+
+Con qualche riga di codice in più, sarebbe semplice eliminare dall'input la
+delimitazione dei nomi come stringhe, oppure inserire un criterio di ordinamento
+più complesso come quello per cognome e nome.
+
+
+\section{Direzioni di lettura}
+
+Approfondiremo già dai prossimi capitoli diverse applicazioni utili di Lua per
+comporre documenti \TeX. Implementeremo una \emph{calcolatrice}
+(capitolo~\ref{iChCalcolatrice}) e comporremo una tabella numerica ripetitiva
+(capitolo~\ref{iChTabellaPesi}).
+
+Nel margine di pagina il lettore troverà i rimandi agli approfondimenti. Questi
+tutorial infatti non hanno l'obiettivo di spiegare la programmazione Lua, cioè
+ciò che faremo nella parte~\ref{partFoundation}, ma di mostrarne l'utilità.
+
+% end of file

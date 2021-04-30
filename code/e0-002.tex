@@ -1,0 +1,16 @@
+% !TeX program = LuaLaTeX
+% filename: code/e0-002.tex
+\documentclass{article}
+
+\newcommand{\ordina}[1]{\directlua{
+    local list = {#1}
+    table.sort(list)
+    tex.print(table.concat(list, ", "))
+}}
+
+\begin{document}
+
+Elenco dei partecipanti: \ordina{"Giacomo", "Tonio", "Elena", "Anna", "Stefano",
+"Milena", "Federico", "Giovanni", "Massimo", "Basilio", "Beatrice"}.
+
+\end{document}

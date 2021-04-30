@@ -1,0 +1,33 @@
+% !TeX program = LuaLaTeX
+% filename: code/e0-001.tex
+\documentclass[b6paper, landscape]{article}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{kantlipsum}
+\usepackage{xcolor}
+
+\AddToShipoutPictureBG{%
+    \AtPageCenter{%
+        \rotatebox{\angdeg}{%
+            \makebox(0,0)[cc]{%
+            \Huge\textcolor{magenta}{%
+                 TESTO LUNGO SULLA DIAGONALE
+                 TESTO LUNGO SULLA DIAGONALE
+                 TESTO LUNGO SULLA DIAGONALE%
+            }}%
+        }%
+    }%
+}
+
+\AtBeginDocument{\directlua{
+    local w = tex.pagewidth
+    local h = tex.pageheight
+    local alpha = (180/math.pi) * math.atan(h/w)
+    token.set_macro('angdeg', alpha)
+}}
+
+\begin{document}
+\kant[1-2]
+\end{document}
+
+

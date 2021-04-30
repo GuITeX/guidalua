@@ -3,21 +3,14 @@
 
 \chapter{Presentazione}
 
-\section{Motivazione}
-
 Questa guida tematica è dedicata alla programmazione in Lua all'interno dei
-motori di composizione del sistema \TeX.
+motori di composizione del sistema \TeX{} per utenti avanzati e sviluppatori.
 
-Con Lua è possibile compiere sia elaborazioni generiche come l'interrogazione di
-basi di dati che elaborazioni tipografiche interagendo con il compositore
-interno. Con Lua rispetto a \TeX, è più semplice ed efficiente effettuare
-calcoli numerici o avvalersi di avanzate librerie esterne.
-
-La nuova generazione di compositori amplia così notevolmente gli scenari
-applicativi. Se da un lato è auspicabile che queste potenzialità diventino
-disponibili per gli utenti finali per mezzo di moduli e pacchetti, dall'altro è
-utile fornire dettagli ed esempi per implementare proprie soluzioni o per poter
-scrivere nuovi moduli condividendone lo sviluppo con la community.
+Come dimostreremo, la nuova generazione di compositori amplia notevolmente gli
+scenari applicativi. Se da un lato è auspicabile che queste potenzialità
+diventino disponibili per gli utenti finali per mezzo di moduli e pacchetti,
+dall'altro è utile fornire dettagli ed esempi per implementare proprie soluzioni
+o per poter scrivere nuovi moduli condividendone lo sviluppo con la community.
 
 Sono certamente molte le cose da conoscere: un nuovo linguaggio molto diverso da
 \TeX{}, numerosi dettagli sul funzionamento interno dei compositori Lua-powered,
@@ -29,16 +22,16 @@ presentare il quadro della crescente complessità del sistema.
 \section{Piano della guida}
 
 La guida è divisa in tre parti: la prima offre una panoramica rapida in forma di
-\emph{tutorial} per iniziare subito con Lua seguendo i passi di un ipotetico
-utente alle prese con problemi compositivi (parte \ref{partTutorial}), la
-seconda tratta delle basi del linguaggio Lua (parte \ref{partFoundation}) e
-contiene numerosi esercizi, e infine la terza illustra esempi applicativi con
-l'uso delle librerie di composizione cn i nodi (parte \ref{partApp}).
+\emph{tutorial} passo passo per iniziare subito con Lua e comprenderne come
+eseguirne il codice all'interno del sorgente (parte \ref{partTutorial}), la
+seconda tratta delle basi del linguaggio Lua e contiene numerosi esercizi (parte
+\ref{partFoundation}), e infine la terza presenta esempi applicativi con lo
+sviluppo di librerie e l'uso della tecnologia dei nodi (parte \ref{partApp}).
 
 Tra gli argomenti ci sono:
 \begin{compactitemize}
 \item differenza tra motore e formato di composizione \( \to \) capitolo
-\ref{iichExplain},
+\ref{iChExplain},
 \item basi del linguaggio Lua \( \to \) dal capitolo \ref{chFondAssignment},
 \item tecniche di programmazione e di rappresentazione dei dati \( \to \) dal
 capitolo \ref{iiichRegistro},
@@ -58,16 +51,16 @@ acconsentito all'utilizzo di quegli appunti per produrre questa guida tematica.
 \section{Contribuire e collaborare}
 
 Spero che i lettori vorranno contribuire al testo inviando proprie soluzioni o
-nuovi contributi piccoli o grandi. Lo si può fare attraverso lo strumento che
+nuovi contributi, piccoli o grandi. Lo si può fare attraverso lo strumento che
 preferite, scrivendomi un messaggio di posta elettronica all'indirizzo
 \href{mailto:giaconet.mailbox@gmail.com}{\texttt{giaconet.mailbox@gmail.com}},
 oppure utilizzando il
 \href{https://github.com/GuITeX/guidalua}{\texttt{repository git}} dei sorgenti
-della guida, eseguendo un Pull Request o aprendo una discussione premendo il
-pulsante Issues.
+della guida, eseguendo un Pull Request o ancora aprendo una discussione premendo
+il pulsante Issues.
 
 
-\section{Altre risorse}
+\section{Altre risorse su Lua}
 
 La risorsa principale per imparare Lua, a cui rimando per tutti gli
 approfondimenti, è certamente il PIL \cite{PIL}, acronimo del titolo del libro
@@ -117,7 +110,7 @@ conoscenze. Non metto in dubbio che ci siano modi migliori, più sicuri, più
 efficienti, più accurati, più completi di riscriverne il codice.
 
 Auguro buona e proficua lettura nell'esplorare l'avampost%
-\begin{tikzpicture}[scale=0.0378]
+\begin{tikzpicture}[scale=0.042]
 \guidalualogocmd
 \end{tikzpicture} lunare.
 

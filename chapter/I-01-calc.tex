@@ -1,22 +1,8 @@
 
 % esercitazioni semplici con richiami ai fondamenti
 
-
-\chapter{Let's start with Lua}
-\label{chGo}
-
-Per dare l'idea di come si possa usare Lua all'interno del sistema di
-composizione \TeX{}, questa prima parte della guida è in forma di
-\emph{tutorial} cioè di brevi resoconti dei progressi compiuti da un ipotetico
-utente \LuaLaTeX{} indaffarato nel risolvere alcuni problemi con i suoi
-documenti: fare calcoli con una calcolatrice o comporre una tabella ripetitiva.
-
-Nel margine di pagina il lettore troverà i rimandi di approfondimento. I
-tutorial infatti non hanno l'obiettivo di spiegare la programmazione Lua ma di
-introdurne l'utilità.
-
-
-\section{La calcolatrice}
+\chapter{La calcolatrice}
+\label{iChCalcolatrice}
 
 Una calcolatrice, una macro \cs{expr} che accetti un'espressione numerica e ne
 stampi il risultato. Sarebbe davvero utile non dover più calcolare a parte il
@@ -78,7 +64,7 @@ espressioni booleane. Proviamo:
 \end{tcolorbox}
 
 
-\subsection{Espressioni booleane personalizzate}
+\section{Espressioni booleane personalizzate}
 
 E se si volessero sostituire le rappresentazioni testuali dei valori vero e
 falso? Ecco la modifica:
@@ -127,7 +113,7 @@ Un semplice test ci conforterà sulla correttezza del codice e si funziona:
 \end{tcolorbox}
 
 
-\subsection{Arrotondamento numerico}
+\section{Arrotondamento numerico}
 
 Vorrei poter regolare l'arrotondamento del risultato numerico della calcolatrice
 ricorrendo a un argomento opzionale separato dall'espressione da una virgola:
@@ -184,7 +170,7 @@ Mettiamo alla prova la modifica alla macro \cs{expr}:
 \end{tcolorbox}
 
 
-\subsection{Funzioni matematiche}
+\section{Funzioni matematiche}
 
 Potremo trovare una sintassi un po' più chiara per indicare il numero di cifre a
 cui arrontondare il risultato, tuttavia c'è di mezzo un problema più urgente:
@@ -257,7 +243,7 @@ dell'efficiente libreria in virgola mobile di Lua, un linguaggio che si sta
 dimostrando semplice da usare e molto efficace.
 
 
-\subsection{Costanti numeriche}
+\section{Costanti numeriche}
 
 Continuamo con un nuovo passo: aggiungere costanti numeriche definite
 dall'utente, una sorta di \emph{funzione di memoria} della calcolatrice. Per
@@ -435,14 +421,14 @@ e tutte le costanti precedentemente definite. Da questo punto in poi, possiamo
 presentare il valore di \( W_\mathrm{x} \) scrivendo nel sorgente
 \verb=\expr{w}= che da \expr{w}.
 
-\subsection{Conclusioni}
+\section{Conclusioni}
 
-Tutte le principali funzionalità della calcolatrice sono state implementate in
-Lua, certo non tutte. Per esempio potremo far eseguire calcoli coinvolgendo
-anche registri contatori o dimensionali di \TeX{}, per esempio per fornire
+Le principali funzionalità della calcolatrice sono state implementate in Lua,
+certo non tutte. Per esempio potremo far eseguire calcoli coinvolgendo anche i
+registri contatori o dimensionali di \TeX{}, per esempio per determinare delle
 coordinate in un disegno, oppure considerare che constanti dai nomi speciali
 come \code{M1}, \code{M2} eccetera si comportino come registri di memoria della
-calcolatrice e quindi che possano essere sovrascritti o possano funzionare da
+calcolatrice e quindi che possano essere sovrascritti e possano funzionare da
 accumulatori.
 
 % end of file
