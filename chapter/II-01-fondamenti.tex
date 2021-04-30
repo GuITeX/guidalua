@@ -1,6 +1,6 @@
 
 \chapter{Assegnazione e tipi predefiniti}
-\label{chFondAssignment}
+\label{iiChAssignment}
 
 
 \section{Lua, proprio un bel nome}
@@ -18,7 +18,7 @@ Janeiro} in Brasile. In portoghese ``Lua'' si pronuncia LOO-ah e significa
 
 
 \section{L'assegnazione}
-\label{secFondAssegnazione}
+\label{iiSecAssegnazione}
 
 Ci occupiamo ora di uno degli elementi di base dei linguaggi informatici:
 l'istruzione di \emph{assegnazione}. Con questa operazione viene introdotto un
@@ -47,7 +47,7 @@ che non le si dichiari locali al blocco di codice.
 
 
 \subsection{Locale o globale?}
-\label{secFondLocaleGlobale}
+\label{iiSecLocaleGlobale}
 
 Una proprietà dell'assegnazione è che se non diversamente specificato Lua
 crea i simboli nell'ambiente globale del codice in esecuzione. Se si
@@ -133,18 +133,18 @@ utili con le funzioni e con gli iteratori di cui ci occuperemo in seguito.
 
 
 \section{Una manciata di tipi}
-\label{secFondManciataTipi}
+\label{iiSecManciataTipi}
 
 In Lua esistono una manciata di tipi. Essenzialmente, omettendone due di uso
 avanzato, sono solo questi sei:
 \begin{compactitemize}
 \item \key{number} il tipo numerico\footnote{Solamente dalla versione 5.3 di Lua
 vengono internamente distinti gli interi e i numeri in virgola mobile};
-\item \key{table} il tipo tabella \( \to \) capitolo \ref{chFondTabella};
-\item \key{boolean} il tipo booleano \( \to \) capitolo \ref{chFondOpLogic};
-\item \key{string} il tipo stringa \( \to \) capitolo \ref{chFondStringhe};
-\item \key{function} il tipo funzione \( \to \) capitolo \ref{chFondFunzioni}.
-\item \key{nil} il tipo nullo \( \to \) sezione \ref{secFondTipoNil};
+\item \key{table} il tipo tabella \( \to \) capitolo \ref{iiChTabella};
+\item \key{boolean} il tipo booleano \( \to \) capitolo \ref{iiChOpLogic};
+\item \key{string} il tipo stringa \( \to \) capitolo \ref{iiChStringhe};
+\item \key{function} il tipo funzione \( \to \) capitolo \ref{iiChFunzioni}.
+\item \key{nil} il tipo nullo \( \to \) sezione \ref{iiSecTipoNil};
 \end{compactitemize}
 
 Il breve elenco suscita due osservazioni: tranne la tabella non esistono
@@ -156,7 +156,7 @@ spinto all'inclusione di concetti intelligenti e potenti.
 
 
 \subsection{Il tipo \key{nil}}
-\label{secFondTipoNil}
+\label{iiSecTipoNil}
 
 Uno dei concetti più importanti che caratterizzano un linguaggio di
 programmazione è la presenza o meno del tipo nullo. In Lua esiste e viene
@@ -189,19 +189,19 @@ identificatori distinti se esse sono diverse nel maiuscolo o minuscolo, come per
 Si è quindi liberi di utilizzare nomi qualsiasi, tuttavia è conveniente aderire
 a qualche \emph{convenzione} che aggiunga al nome un significato di categoria.
 Per esempio, gli identificatori che iniziano con una lettera maiuscola si
-possono riservare agli oggetti, come nel capitolo \ref{chFondOop}, oppure quelli
+possono riservare agli oggetti, come nel capitolo \ref{iiChOop}, oppure quelli
 che iniziano con un solo trattino basso, l'underscore \key{'\_'}, pur essendo
 identificatori come tutti gli altri, si possono riservare per dati privati come
 campi di tabella o funzioni ausiliarie.
 
-Infatti nel capitolo \ref{chFondIteratori} degli iteratori si fa uso
+Infatti nel capitolo \ref{iiChIteratori} degli iteratori si fa uso
 dell'identificatore \key{'\_'} per le variabili di ciclo non utilizzate.
 Qualsiasi sia la convenzione adottata per i nomi, l'importante è rispettarne
 sempre le regole per evitare errori o un listato meno chiaro.
 
 Sono invece comunque da evitare i nomi che iniziano con un doppio trattino
 basso, che potrebbero collidere con quelli dei metametodi (vedi il capitolo
-\ref{chFondOop}) e quelli che pur iniziando con un singolo trattino basso hanno
+\ref{iiChOop}) e quelli che pur iniziando con un singolo trattino basso hanno
 poi lettere tutte in maiuscolo come per esempio
 \key{\_VERSION}\luastd{\_VERSION}, perché potrebbero collidere con i nomi
 predefiniti di Lua.

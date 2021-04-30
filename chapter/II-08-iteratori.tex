@@ -1,6 +1,6 @@
 
 \chapter{Iteratori}
-\label{chFondIteratori}
+\label{iiChIteratori}
 
 Gli iteratori offrono un approccio semplice e unificato per scorrere uno alla
 volta gli elementi di una collezione di dati. Vi dedicheremo un capitolo proprio
@@ -75,7 +75,7 @@ che tratteremo nella prossima sezione.
 
 
 \section{Funzione \fn{pairs}}
-\label{secFondPairsIterator}
+\label{iiSecPairsIterator}
 
 Questa funzione primitiva di Lua considera la tabella come un dizionario
 pertanto l'iteratore restituirà in un ordine casuale tutte le coppie chiave
@@ -102,7 +102,7 @@ e la tabella stessa.
 
 Perchè non utilizzare la closure per memorizzare lo stato dell'iteratore?
 
-Abbiamo incontrato le closure nella sezione \ref{secClosure}. Proviamo a
+Abbiamo incontrato le closure nella sezione \ref{iiSecClosure}. Proviamo a
 scrivere il codice per iterare una tabella:
 \sourcecode{
     file = [[code/e9-iter.lua]],
@@ -165,7 +165,7 @@ completo:
 In questo esempio, oltre ad approfondire il concetto di iterazione basata sulla
 closure di Lua, possiamo notare che il generic for effettua correttamente anche
 l'assegnazione a più variabili di ciclo con le regole viste nella
-sezione~\ref{secFondAssegnazione}.
+sezione~\ref{iiSecAssegnazione}.
 
 Naturalmente, l'implementazione data di \fn{evenNum} è solo una fra quelle
 possibili, e non è detto che non debbano essere considerate situazioni
@@ -174,7 +174,7 @@ addirittura nessun argomento.
 
 
 \section{Stateless iterator}
-\label{secFondStatelessIter}
+\label{iiSecStatelessIter}
 
 Una seconda versione del generatore di numeri pari può essere un buon esempio
 di un iteratore in Lua che non necessita di una closure, per un risultato ancora
@@ -204,7 +204,7 @@ controllo che è proprio il valore nella sequenza dei numeri pari.
 }
 
 Con gli iteratori abbiamo terminato l'esplorazione di base del linguaggio Lua.
-Gli otto capitoli dal \ref{chFondAssignment} al \ref{chFondIteratori} sono
+Gli otto capitoli dal \ref{iiChAssignment} al \ref{iiChIteratori} sono
 sufficienti per scrivere programmi utili perché trattano tutti gli argomenti
 essenziali, il prossimo invece, tratterà il paradigma della programmazione a
 oggetti in Lua.

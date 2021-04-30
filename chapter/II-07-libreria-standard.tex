@@ -95,7 +95,7 @@ Altre funzioni molto utili sono \fn{table.insert}\luastd{table.insert} con la
 sua controparte \fn{table.remove}\luastd{table.remove}, e
 \fn{table.sort}\luastd{table.sort} per riordinare gli elementi della sequenza di
 una tabella secondo criteri definibili di cui un esempio si trova nella
-sezione~\ref{secClosure}.
+sezione~\ref{iiSecClosure}.
 
 
 \section{Libreria stringhe}
@@ -108,7 +108,7 @@ testo.
 
 
 \subsection{Funzione \fn{string.format}}
-\label{secFondStringFormat}
+\label{iiSecStringFormat}
 
 La funzione più semplice è quella di formattazione
 \fn{string.format}\luastd{string.format}. Essa restituisce una stringa prodotta
@@ -143,7 +143,7 @@ Esistono due strumenti di base, il primo è il \emph{pattern} e il secondo è la
 
 
 \subsection{Pattern I}
-\label{secFondPattern}
+\label{iiSecPattern}
 
 Il pattern è una stringa che può contenere campi chiamati \emph{classi} simili
 a quelli per la funzione di formato visti in precedenza, che stavolta però si
@@ -194,7 +194,7 @@ Esempio:
 }
 
 \subsection{Capture}
-\label{secFondCapture}
+\label{iiSecCapture}
 
 Il pattern può essere arricchito non solo per trovare corrispondenze ma anche
 per restituirne parti componenti. Questa funzionalità viene chiamata
@@ -220,7 +220,7 @@ saranno restituiti:
 \subsection{Pattern II}
 
 Mentre il carattere percento unito a una lettera forma una delle classi
-carattere elencate alla sezione~\ref{secFondPattern}, la stessa lettera scritta
+carattere elencate alla sezione~\ref{iiSecPattern}, la stessa lettera scritta
 in maiuscolo rappresenta la classe carattere negazione.
 
 La classe \verb|"%D"| rappresenta un carattere che non sia una cifra decimale,
@@ -278,7 +278,7 @@ carattere per le prime sei cifre decimali, può essere definito anche con
 
 
 \subsection{La funzione \fn{string.gsub}}
-\label{secFondGsub}
+\label{iiSecGsub}
 
 Abbiamo appena cominciato a scoprire le funzionalità dedicate al testo
 disponibili nella libreria standard di Lua. Diamo solo un altro sguardo
@@ -318,7 +318,7 @@ immutabili.
 
 Infine, le funzioni della libreria \key{string} possono essere chiamate su
 variabili stringa usando la \emph{colon notation} che introdurremo alla
-sezione~\ref{secFondColonNotation}, grazie ai metametodi:
+sezione~\ref{iiSecColonNotation}, grazie ai metametodi:
 \begin{lines}
 string.match(s, pattern) -- equivalente a:
 s:match(pattern)
