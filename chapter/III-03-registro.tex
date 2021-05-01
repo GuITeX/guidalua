@@ -3,9 +3,9 @@
 \chapter{Un registro delle compilazioni}
 \label{iiiChRegistro}
 
-Siamo giunti al primo capitolo di taglio applicativo. Ci occuperemo di creare
-in Lua un sistema di registrazione delle compilazioni che si concretizza in un
-file posizionato nella directory principale del progetto di documento.
+In questo tutorial ci occuperemo di creare in Lua un sistema di registrazione
+delle compilazioni che si concretizza in un file posizionato nella directory
+principale del progetto del documento.
 
 Non è possibile reperire dati generali sulla compilazione eseguendo codice
 durante la compilazione stessa. Dovremo farlo con un tool esterno. Solo in
@@ -14,7 +14,7 @@ del nome del file sorgente. Tuttavia la registrazione in fase di compilazione è
 utile per imparare con Lua a lavorare con i file e sperimentare un processo di
 sviluppo iterativo molto più rapido che con \TeX.
 
-Chiameremo questo registro \code{history.log} verso cui invieremo una linea di
+Chiameremo questo registro \file{history.log} verso cui invieremo una linea di
 testo informativa per ciscuna compilazione che il compositore completi
 correttamente.
 

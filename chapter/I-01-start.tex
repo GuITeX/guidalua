@@ -63,10 +63,15 @@ eccetera.
 Desideriamo che nel nostro documento ci sia un testo allineato sulla diagonale
 della pagina. Per ottenerlo usando il comando \cs{rotatebox} del pacchetto
 \pack{graphicx} è necessario calcolare il valore dell'angolo di rotazione in
-gradi conoscendo la misura della larghezza e dell'altezza della pagina e questo
-implica il calcolo dell'arcotangente del rapporto:
+gradi conoscendo la misura di larghezza e altezza della pagina e questo implica
+il calcolo dell'arcotangente del rapporto. Nel caso di questa guida:
 \[
-    \alpha = \frac{180}{\pi}\arctan{\frac{h}{w}}
+    \alpha = \frac{180}{\pi}\arctan{\frac{h}{w}} = \directlua{
+        local w = tex.pagewidth
+        local h = tex.pageheight
+        local angle = (180/math.pi) * math.atan(h/w)
+        tex.print(tostring(angle))
+    }
 \]
 
 Applicando qualche metodo numerico o pacchetto, sono certo che \TeX{} sia in
@@ -102,16 +107,10 @@ nel dettaglio di cosa sia un campo o una tabella in Lua, non sono valori in sola
 lettura di valore pari a quello dei corrispondenti parametri dimensionali. Sono
 bensì le dimensioni \cs{pagewidth} e \cs{pageheight} stesse.
 
-La terza linea esegue il calcolo in virgola mobile in doppia
-precisione\footnote{Per questo documento il valore dell'angolo della diagonale
-di pagina vale \( \directlua{
-    local w = tex.pagewidth
-    local h = tex.pageheight
-    local angle = (180/math.pi) * math.atan(h/w)
-    tex.print(tostring(angle))
-}\) gradi.} e l'ultima crea una macro \cs{angdeg} con il valore dell'angolo ---
-rappresenta percò l'output dell'elaborazione --- esattamente come se fosse stata
-creata con \cs{def}.
+La terza linea esegue il calcolo in virgola mobile in doppia precisione e
+l'ultima crea una macro \cs{angdeg} con il valore dell'angolo --- rappresenta
+percò l'output dell'elaborazione --- esattamente come se fosse stata creata con
+\cs{def}.
 
 Nel motore di composizione, Lua ha accesso diretto ai registri dimensionali e ai
 contatori e può creare macro. Significa che l'implementazione del motore di
@@ -183,13 +182,18 @@ più complesso come quello per cognome e nome.
 
 \section{Direzioni di lettura}
 
-Approfondiremo già dai prossimi capitoli diverse applicazioni utili di Lua per
+Il prossimo capitolo~\ref{iChExplain} si occupa di spiegare le particolarità dei
+motori di composizione Lua-powered distinguendoli dal formato, e di come possano
+eseguire sorgenti \LaTeX{}.
+
+I capitoli dal~\ref{iiChAssignment} fino al~\ref{iiChOop} trattano delle basi
+del linguaggio Lua.
+
+I tutorial applicativi in Lua
+
 comporre documenti \TeX. Implementeremo una \emph{calcolatrice}
 (capitolo~\ref{iChCalcolatrice}) e comporremo una tabella numerica ripetitiva
 (capitolo~\ref{iChTabellaPesi}).
 
-Nel margine di pagina il lettore troverà i rimandi agli approfondimenti. Questi
-tutorial infatti non hanno l'obiettivo di spiegare la programmazione Lua, cioè
-ciò che faremo nella parte~\ref{partFoundation}, ma di mostrarne l'utilità.
 
 % end of file
