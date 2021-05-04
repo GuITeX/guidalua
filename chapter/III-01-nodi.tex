@@ -3,6 +3,9 @@
 \chapter{Nodi}
 \label{iiiChNodi}
 
+
+\section{Introduzione pratica ai nodi}
+
 In alcuni moduli si incontrano dati che devono essere scritti lettera per
 lettera all'interno di una sequenza di caselle di uguale larghezza. Per
 riprodurre in \TeX{} una simile struttura dovremo alternare i singoli caratteri
@@ -69,18 +72,20 @@ La destinazione può essere un registro di tipo scatola oppure il processo di
 uscita tramite la funzione \fn{node.write}. Riutilizzare un oggetto nodo già
 finalizzato comporta possibili crash del programma.
 
-Altri problemi derivano invece dal non eliminare esplicitamente nodi non
-finalizzati. Per esempio, se si deve costruire un oggetto ripetitivo si potrebbe
-creare la lista dell'elemento e poi finalizzare una suo clone. La copia in un
-nuovo oggetto nodo è molto veloce ma ci si deve ricordare di eliminare dalla
-memoria il nodo originale con l'apposita funzione
+Altri problemi derivano invece dal non eliminare esplicitamente nodi creati ma
+poi non finalizzati. Per esempio, se si deve costruire un oggetto ripetitivo si
+può creare la lista dell'elemento e poi finalizzare un suo clone. La copia in un
+nuovo oggetto nodo è molto veloce ma alla fine ci si deve ricordare di eliminare
+dalla memoria il nodo originale con l'apposita funzione
 \fn{node.free}\luastd{node.free} o simili.
 
-
-
-
-
+Ora che abbiamo definito le funzioni di creazione di glifi e dimensioni non
+rimane che scrivere il codice per la creazione della lista. Carattere per
+carattere concateneremo un nodo dimensione con un nodo glifo usando la funzione
+\fn{node.insert\_after}\luastd{node.insert\_after}:
 \begin{lines}
+#[indexfile=code/f1-001.tex]
+-- filename: code/f1-001.tex
 local s = "TESTO"
 local gap = tex.sp("20pt")
 local w1 = gap
@@ -95,6 +100,19 @@ end
 local hbox = node.hpack(head)
 tex.box["sptxt"] = hbox
 \end{lines}
+
+La lista che fa capo al nodo iniziale contenuto nella variabile \key{head},
+viene inserita in una scatola orizzontale con la funzione
+\fn{node.hpack}\luastd{node.hpack} così da poterla memorizzare nel registro
+\TeX{} di nome \key{sptxt} da creare in un punto precedente del codice del
+sorgente.
+
+A questo punto si può inserire nel sorgente ovunque serva il contenuto del
+registro con i classici comandi \LaTeX.
+
+
+\subsection{Disegno delle caselle}
+
 
 
 

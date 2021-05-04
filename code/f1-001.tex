@@ -1,0 +1,39 @@
+% !TeX program = LuaLaTeX
+% filename: code/f1-001.tex
+
+\documentclass[12pt]{article}
+
+\directlua{
+function glyph(code)
+    local n = node.new("glyph")
+    n.font = font.current()
+    n.char = code
+    return n.width, n
+end
+function glue(x)
+    local g = node.new "glue"
+    g.width = x
+    return g
+end
+}
+
+\newbox\sptxt
+\newcommand{\spacedtext}[2]{\directlua{
+    local s = [==[#2]==]
+    local gap = assert(tex.sp([[#1]]))
+    local w1 = gap
+    local head, last
+    for n in string.utfvalues(s) do
+        local wn, gn = glyph(n)
+        local g = glue(gap - (w1 + wn)/2)
+        head, last = node.insert_after(head, last, g)
+        head, last = node.insert_after(head, last, gn)
+        w1 = wn
+    end
+    local hbox = node.hpack(head)
+    tex.box["sptxt"] = hbox
+}\box\sptxt}
+
+\begin{document}
+\spacedtext{20pt}{UN TESTO}
+\end{document}
