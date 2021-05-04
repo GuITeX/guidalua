@@ -10,7 +10,7 @@
 % License information see LICENSE text file
 
 \documentclass[b5paper,11pt,openany]{guidatematica}
-\ProvidesFile{guidalua.tex}[2021/04/30 v0.4.8 Guida al linguaggio Lua per LuaTeX]
+\ProvidesFile{guidalua.tex}[2021/05/30 v0.5 Guida al linguaggio Lua per LuaTeX]
 \GetFileInfo{guidalua.tex}
 \setmonofont[Scale=0.82]{Fira Mono}
 \usepackage{sourcecode}
@@ -164,7 +164,7 @@ License}, versione 1.3 o successive ed è curata dall'autore.}
 
 \mainmatter*
 
-\part{Tutorial}
+\part{Il sistema Lua+\TeX}
 \label{partStart}
 
 \input{chapter/I-01-start}
@@ -194,20 +194,25 @@ License}, versione 1.3 o successive ed è curata dall'autore.}
 
 \input{chapter/II-09-oop}
 
+\part{Cose di\LuaTeX}
+\label{partLuaTeX}
+
+\input{chapter/III-01-nodi.tex}
+
 \part{Applicazioni Lua in \LuaTeX}
 \label{partApp}
 
-\input{chapter/III-01-calc}
+\input{chapter/IV-01-calc}
 
-\input{chapter/III-02-tab}
+\input{chapter/IV-02-tab}
 
-\input{chapter/III-03-registro}
+\input{chapter/IV-03-registro}
 
-\input{chapter/III-04-tartaglia-nodi}
+\input{chapter/IV-04-tartaglia}
 
-% \input{chapter/III-05-cerchio-pdfliteral}
+% \input{chapter/IV-05-cerchio}
 
-% \input{chapter/III-06-dati-esterni}
+% \input{chapter/IV-06-dati}
 
 \appendix
 

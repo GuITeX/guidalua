@@ -28,10 +28,10 @@ adesione](https://guitex.org/home/it/diventa-socio/associarsi-a-guit).
 Contenuti
 ---------
 
-La *Guida al linguaggio Lua per LuaTeX* è suddivisa in tre parti. Nella parte
-prima è presentata la modalità di esecuzione di codice Lua all'interno dei
+La *Guida al linguaggio Lua per LuaTeX* è suddivisa in quattro parti. Nella
+parte prima è presentata la modalità di esecuzione di codice Lua all'interno dei
 motori di composizione che comprendono un interprete Lua, come `luatex`. Viene
-chiarita la differenza tra motore di composizione e formato, ed è descritta la
+chiarita la differenza tra motore di composizione e formato ed è descritta la
 piccola modifica al preambolo di un sorgente LaTeX perché sia compilabile con
 LuaLaTeX.
 
@@ -40,14 +40,18 @@ generale. Ogni fine capitolo contiene esercizi da svolgere mano a mano che si
 procede nello studio per raggiungere rapidamente i propri obiettivi di
 conoscenza.
 
-Nella terza parte alcuni *tutorial* offrono una prima presentazione sugli
+Nella terza parte sono presentate le specifiche librerie interne di `luatex` e
+in particolare la tecnologia dei nodi per costruire nei mimini dettagli oggetti
+tipografici programmando in Lua.
+
+Nella quarta parte alcuni *tutorial* offrono una prima presentazione sugli
 impieghi pratici di Lua nei documenti TeX con i capitoli sulla *calcolatrice* e
 la *composizione automatica di tabelle* e molto altro ancora.
 
 Gli esempi applicativi in LuaTeX, dove il codice Lua risolve problemi specifici
 difficili da implementare con il tradizionale linguaggio macro di (La)TeX, sono
 utili per imparare usi nuovi e avanzati dei programmi di composizione
-tipografica TeX.
+tipografica del sistema TeX.
 
 La guida non richiede una conoscenza approfondita della programmazione, occorre
 tuttavia già conoscere LaTeX, saper impartire comandi da terminale, e aver
