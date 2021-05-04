@@ -1,0 +1,101 @@
+
+
+\chapter{Nodi}
+
+In alcuni moduli si incontrano dati che devono essere scritti lettera per
+lettera all'interno di una sequenza di caselle di uguale larghezza. Per
+riprodurre in \TeX{} una simile struttura dovremo alternare i singoli caratteri
+con uno spazio che dipende dalle larghezze dei caratteri adiacenti.
+
+La distanza \( G \) tra i centri dei glifi è constante ed è uguale alla somma di
+metà della larghezza del carattere di sinistra, della metà della larghezza del
+carattere di destra più lo spazio tra di loro è costante. Se \(w_\mathrm{i} \) e
+\(w_\mathrm{i+1} \) sono le larghezze di due glifi consecutivi allora la
+distanza \( g \) interna dai loro bordi, quella che dovremo effettivamente
+inserire, soddisfa l'equazione:
+\[
+    G = \frac{w_\mathrm{i}}{2} + g + \frac{w_\mathrm{i+1}}{2}
+\]
+
+In \LuaTeX, grazie alla libreria interna \code{node} è possibile costruire ogni
+tipo di struttura tipografica pronta per il posizionamento sulla pagina. Queste
+strutture sono le stesse che il compositore costruirebbe leggendo il codice di
+un sorgente \TeX{}. Creandole con Lua ci sostituiamo a esso nell'eseguire le
+prime fasi di lettura dei token, espansione ed esecuzione, arrivando
+direttamente alla fase finale detta visuale.
+
+Come si crea un nodo? Ciascun nodo si crea sempre con lo stesso schema semplice
+e diretto: si chiama la funzione \fn{new} di \code{node} con l'identificatore
+del tipo e sull'oggetto restituito si impostano i parametri.
+
+Per un nodo glifo i parametri obbligatori sono il numero del font, che deve
+essere già caricato, e il codice del glifo nel font. La funzione Lua potrebbe
+essere:
+\begin{lines}
+function glyph(code)
+    local n = node.new("glyph")
+    n.font = font.current()
+    n.char = code
+    return n.width, n
+end
+\end{lines}
+
+I nodi dimensione sono chiamati \key{glue} e rappresentano le lunghezze
+elastiche grazie alla quali \TeX{} è così flessibile nel comporre la pagina. Nel
+nostro esempio interessa solamente la parte rigida e la funzione Lua potrebbe
+essere:
+\begin{lines}
+function glue(x)
+    local g = node.new("glue")
+    g.width = x
+    return g
+end
+\end{lines}
+
+I nodi si assemblano poi in liste che possono essere assemblate su più livelli.
+Un capoverso per esempio, è un unico nodo di tipo scatola verticale che contiene
+una lista di scatole orizzontali corrispondenti alle singole righe alternate con
+nodi di spaziatura verticale. Ogni scatola orizzontale a sua volta è una lista
+di nodi glifo, dimensioni e altri tipi di nodi come quelli per il kerning.
+
+Tecnicamente questi oggetti sono tipi Lua detti \emph{userdata}, con
+implementazione in C e fuori dalla gestione automatica della memoria, vanno
+quindi usati con cautela facendo in modo che il ciclo di vita sia sempre
+\emph{creazione}, \emph{impostazione parametri}, e \emph{invio alla
+destinazione}.
+
+La destinazione può essere un registro di tipo scatola oppure il processo di
+uscita tramite la funzione \fn{node.write}. Riutilizzare un oggetto nodo già
+finalizzato comporta possibili crash del programma.
+
+Altri problemi derivano invece dal non eliminare esplicitamente nodi non
+finalizzati. Per esempio, se si deve costruire un oggetto ripetitivo si potrebbe
+creare la lista dell'elemento e poi finalizzare una suo clone. La copia in un
+nuovo oggetto nodo è molto veloce ma ci si deve ricordare di eliminare dalla
+memoria il nodo originale con l'apposita funzione
+\fn{node.free}\luastd{node.free} o simili.
+
+
+
+
+
+\begin{lines}
+local s = "TESTO"
+local gap = tex.sp("20pt")
+local w1 = gap
+local head, last
+for n in string.utfvalues(s) do
+    local wn, gn = glyph(n)
+    local g = glue(gap - (w1 + wn)/2)
+    head, last = node.insert_after(head, last, g)
+    head, last = node.insert_after(head, last, gn)
+    w1 = wn
+end
+local hbox = node.hpack(head)
+tex.box["sptxt"] = hbox
+\end{lines}
+
+
+
+
+% end of file

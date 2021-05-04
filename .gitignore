@@ -15,7 +15,7 @@ tmp.lua
 !guidatematica.pdf
 # maintain all the image pdf files
 !image/*.pdf
-# no secondary file made by biber
+# no auxiliary file made by biber/biblatex
 guidalua.bbl
 guidalua.bcf
 guidalua.blg

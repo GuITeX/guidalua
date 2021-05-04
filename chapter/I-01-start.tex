@@ -41,7 +41,9 @@ compilazione da \LaTeX{} a Lua, un linguaggio di programmazione per scopi
 generali, efficiente e portabile. Qualsiasi cosa faccia il \code{<codice Lua>}
 racchiuso tra graffe esso sarà eseguito dall'interprete Lua e non da \TeX.
 
+\begin{quotation}
 Quali sono le conseguenze? Qual è l'utilità dell'interprete Lua?
+\end{quotation}
 
 \CLRmarginpar{Passare a \LuaLaTeX\\
 \gotosec{} \ref{iSecPassareALuaTeX}}
@@ -58,7 +60,7 @@ oggetti tipografici di complessità arbitraria, la grafica vettoriale, eccetera
 eccetera.
 
 
-\section{Un primo esempio}
+\section{Esempio, la diagonale di pagina}
 
 Desideriamo che nel nostro documento ci sia un testo allineato sulla diagonale
 della pagina. Per ottenerlo usando il comando \cs{rotatebox} del pacchetto
@@ -71,13 +73,13 @@ il calcolo dell'arcotangente del rapporto. Nel caso di questa guida:
         local h = tex.pageheight
         local angle = (180/math.pi) * math.atan(h/w)
         tex.print(tostring(angle))
-    }
+    }°
 \]
 
-Applicando qualche metodo numerico o pacchetto, sono certo che \TeX{} sia in
-grado di calcolare l'angolo con sufficiente precisione pur non disponendo di
-alcuna libreria in virgola mobile. Con Lua invece è un calcolo diretto in
-floating point:
+Applicando qualche metodo numerico sono certo che \TeX{} sia in grado di
+calcolare l'angolo con sufficiente precisione pur non disponendo di alcuna
+libreria in virgola mobile. Con Lua invece è un calcolo diretto in floating
+point:
 
 \CLRmarginpar{Tabella di Lua\\
 \gotosec{} \ref{iiChTabella}}[true]% true option means +16pt of vspace
@@ -108,7 +110,7 @@ lettura di valore pari a quello dei corrispondenti parametri dimensionali. Sono
 bensì le dimensioni \cs{pagewidth} e \cs{pageheight} stesse.
 
 La terza linea esegue il calcolo in virgola mobile in doppia precisione e
-l'ultima crea una macro \cs{angdeg} con il valore dell'angolo --- rappresenta
+l'ultima crea la macro \cs{angdeg} con il valore dell'angolo --- rappresenta
 percò l'output dell'elaborazione --- esattamente come se fosse stata creata con
 \cs{def}.
 
@@ -123,7 +125,7 @@ composizione stesso è nativamente interfacciato con Lua.
     tex.print(table.concat(list, ', '))
 }}
 
-\section{Un secondo esempio}
+\section{Esempio, ordinamento di una lista}
 
 Abbiamo una lista dei nomi di partecipanti a un evento, ma vorremmo evitare di
 ordinarli a mano. La lista si presenta come un elenco separato da virgole dei
@@ -165,7 +167,7 @@ codice Lua rispetto ai concetti del linguaggio che comunque potete raggiungere
 con i riferimenti al margine ai capitoli della parte~\ref{partFoundation}.
 
 Nel documento un tale comando si usa in questo modo, con i nomi necessariamente
-da delimitare come stringhe:
+da delimitare come stringhe Lua:
 \begin{lines}
 #[tex]
 #[indexfile=code/e0-002.tex]
@@ -175,25 +177,37 @@ da delimitare come stringhe:
     "Beatrice"}
 \end{lines}
 
-Con qualche riga di codice in più, sarebbe semplice eliminare dall'input la
-delimitazione dei nomi come stringhe, oppure inserire un criterio di ordinamento
-più complesso come quello per cognome e nome.
+Con qualche riga di codice in più, sarebbe semplice eliminare la necessità della
+delimitazione dei nomi, oppure inserire un criterio di ordinamento più complesso
+come quello per cognome/nome.
+
+
+\section{Esempio, data in formato ISO}
+
+Se una data è nel formato ISO~\texttt{yyyy-mm-dd} come potremo convertirla nella
+forma estesa?
+
+
+\section{Esempio, inclusione PDF}
+
+Ho una cartella di PDF e vorrei ottenerne un unico file.
 
 
 \section{Direzioni di lettura}
 
-Il prossimo capitolo~\ref{iChExplain} si occupa di spiegare le particolarità dei
-motori di composizione Lua-powered distinguendoli dal formato, e di come possano
-eseguire sorgenti \LaTeX{}.
+Il prossimo capitolo~\ref{iChExplain} introduce i motori di composizione
+Lua-powered distinguendoli dal formato, spiegando come compilare con essi i
+sorgenti \LaTeX{}.
 
 I capitoli dal~\ref{iiChAssignment} fino al~\ref{iiChOop} trattano delle basi
-del linguaggio Lua.
+del linguaggio Lua e sono il cuore della guida.
 
-I tutorial applicativi in Lua
+% parte iii cose di luatex
 
-comporre documenti \TeX. Implementeremo una \emph{calcolatrice}
-(capitolo~\ref{iChCalcolatrice}) e comporremo una tabella numerica ripetitiva
-(capitolo~\ref{iChTabellaPesi}).
+I frutti si raccolgono nei capitoli finali dei tutorial applicativi in Lua: per
+esempio quello sulla \emph{calcolatrice} (capitolo~\ref{iiiChCalcolatrice}) o il
+tutorial sulla costruzione automatica di una tabella numerica
+(capitolo~\ref{iiiChTabellaPesi}).
 
 
 % end of file
