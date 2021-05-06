@@ -56,6 +56,12 @@ function glue(x)
 end
 \end{lines}
 
+Le dimensioni per i nodi, in particolare per i parametri dei nodi, devono essere
+in \emph{scaled point} in sigla \key{sp}. Quest'unità è la frazione intera di un
+punto tipografico con fattore \( 2^{16}  = 65536 \) e deriva
+dall'implementazione in virgola fissa scelta da Donald~Knuth stesso, per le
+dimensioni in \TeX.
+
 I nodi si assemblano poi in liste che possono essere assemblate su più livelli.
 Un capoverso per esempio, è un unico nodo di tipo scatola verticale che contiene
 una lista di scatole orizzontali corrispondenti alle singole righe alternate con
@@ -64,9 +70,13 @@ di nodi glifo, dimensioni e altri tipi di nodi come quelli per il kerning.
 
 Tecnicamente questi oggetti sono tipi Lua detti \emph{userdata}, con
 implementazione in C e fuori dalla gestione automatica della memoria, vanno
-quindi usati con cautela facendo in modo che il ciclo di vita sia sempre
-\emph{creazione}, \emph{impostazione parametri}, e \emph{invio alla
-destinazione}.
+quindi usati con cautela facendo in modo che il ciclo di vita sia sempre e solo
+questo:
+\begin{compactenumerate}
+\item \emph{creazione}, 
+\item \emph{impostazione parametri},
+\item \emph{invio alla destinazione}.
+\end{compactenumerate}
 
 La destinazione può essere un registro di tipo scatola oppure il processo di
 uscita tramite la funzione \fn{node.write}. Riutilizzare un oggetto nodo già
@@ -113,8 +123,187 @@ registro con i classici comandi \LaTeX.
 
 \subsection{Disegno delle caselle}
 
+Con il nodo \emph{rule} si disegna un rettangolo pieno. Regolandone le
+dimensioni possiamo disegnare la separazione verticale delle caselle. Per
+crearli, come per i primi due tipi di nodo che abbiamo incontrato basiamoci su
+una funzione:
+\begin{lines}
+function rule(w, h, d)
+    local r = node.new("rule")
+    r.width = w
+    r.height = h
+    r.depth = d
+    return r
+end
+\end{lines}
+e modifichiamo il codice per inserire una barra verticale tra le caselle. Se ci
+si pensa un attimo, questo significa che dobbiamo spezzare in due il nodo che
+distanzia i glifi per costruire una lista del tipo rule, glue, gliph, glue,
+rule, eccetera. In conseguenza non è più necessaria la variabile \key{w1} che
+conteneva la larghezza del glifo precedente.
 
+Se \( t \) è lo spessore della barra verticale, la regola della distanza
+diventa:
+\[
+    G = \frac{t}{2} + g + w + g + \frac{t}{2}
+\]
 
+I termini che usiamo sono convenzionali perché la nostra lista di nodi non sa
+nulla di caselle o distanze interne, è solo una catena di nodi fatta di tanti
+nodi uguali, le barre verticali e le due distanze interne alla casella. 
+
+Qui, è fondamentale ricordarci di come si utilizzano i nodi. Devono essere
+creati, configurati e inviati a destinazione. Se costruissimo un solo oggetto
+rule inserendolo nella lista ogni volta che arriva il turno di una barra
+verticale, commetteremo un grave errore di violazione del principio: avremmo
+infatti inviato un nodo non a una sola destinazione ma a più destinazioni, cosa
+che comporta il crash del programma.
+
+Tuttavia possiamo usare la funzione \fn{node.copy}\luastd{node.copy} per
+duplicare i nodi multipli. Possiamo osservare questa tecnica in azione nel
+codice che crea la lista con le barre:
+\begin{lines}
+#[indexfile=code/f1-002.tex]
+-- filename: code/f1-002.tex
+local s = "TESTO"
+local gap = tex.sp("20pt")
+local t = tex.sp("0.2pt")
+local r = rule(t, tex.sp("12.5pt"), tex.sp("4pt"))
+local head, last
+for n in string.utfvalues(s) do
+    head, last = node.insert_after(head, last, node.copy(r))
+    local w, gn = glyph(n)
+    local g = glue((gap - t - w)/2)
+    head, last = node.insert_after(head, last, g)
+    head, last = node.insert_after(head, last, gn)
+    head, last = node.insert_after(head, last, node.copy(g))
+end
+head, last = node.insert_after(head, last, r)
+local hbox = node.hpack(head)
+tex.box["sptxt"] = hbox
+\end{lines}
+
+Molto importante controllare che il codice Lua si attenga alla regola del ciclo
+di vita dei nodi, senza dubbio, ma il codice non ci ha dato problemi inattesi.
+Proseguiamo. La prossima operazione è assemblare nuovi nodi rule per le linee di
+chiusura delle caselle, quella sopra e quella sotto.
+
+La nostra lista diventa una scatola verticale per sovrapporre le scatole
+orizzontali linea \key{hbox(r1)}, testo spaziato \key{hbox(spacedtext)}, linea
+\key{hbox(r2)}. Il compositore infatti sovrappone uno sull'altro gli elementi di
+una scatola verticale così come affianca uno all'altro quelli di una scatola
+orizzontale.
+
+Per calcolare la lunghezza dei nodi rule, \key{r1} e \key{r2}, dovremo
+conteggiare il numero dei glifi. Introduciamo allora la funzione \fn{spacedtext}
+definita con il codice precedente per restituire il numero dei glifi e il nodo
+della scatola orizzontale che contiene il testo spaziato.
+
+La struttura della lista che inseriamo nel registro è però ancora più complessa
+perché impacchetteremo la scatola verticale a sua volta in una scatola
+orizzontale per fare in modo di regolare l'allineamento alla linea base. Lo
+schema è:
+\begin{Verbatim}[numbers=none]
+result_hbox (
+    vbox (
+        hbox(r1) -- hbox(spacedtext) -- hbox(r2)
+    )
+)
+\end{Verbatim}
+
+e la traduzione in codice Lua è:
+\begin{lines}
+#[indexfile=code/f1-003.tex]
+-- filename: code/f1-003.tex
+local gap = tex.sp("20pt") -- distanza assiale glifi
+local t = tex.sp("0.2pt")  -- spessore barra verticale
+local h = tex.sp("12.5pt") -- altezza barra
+local d = tex.sp("4pt")    -- profondità barra
+-- nodo hbox(spacedtext)
+local n, hbox = spacedtext(s, gap, t, h, d)
+-- nodo hbox(r1)
+local r1 = rule(n*gap, t)
+r1 = node.hpack(r1)
+-- nodo hbox(r2)
+local r2 = node.copy(r1)
+-- lista hh = hbox(r1) -- hbox(specedtext) -- hbox(r2)
+local hh, ll = node.insert_after(nil, nil, r1)
+hh, ll = node.insert_after(hh, ll, hbox)
+hh, ll = node.insert_after(hh, ll, r2)
+-- nodo vbox
+local vbox = node.vpack(hh)
+local result_hbox = node.hpack(vbox)
+result_hbox.head.shift = d
+tex.box["sptxt"] = result_hbox
+\end{lines}
+
+% visualizzare il risultato del codice
+
+\directlua{
+spacedtext = {}
+local s = spacedtext
+function s.glyph(code)
+    local n = node.new('glyph')
+    n.font = font.current()
+    n.char = code
+    return n.width, n
+end
+function s.glue(x)
+    local g = node.new 'glue'
+    g.width = x
+    return g
+end
+function s.rule(w, h, d)
+    local r = node.new('rule')
+    r.width = w
+    r.height = h
+    r.depth = d
+    return r
+end
+function s:spacedtext(s, gap, t, h, d)
+    local r = self.rule(t, h, d)
+    local head, last
+    local c = 0
+    for n in string.utfvalues(s) do
+        head, last = node.insert_after(head, last, node.copy(r))
+        local w, gn = self.glyph(n)
+        local g = self.glue((gap - t - w)/2)
+        head, last = node.insert_after(head, last, g)
+        head, last = node.insert_after(head, last, gn)
+        head, last = node.insert_after(head, last, node.copy(g))
+        c = c + 1
+    end
+    head, last = node.insert_after(head, last, r)
+    local hbox = node.hpack(head)
+    return c, hbox
+end
+}
+
+\newbox\sptxt
+\newcommand{\spacedtext}[2]{\directlua{
+    local lib = spacedtext
+    local gap = assert(tex.sp([[#1]]))
+    local s = [==[#2]==]
+    local t, h = tex.sp('0.2pt'), tex.sp('12.5pt')
+    local d = tex.sp('4pt')
+    local n, hbox = lib:spacedtext(s, gap, t, h, d)
+    local r1 = lib.rule(n*gap, t)
+    r1 = node.hpack(r1)
+    local r2 = node.copy(r1)
+    local hh, ll = node.insert_after(nil, nil, r1)
+    hh, ll = node.insert_after(hh, ll, hbox)
+    hh, ll = node.insert_after(hh, ll, r2)
+    local vbox = node.vpack(hh)
+    local res_hbox = node.hpack(vbox)
+    res_hbox.head.shift = d
+    tex.box['sptxt'] = res_hbox
+}\box\sptxt}
+
+% fine codice
+
+Eccone qualche dimostrazione: \spacedtext{18pt}{TESTO}.
+
+e poi \spacedtext{12pt}{Fine Sezione!}
 
 
 % end of file

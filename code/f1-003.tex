@@ -1,0 +1,65 @@
+% !TeX program = LuaLaTeX
+% filename: code/f1-003.tex
+
+\documentclass[12pt]{article}
+
+\directlua{
+function glyph(code)
+    local n = node.new("glyph")
+    n.font = font.current()
+    n.char = code
+    return n.width, n
+end
+function glue(x)
+    local g = node.new "glue"
+    g.width = x
+    return g
+end
+function rule(w, h, d)
+    local r = node.new("rule")
+    r.width = w
+    r.height = h
+    r.depth = d
+    return r
+end
+function spacedtext(s, gap, t, h, d)
+    local r = rule(t, h, d)
+    local head, last
+    local c = 0
+    for n in string.utfvalues(s) do
+        head, last = node.insert_after(head, last, node.copy(r))
+        local w, gn = glyph(n)
+        local g = glue((gap - t - w)/2)
+        head, last = node.insert_after(head, last, g)
+        head, last = node.insert_after(head, last, gn)
+        head, last = node.insert_after(head, last, node.copy(g))
+        c = c + 1
+    end
+    head, last = node.insert_after(head, last, r)
+    local hbox = node.hpack(head)
+    return c, hbox
+end
+}
+
+\newbox\sptxt
+\newcommand{\spacedtext}[2]{\directlua{
+    local s = [==[#2]==]
+    local gap = assert(tex.sp([[#1]]))
+    local t, h = tex.sp("0.2pt"), tex.sp("12.5pt")
+    local d = tex.sp("4pt")
+    local n, hbox = spacedtext(s, gap, t, h, d)
+    local r1 = rule(n*gap, t)
+    r1 = node.hpack(r1)
+    local r2 = node.copy(r1)
+    local hh, ll = node.insert_after(nil, nil, r1)
+    hh, ll = node.insert_after(hh, ll, hbox)
+    hh, ll = node.insert_after(hh, ll, r2)
+    local vbox = node.vpack(hh)
+    local res_hbox = node.hpack(vbox)
+    res_hbox.head.shift = d
+    tex.box["sptxt"] = res_hbox
+}\box\sptxt}
+
+\begin{document}
+o\spacedtext{20pt}{UN TESTO}o
+\end{document}
