@@ -1,0 +1,31 @@
+% !TeX program = LuaTeX
+% filename: tol/n1.tex
+
+\leavevmode\directlua{
+% geometria barre
+local mm = tex.sp "1mm"
+local function hbar(x)
+    return (0.215*x*x + 1)*mm
+end
+% nodo rule prototipo
+local bar = node.new("rule")
+bar.width = 2*mm
+% nodo glue prototipo
+local g = node.new("glue")
+g.width = 1*mm
+% creazione lista
+local head, last
+for x = 0, 8 do
+    local b = node.copy(bar)
+    b.height = hbar(x)
+    head, last = node.insert_after(head, last, b)
+    head, last = node.insert_after(head, last, node.copy(g))
+end
+bar.height = hbar(9)
+head, last = node.insert_after(head, last, bar)
+% free memory
+node.free(g)
+% send list to output
+node.write(head)
+}
+\bye

@@ -3,99 +3,221 @@
 \chapter{Nodi}
 \label{iiiChNodi}
 
+I \emph{nodi} sono gli oggetti elementari che \TeX{} costruisce e assembla in
+liste di vari livelli come risultato finale della lettura e dell'esecuzione del
+codice del file sorgente.
 
-\section{Introduzione pratica ai nodi}
+I nodi sono quindi i mattoni che intessuti uno sull'altro costruiscono la
+rappresentazione di ciò che poi sarà effettivamente scritto sulla pagina e che
+dipende solamente più dal formato di uscita, per esempio PDF o DVI.
 
-In alcuni moduli si incontrano dati che devono essere scritti lettera per
-lettera all'interno di una sequenza di caselle di uguale larghezza. Per
-riprodurre in \TeX{} una simile struttura dovremo alternare i singoli caratteri
-con uno spazio che dipende dalle larghezze dei caratteri adiacenti.
+Il linguaggio Lua è stato progettato tra le altre cose per offrire all'utente di
+un programma l'accesso a funzioni interne tramite codice di scripting, per
+configurare o per estendere in modo del tutto generale il nucleo originario.
 
-La distanza \( G \) tra i centri dei glifi è constante ed è uguale alla somma di
-metà della larghezza del carattere di sinistra, della metà della larghezza del
-carattere di destra più lo spazio tra di loro è costante. Se \(w_\mathrm{i} \) e
-\(w_\mathrm{i+1} \) sono le larghezze di due glifi consecutivi allora la
-distanza \( g \) interna dai loro bordi, quella che dovremo effettivamente
-inserire, soddisfa l'equazione:
-\[
-    G = \frac{w_\mathrm{i}}{2} + g + \frac{w_\mathrm{i+1}}{2}
-\]
+\LuaTeX{} e gli altri motori che includono l'interprete Lua, grazie a questa
+fondamentale caratteristica di basso livello di questo linguaggio, implementano
+la libreria \code{node} che rende possibile la costruzione delle strutture
+tipografiche dei nodi in Lua.
 
-In \LuaTeX, grazie alla libreria interna \code{node} è possibile costruire ogni
-tipo di struttura tipografica pronta per il posizionamento sulla pagina. Queste
-strutture sono le stesse che il compositore costruirebbe leggendo il codice di
-un sorgente \TeX{}. Creandole con Lua ci sostituiamo a esso nell'eseguire le
-prime fasi di lettura dei token, espansione ed esecuzione, arrivando
-direttamente alla fase finale detta visuale.
+Grazie alla libreria \code{node} è possibile costruire ogni tipo di struttura
+tipografica pronta per il posizionamento sulla pagina. Queste strutture sono le
+stesse che il compositore costruirebbe leggendo il codice di un sorgente \TeX{}.
+Creandole con Lua ci sostituiamo a esso nell'eseguire le prime fasi di lettura
+dei token, espansione ed esecuzione, arrivando direttamente alla fase finale
+detta visuale.
 
-Come si crea un nodo? Ciascun nodo si crea sempre con lo stesso schema semplice
-e diretto: si chiama la funzione \fn{new} di \code{node} con l'identificatore
-del tipo e sull'oggetto restituito si impostano i parametri.
+Nel presentare i nodi conviene lasciare i dettagli al manuale di \LuaTeX{}
+\cite{prg:luatex} per poter evidenziare i concetti essenziali e introdurre
+l'argomento con gradualità.
 
-Per un nodo glifo i parametri obbligatori sono il numero del font, che deve
-essere già caricato, e il codice del glifo nel font. La funzione Lua potrebbe
-essere:
-\begin{lines}
-function glyph(code)
-    local n = node.new("glyph")
-    n.font = font.current()
-    n.char = code
-    return n.width, n
-end
-\end{lines}
 
-I nodi dimensione sono chiamati \key{glue} e rappresentano le lunghezze
-elastiche grazie alla quali \TeX{} è così flessibile nel comporre la pagina. Nel
-nostro esempio interessa solamente la parte rigida e la funzione Lua potrebbe
-essere:
-\begin{lines}
-function glue(x)
-    local g = node.new("glue")
-    g.width = x
-    return g
-end
-\end{lines}
+\section{Ciclo di vita dei nodi}
+\label{iiiSecCicloVitaNodi}
 
-Le dimensioni per i nodi, in particolare per i parametri dei nodi, devono essere
-in \emph{scaled point} in sigla \key{sp}. Quest'unità è la frazione intera di un
-punto tipografico con fattore \( 2^{16}  = 65536 \) e deriva
-dall'implementazione in virgola fissa scelta da Donald~Knuth stesso, per le
-dimensioni in \TeX.
-
-I nodi si assemblano poi in liste che possono essere assemblate su più livelli.
-Un capoverso per esempio, è un unico nodo di tipo scatola verticale che contiene
-una lista di scatole orizzontali corrispondenti alle singole righe alternate con
-nodi di spaziatura verticale. Ogni scatola orizzontale a sua volta è una lista
-di nodi glifo, dimensioni e altri tipi di nodi come quelli per il kerning.
-
-Tecnicamente questi oggetti sono tipi Lua detti \emph{userdata}, con
-implementazione in C e fuori dalla gestione automatica della memoria, vanno
+Tecnicamente gli oggetti nodo in Lua sono tipi detti \emph{userdata}, con
+implementazione in C e fuori dalla gestione automatica della memoria. Vanno
 quindi usati con cautela facendo in modo che il ciclo di vita sia sempre e solo
 questo:
 \begin{compactenumerate}
 \item \emph{creazione}, 
 \item \emph{impostazione parametri},
-\item \emph{invio alla destinazione}.
+\item \emph{invio a unica destinazione oppure distruzione}.
 \end{compactenumerate}
 
-La destinazione può essere un registro di tipo scatola oppure il processo di
-uscita tramite la funzione \fn{node.write}. Riutilizzare un oggetto nodo già
-finalizzato comporta possibili crash del programma.
+La destinazione deve essere unica. Riutilizzare un oggetto nodo già finalizzato
+comporta il rischio elevato, se non la certezza, del crash del programma. Essa
+può essere un registro di tipo scatola oppure il processo di uscita tramite la
+funzione \fn{node.write}\luastd{node.write}. L'importante è che lo stesso nodo
+non abbia più di un utilizzo.
 
 Altri problemi derivano invece dal non eliminare esplicitamente nodi creati ma
-poi non finalizzati. Per esempio, se si deve costruire un oggetto ripetitivo si
-può creare la lista dell'elemento e poi finalizzare un suo clone. La copia in un
-nuovo oggetto nodo è molto veloce ma alla fine ci si deve ricordare di eliminare
-dalla memoria il nodo originale con l'apposita funzione
-\fn{node.free}\luastd{node.free} o simili.
+poi non finalizzati. Per esempio, se si deve costruire un oggetto formato da
+nodi tutti uguali si può creare il nodo prototipo per copiarlo più volte con la
+funzione \fn{node.copy}\luastd{node.copy}, ma alla fine ci si deve ricordare di
+destinarlo oppure eliminarlo dalla memoria con le apposite funzioni, per esempio
+con \fn{node.free}\luastd{node.free}.
 
-Ora che abbiamo definito le funzioni di creazione di glifi e dimensioni non
-rimane che scrivere il codice per la creazione della lista. Carattere per
-carattere concateneremo un nodo dimensione con un nodo glifo usando la funzione
-\fn{node.insert\_after}\luastd{node.insert\_after}:
+
+% alcuni singoli nodi/presentazione
+\section{Introduzione ai nodi principali}
+
+Come si crea un nodo? Ciascun nodo si crea sempre con lo stesso semplice schema:
+si chiama la funzione \fn{new} di \code{node}\luastd{node.new} con
+l'identificatore del tipo e si configurano i parametri dell'oggetto restituito.
+
+
+\subsection{Nodi glifo}
+
+Il nodo glifo è un signolo elemento di un font, un nodo tra i più usati che
+compone parole, frasi, pagine. I suoi parametri obbligatori sono il numero del
+font, che deve essere già caricato, e il codice del glifo nel font.
+
+Questo codice Lua mette in pratica i due passaggi:
 \begin{lines}
-#[indexfile=code/f1-001.tex]
--- filename: code/f1-001.tex
+local n = node.new("glyph") -- creazione nodo
+n.font = font.current()     -- impostazione parametri
+n.char = 65
+\end{lines}
+
+
+\subsection{Nodi dimensione}
+
+I nodi dimensione sono chiamati \key{glue} e rappresentano le lunghezze
+elastiche grazie alla quali \TeX{} riesce ad essere così flessibile nel comporre
+la pagina. Un esempio in cui interessa solamente la dimensione rigida è:
+\begin{lines}
+local g = node.new("glue") -- creazione nodo
+g.width = 12 * 65536       -- impostazione parametri
+\end{lines}
+
+Le dimensioni per i nodi, in particolare per i parametri dei nodi, devono essere
+in \emph{scaled point} in sigla \key{sp}. Quest'unità è la frazione intera di un
+punto tipografico con fattore \( 2^{16} = 65536 \) e deriva
+dall'implementazione in virgola fissa scelta da Donald~Knuth stesso, per le
+dimensioni in \TeX.
+
+
+\subsection{Nodi rule}
+
+Con il nodo \emph{rule} si disegna un rettangolo pieno. Il suo uso abituale è
+quello di disegnare una linea verticale o orizzontale come i filetti di una
+tabella. Il codice Lua di creazione e impostazione segue il solito schema:
+\begin{lines}
+local r = node.new("rule") -- creazione nodo
+r.width = tex.sp "0.24pt"  -- impostazione parametri
+r.height = tex.sp "14pt"
+r.depth = tex.sp "4pt"
+\end{lines}
+
+Il nodo rule è l'equivalente della macro \cs{rule}. L'altezza totale è la somma
+del tratto discendente sotto la linea base chiamata profondità, e del tratto al
+di sopra di essa.
+
+
+\subsection{Assemblaggio nodi in liste}
+
+I nodi si assemblano in liste che possono essere strutturate su più livelli. Un
+capoverso per esempio, è un unico nodo di tipo scatola verticale che contiene
+una lista di scatole orizzontali ciascuna corrispondente alle singole righe
+alternate con nodi di spaziatura verticale. Ogni scatola orizzontale a sua volta
+è una lista di nodi glifo, dimensione elastica e altri tipi di nodi come quelli
+di kerning.
+
+Tutti i nodi hanno due specifici campi \key{.prev} e \key{.next}, che contengono
+i riferimenti al nodo che precede e a quello che segue. Le liste possono essere
+quindi percorse sia in avanti, dalla testa alla coda, che all'indietro.
+
+Invece che gestire direttamente questi campi per il collegamento delle liste,
+consiglio di utilizzare le funzioni come
+\fn{node.insert\_after}\luastd{node.insert\_after}. I suoi argomenti sono tre
+riferimenti: il nodo di testa della lista, il nodo corrente dopo il quale si
+vuole inserire il nuovo nodo, e infine il nodo da inserire.
+
+Il riferiementi restituiti sono due: il nodo di testa della lista e il nuovo
+nodo inserito. Questo schema consente semplicemente di aggiungere in coda alla
+lista nuovi elementi oppure creare una lista da un primo elemento.
+
+Come esempio, realizziamo il disegno di barre affiancate che crescono sempre di
+più in altezza. Usiamo il formato plain in \LuaTeX{} e la copia di nodi
+prototipo:
+\sourcecode{file = [[tol/n1.tex]]}
+
+Alla funzione di uscita \fn{node.write} si passa solamente un nodo, che sia
+semplice o che sia il nodo di testa di una lista, tutti i nodi collegati saranno
+inviati all'output di pagina.
+
+Il risultato del codice è: \directlua{
+% geometria barre
+local mm = tex.sp '1mm'
+local function hbar(x)
+    return (0.215*x*x + 1)*mm
+end
+% nodo rule prototipo
+local bar = node.new('rule')
+bar.width = 2*mm
+% nodo glue prototipo
+local g = node.new('glue')
+g.width = 1*mm
+% creazione lista
+local head, last
+for x = 0, 8 do
+    local b = node.copy(bar)
+    b.height = hbar(x)
+    head, last = node.insert_after(head, last, b)
+    head, last = node.insert_after(head, last, node.copy(g))
+end
+bar.height = hbar(9)
+head, last = node.insert_after(head, last, bar)
+% free memory
+node.free(g)
+% send list to output
+node.write(head)
+}
+
+
+% Scatole orizz e verticale
+\subsection{Nodi scatola}
+
+Le liste di nodi possono essere impacchettate in scatole orizzontali o
+verticali. Le prime posizionano la lista disponendo uno dopo l'altro i nodi su
+una linea orizzontale che chiamiamo linea base, le seconde dispongono i nodi in
+ordine uno sull'altro in una pila verticale.
+
+Gli oggetti scatola sono i normalissimi oggetti di \TeX{} che si costruiscono
+con le macro \cs{hbox} e \cs{vbox}, o le corrispondenti macro \LaTeX. In Lua
+essi si ottengono con le funzioni \fn{node.hpack}\luastd{node.hpack} e
+\fn{node.vpack}\luastd{node.vpack}, rispettivamente per scatole orizzontali e
+verticali, al solito fornendo come argomento il nodo di testa di una lista.
+
+Vediamo all'opera queste operazioni con l'esercitazione pratica della prossima
+sezione. Teniamo in conto che il contenuto di un nodo scatola, è la lista il cui
+nodo di testa è memorizzato nel campo \key{.head}.
+
+
+\section{Esercitazione: testo in caselle}
+
+In alcuni moduli si incontrano dati che devono essere scritti lettera per
+lettera all'interno di una sequenza di caselle tutte di uguale dimensione. Per
+riprodurre in \TeX{} una simile struttura dovremo alternare i singoli caratteri
+con uno spazio che dipende dalle larghezze dei caratteri adiacenti.
+
+La distanza \( G_\mathrm{gap} \) tra i centri dei glifi è constante ed è uguale
+alla somma di metà della larghezza del carattere di sinistra, della metà della
+larghezza del carattere di destra più lo spazio tra di loro è costante. Se
+\(w_\mathrm{i} \) e \(w_\mathrm{i+1} \) sono le larghezze di due glifi
+consecutivi allora la distanza \( g \) interna dai loro bordi, quella che
+dovremo effettivamente inserire, soddisfa l'equazione:
+\[
+    G_\mathrm{gap} = \frac{w_\mathrm{i}}{2} + g + \frac{w_\mathrm{i+1}}{2}
+\]
+
+Assumendo già definite le funzioni Lua \fn{gliph} e \fn{glue}, la costruzione
+della lista dei nodi glifo alternati a nodi distanza, è riportata nell'estratto
+di condice seguente:
+\begin{lines}
+#[indexfile=tol/n2.tex]
+-- filename: tol/n2.tex
 local s = "TESTO"
 local gap = tex.sp("20pt")
 local w1 = gap
@@ -113,58 +235,49 @@ tex.box["sptxt"] = hbox
 
 La lista che fa capo al nodo iniziale contenuto nella variabile \key{head},
 viene inserita in una scatola orizzontale con la funzione
-\fn{node.hpack}\luastd{node.hpack} così da poterla memorizzare nel registro
-\TeX{} di nome \key{sptxt} da creare in un punto precedente del codice del
-sorgente.
+\fn{node.hpack}\luastd{node.hpack}. La scatola è poi memorizzata nel registro
+\TeX{} dello stesso tipo con il nome \key{'sptxt'} già creato precedentemente
+nel sorgente.
 
 A questo punto si può inserire nel sorgente ovunque serva il contenuto del
-registro con i classici comandi \LaTeX.
+registro con le primitive \TeX{} \cs{box} o \cs{copy}, o con il comando \LaTeX{}
+\cs{usebox}.
 
 
 \subsection{Disegno delle caselle}
 
-Con il nodo \emph{rule} si disegna un rettangolo pieno. Regolandone le
-dimensioni possiamo disegnare la separazione verticale delle caselle. Per
-crearli, come per i primi due tipi di nodo che abbiamo incontrato basiamoci su
-una funzione:
-\begin{lines}
-function rule(w, h, d)
-    local r = node.new("rule")
-    r.width = w
-    r.height = h
-    r.depth = d
-    return r
-end
-\end{lines}
-e modifichiamo il codice per inserire una barra verticale tra le caselle. Se ci
-si pensa un attimo, questo significa che dobbiamo spezzare in due il nodo che
-distanzia i glifi per costruire una lista del tipo rule, glue, gliph, glue,
-rule, eccetera. In conseguenza non è più necessaria la variabile \key{w1} che
+Cominciamo con il modificare il codice precedente per inserire le barre
+verticali tra le caselle. Se ci si pensa un momento, questo significa che
+dobbiamo spezzare in due il nodo che distanzia i glifi per costruire la sequenza
+del tipo \key{'rule'}, \key{'glue'}, \key{'gliph'}, \key{'glue'}, \key{'rule'},
+eccetera. In conseguenza non è più necessaria la variabile \key{w1} che
 conteneva la larghezza del glifo precedente.
 
 Se \( t \) è lo spessore della barra verticale, la regola della distanza
 diventa:
 \[
-    G = \frac{t}{2} + g + w + g + \frac{t}{2}
+    G_\mathrm{gap} = \frac{t}{2} + g + w + g + \frac{t}{2}
 \]
 
 I termini che usiamo sono convenzionali perché la nostra lista di nodi non sa
-nulla di caselle o distanze interne, è solo una catena di nodi fatta di tanti
-nodi uguali, le barre verticali e le due distanze interne alla casella. 
+nulla di caselle o distanze interne, è solo una catena di nodi fatta di tante
+barre verticali uguali e di coppie di distanze dal glifo.
 
-Qui, è fondamentale ricordarci di come si utilizzano i nodi. Devono essere
-creati, configurati e inviati a destinazione. Se costruissimo un solo oggetto
-rule inserendolo nella lista ogni volta che arriva il turno di una barra
-verticale, commetteremo un grave errore di violazione del principio: avremmo
-infatti inviato un nodo non a una sola destinazione ma a più destinazioni, cosa
-che comporta il crash del programma.
+In caso di nodi uguali, è molto importante ricordarci delle regole base. Se
+costruissimo un solo oggetto rule per inserirlo in lista ogni volta che arriva
+il turno di una barra verticale, commetteremo un grave errore di violazione del
+principio: avremmo infatti inviato un nodo a più destinazioni, cosa che produce
+una lista impossibile da scorrere per circolarità dei riferimenti.
 
-Tuttavia possiamo usare la funzione \fn{node.copy}\luastd{node.copy} per
-duplicare i nodi multipli. Possiamo osservare questa tecnica in azione nel
-codice che crea la lista con le barre:
+È molto importante scrivere codice Lua che si attenga alla regola del ciclo di
+vita dei nodi. Non farlo da luogo a liste non corrette e violazioni di memoria
+
+Per duplicare i nodi può essere utile la funzione
+\fn{node.copy}\luastd{node.copy}. Questa tecnica è utilizzata per creare la
+lista con le sole barre verticali:
 \begin{lines}
-#[indexfile=code/f1-002.tex]
--- filename: code/f1-002.tex
+#[indexfile=tol/n3.tex]
+-- filename: tol/n3.tex
 local s = "TESTO"
 local gap = tex.sp("20pt")
 local t = tex.sp("0.2pt")
@@ -183,38 +296,35 @@ local hbox = node.hpack(head)
 tex.box["sptxt"] = hbox
 \end{lines}
 
-Molto importante controllare che il codice Lua si attenga alla regola del ciclo
-di vita dei nodi, senza dubbio, ma il codice non ci ha dato problemi inattesi.
-Proseguiamo. La prossima operazione è assemblare nuovi nodi rule per le linee di
-chiusura delle caselle, quella sopra e quella sotto.
+La prossima operazione è assemblare nuovi nodi rule per le linee di chiusura
+delle caselle, quella sopra \key{'r1'} e quella sotto \key{'r2'}.
 
-La nostra lista diventa una scatola verticale per sovrapporre le scatole
-orizzontali linea \key{hbox(r1)}, testo spaziato \key{hbox(spacedtext)}, linea
+La nostra lista diventa una scatola verticale con all'interno la lista delle tre
+scatole orizzontali \key{hbox(r1)}, testo spaziato \key{hbox(spacedtext)}, e
 \key{hbox(r2)}. Il compositore infatti sovrappone uno sull'altro gli elementi di
 una scatola verticale così come affianca uno all'altro quelli di una scatola
 orizzontale.
 
-Per calcolare la lunghezza dei nodi rule, \key{r1} e \key{r2}, dovremo
-conteggiare il numero dei glifi. Introduciamo allora la funzione \fn{spacedtext}
-definita con il codice precedente per restituire il numero dei glifi e il nodo
-della scatola orizzontale che contiene il testo spaziato.
-
-La struttura della lista che inseriamo nel registro è però ancora più complessa
-perché impacchetteremo la scatola verticale a sua volta in una scatola
-orizzontale per fare in modo di regolare l'allineamento alla linea base. Lo
-schema è:
+Aggiungiamo poi un ulteriore livello, inserendo la scatola verticale a sua volta
+in una scatola orizzontale per fare in modo di regolare l'allineamento alla
+linea base. Lo schema finale della struttura è questo:
 \begin{Verbatim}[numbers=none]
 result_hbox (
-    vbox (
+    head = vbox (
         hbox(r1) -- hbox(spacedtext) -- hbox(r2)
     )
 )
 \end{Verbatim}
 
-e la traduzione in codice Lua è:
+Per calcolare la lunghezza dei nodi rule \key{r1} e \key{r2}, dovremo
+conteggiare il numero dei glifi. Introduciamo allora la funzione \fn{spacedtext}
+che restituisce il numero dei glifi e il nodo della scatola orizzontale che
+contiene il testo spaziato.
+
+La traduzione in codice Lua dello schema è diretto:
 \begin{lines}
-#[indexfile=code/f1-003.tex]
--- filename: code/f1-003.tex
+#[indexfile=tol/n4.tex]
+-- filename: tol/n4.tex
 local gap = tex.sp("20pt") -- distanza assiale glifi
 local t = tex.sp("0.2pt")  -- spessore barra verticale
 local h = tex.sp("12.5pt") -- altezza barra
@@ -301,9 +411,12 @@ end
 
 % fine codice
 
-Eccone qualche dimostrazione: \spacedtext{18pt}{TESTO}.
+Eccone una dimostrazione: \spacedtext{18pt}{TESTO}.
 
-e poi \spacedtext{12pt}{Fine Sezione!}
+
+%\subsection{Nodi pdfliteral}
+
+
 
 
 % end of file

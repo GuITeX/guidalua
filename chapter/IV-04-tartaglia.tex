@@ -2,24 +2,24 @@
 % Costruzione con i nodi del triangolo di Tartaglia.
 
 \chapter{Tartaglia}
-\label{iiChTartaglia}
+\label{ivChTartaglia}
 
 In questo capitolo utilizzeremo le funzionalità di creazione dei nodi per
 realizzare il triangolo di Tartaglia. I nodi sono oggetti tipografici pronti da
 posizionare sulla pagina che vengono prodotti da \TeX{} in uno degli ultimi
-momenti del processo. \LuaTeX{} è in grado di creare i nodi anche per altra via,
-tramite la creazione di oggetti in Lua.
+momenti del processo di composizione. \LuaTeX{} è in grado di creare i nodi
+anche tramite la creazione diretta di oggetti in Lua.
 
-I nodi sono di vario tipo, per esempio dimensioni elastiche o glifi, e vengono
-assemblati in liste anche molto complesse perché strutturate in scatole
+I nodi sono di vario tipo, per esempio dimensioni elastiche o glifi, e devono
+essere assemblati in liste anche molto complesse perché strutturate in scatole
 verticali od orizzontali. Infine, senza entrare troppo nel dettaglio tecnico, i
 nodi non rientrano nella gestione automatica della memoria operata dal Garbage
-Collector di Lua, mentre occorre programmare correttamente i riferimenti
-al nodo seguente e precedente se si vuole creale una lista.
+Collector di Lua, occorre perciò programmare seguendo la regola del ciclo di
+vita presentata nel capitolo~\ref{iiiChNodi}.
 
-Per questi motivi conviene manipolare le liste dei nodi attraverso le funzioni
-che si trovano nella tabella \code{node}, anziché operare su di essi
-direttamente.
+In una lista di nodi occorre anche assicurare che i riferimenti al nodo seguente
+e precedente siano corretti. Per questo conviene manipolare le liste dei nodi
+attraverso le funzioni che si trovano nella tabella \code{node}.
 
 Con i nodi ogni dettaglio deve essere costruito. Si opera come un tipografo
 che lavora con strumenti elementari, assemblando un pezzo alla volta.
@@ -80,7 +80,7 @@ Ottenuto l'oggetto nodo possiamo comporlo sulla pagina con la funzione
 \sourcecode{file = [[app-tartaglia/02.tex]]}
 
 La macro \cs{leavevmode} è importante perché è vietato inserire un oggetto glifo
-in modo verticale, ed è questa la modalità in cui si trova \TeX{} all'inizio.
+in modo verticale, la modalità in cui si trova \TeX{} all'inizio.
 
 
 \subsection{Dal numero alla lista}
