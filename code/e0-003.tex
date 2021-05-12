@@ -2,50 +2,29 @@
 % filename: code/e0-003.tex
 
 \documentclass{article}
-\usepackage{tikz}
 
-\directlua{
-function glyph(code)
-    local n = node.new("glyph")
-    n.font = font.current()
-    n.char = code
-    return n.width, n
-end
-function glue(x)
-    local g = node.new "glue"
-    g.width = x
-    return g
-end
+\newcommand{\isodate}[1]{\directlua{
+local isodate = [[#1]]
+% conversione numerica della data
+local y = assert(math.tointeger(isodate:sub(1,4)))
+local m = assert(math.tointeger(isodate:sub(6,7)))
+local d = assert(math.tointeger(isodate:sub(9)))
+% controllo di validità
+assert(y > 1969)
+assert(m > 0 and m < 13)
+assert(d > 0 and d < 32)
+assert(isodate:sub(5,5)=="-")
+assert(isodate:sub(8,8)=="-")
+% stampa nel formato esteso giorno mese anno
+local month = {
+   "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+   "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"
 }
-
-\newbox\sptxt
-\newcommand{\spacedtext}[2]{\directlua{
-    local s = [==[#2]==]
-    local gap = assert(tex.sp([[#1]]))
-    local w1 = gap
-    local head, last
-    for n in string.utfvalues(s) do
-        local wn, gn = glyph(n)
-        local g = glue(gap - (w1 + wn)/2)
-        head, last = node.insert_after(head, last, g)
-        head, last = node.insert_after(head, last, gn)
-        w1 = wn
-    end
-    local hbox = node.hpack(head)
-    tex.box["sptxt"] = hbox
-}\box\sptxt}
+tex.print(d.." "..month[m].." "..y)
+}}
 
 \begin{document}
-\begin{tikzpicture}
-\draw[xstep=20pt,ystep=14pt] (0, 0) grid (220pt, 14pt);
-\node[anchor=base west,inner sep=0pt] at (0,3pt) {\spacedtext{20pt}{I Will-èi12}};
-\end{tikzpicture}
+\noindent\isodate{2001-06-28}\\
+\isodate{1998-01-01}\\
+\isodate{2010-12-31}
 \end{document}
-
-
-
-
-
-
-
-

@@ -1,0 +1,26 @@
+% !TeX program = LuaLaTeX
+% filename: code/e0-004.tex
+
+\documentclass{article}
+\usepackage{pdfpages}
+
+\newcommand{\includePDFall}{\directlua{
+   local path = assert(lfs.currentdir())
+   local t = {}
+   local perc, bs = string.char(37), string.char(92)
+   local incfmt = bs.."includepdf[pages=-]{"..perc.."s}"
+   local extfmt = perc.."."..perc.."w+$" % "%.%w+$"
+   local i = 0
+   for file in lfs.dir(path) do
+      if (file:match(extfmt) or ""):lower() == ".pdf" and
+         not (file == "\jobname.pdf") then
+         i = i + 1
+         t[i] = string.format(incfmt, file)
+      end
+   end
+   tex.print(t)
+}}
+
+\begin{document}
+\includePDFall
+\end{document}

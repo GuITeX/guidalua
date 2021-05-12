@@ -1,7 +1,7 @@
 
 % codename "magpie"
 
-\chapter{Let's start with Lua}
+\chapter{Let's start with \LuaTeX}
 \label{iChStart}
 
 Consideriamo un sorgente \LaTeX{} minimale:
@@ -13,12 +13,12 @@ Consideriamo un sorgente \LaTeX{} minimale:
 \end{document}
 \end{lines}
 
-I suoi elementi sono l'utile commento che informa l'editor di quale compositore
-usare per la compilazione detto riga magica, la dichiarazione di classe e infine
-il corpo vuoto del documento.
+I suoi elementi sono: la riga magica, l'utile commento che informa l'editor di
+quale compositore usare per la compilazione, la dichiarazione di classe e infine
+il corpo del documento vuoto.
 
-Essendo il compositore \LuaLaTeX{} abbiamo a disposizione la nuova primitiva
-\cs{directlua}. Potremo inserirla più volte in qualsiasi punto del sorgente. Se
+Con il compositore \LuaLaTeX{} abbiamo a disposizione la nuova primitiva
+\cs{directlua}. La si può inserire più volte e in qualsiasi punto del codice. Se
 la inserissimo nel preambolo del sorgente minimo avremo:
 
 \CLRmarginpar{Lua in \LaTeX\\
@@ -39,10 +39,10 @@ la inserissimo nel preambolo del sorgente minimo avremo:
 Qui sta il punto. La primitiva \cs{directlua} è come se commutasse il modo di
 compilazione da \LaTeX{} a Lua, un linguaggio di programmazione per scopi
 generali, efficiente e portabile. Qualsiasi cosa faccia il \code{<codice Lua>}
-racchiuso tra graffe esso sarà eseguito dall'interprete Lua e non da \TeX.
+racchiuso tra graffe, esso sarà eseguito dall'interprete Lua e non da \TeX.
 
 \begin{quotation}
-Quali sono le conseguenze? Qual è l'utilità dell'interprete Lua?
+Quali sono le conseguenze? Qual è l'utilità di Lua?
 \end{quotation}
 
 \CLRmarginpar{Passare a \LuaLaTeX\\
@@ -57,10 +57,20 @@ La seconda è che Lua può \emph{integrare} l'elaborazione \TeX{} eseguendo
 compiti complessi come il calcolo numerico, l'interrogazione di database,
 l'editing del testo, l'interazione con i servizi di rete, la costruzione di
 oggetti tipografici di complessità arbitraria, la grafica vettoriale, eccetera
-eccetera.
+eccetera. Non è male studiare subito qualche esempio.
+
+Ciò che è importante di questi primi esempi è osservare quanto sia semplice e
+utile integrare le funzionalità di base del compositore con Lua. Questo è il
+motivo che giustifica un commento del codice qui solo abbozzato. Tutti i
+prossimi capitoli della guida hanno lo scopo di approfondire i concetti del
+linguaggio Lua e le nuove funzionalità interne.
+
+Infine, a ognuno degli esempi corrisponde un file sorgente disponibile
+nell'\href{https://github.com/GuITeX/guidalua}{archivio elettronico della
+guida}, pronto per essere compilato e per studiare modifiche e fare esperimenti.
 
 
-\section{Esempio, la diagonale di pagina}
+\section{La diagonale di pagina}
 
 Desideriamo che nel nostro documento ci sia un testo allineato sulla diagonale
 della pagina. Per ottenerlo usando il comando \cs{rotatebox} del pacchetto
@@ -86,6 +96,9 @@ point:
 %
 \CLRmarginpar{Libreria \code{math}\\
 \gotosec{} \ref{iiSecMathLibrary}}
+%
+\CLRmarginpar{Variabili locali\\
+\gotosec{} \ref{iiSecLocaleGlobale}}
 %
 \begin{lines}
 #[tex]
@@ -125,7 +138,7 @@ composizione stesso è nativamente interfacciato con Lua.
     tex.print(table.concat(list, ', '))
 }}
 
-\section{Esempio, ordinamento di una lista}
+\section{Ordinamento di una lista}
 
 Abbiamo una lista dei nomi di partecipanti a un evento, ma vorremmo evitare di
 ordinarli a mano. La lista si presenta come un elenco separato da virgole dei
@@ -141,6 +154,9 @@ come unico argomento la lista:
 \CLRmarginpar{\fn{tex.print}\\
 \gotosec{} \ref{iSecPassaggioDati}}
 %
+\CLRmarginpar{\fn{table.concat}\\
+\gotosec{} \ref{iiSecStringImmutability}}
+%
 \begin{lines}
 #[tex]
 #[indexfile=code/e0-002.tex]
@@ -153,18 +169,13 @@ come unico argomento la lista:
 \end{lines}
 
 Il dato in ingresso, la lista dei nomi non ordinata, viene costruito grazie al
-meccanismo della sostituzione degli argomenti di una macro. Il dato in uscita,
-la lista dei nomi ordinata, perviene al compositore come testo in lettura come
-se fosse stato presente nel file sorgente.
+meccanismo della sostituzione degli argomenti di una macro, nel momento in cui
+il codice argomento della macro \cs{directlua} viene espanso prima di essere
+inviato all'interprete per l'esecuzione.
 
-I tre passi del codice sono la costruzione della lista con una tabella,
-l'ordinamento degli elementi, e l'invio al buffer di lettura dei caratteri gli
-elementi concatenati e separati con una virgola.
-
-Anche qui, se non fosse chiaro quanto avete appena letto è perché vorrei
-introdurre prima come si definisce un comando \LaTeX{} che contiene solamente
-codice Lua rispetto ai concetti del linguaggio che comunque potete raggiungere
-con i riferimenti al margine ai capitoli della parte~\ref{partFoundation}.
+Il dato in uscita, la lista dei nomi ordinata, arriva al compositore come testo
+in lettura come se fosse stato digitato nel file sorgente. Il codice della macro
+\cs{ordina} rappresenta quindi una sorta di funzione.
 
 Nel documento un tale comando si usa in questo modo, con i nomi necessariamente
 da delimitare come stringhe Lua:
@@ -182,18 +193,111 @@ delimitazione dei nomi, oppure inserire un criterio di ordinamento più compless
 come quello per cognome/nome.
 
 
-\section{Esempio, data in formato ISO}
+\section{Data in formato ISO}
 
-Se una data è nel formato ISO~\texttt{yyyy-mm-dd} come potremo convertirla nella
-forma estesa?
+Le date nel formato ISO~\texttt{yyyy-mm-dd} si convertono facilmente nel formato
+esteso a cui siamo abituati, associando ai numeri da 1 a 12 i nomi dei mesi:
+
+\CLRmarginpar{\fn{string.sub}\\
+\gotosec{} \ref{iiSecStringOther}}[true]% true option means +16pt of vspace
+%
+\CLRmarginpar{\key{math.}\\
+\fn{tointeger}\\
+\gotosec{} \ref{iiSecMathLibrary}}
+%
+\CLRmarginpar{\fn{assert}\\
+\gotosec{} \ref{iiSecTabellaOggetto}}
+%
+\begin{lines}
+#[tex]
+#[indexfile=code/e0-003.tex]
+% filename: code/e0-003.tex
+\newcommand{\isodate}[1]{\directlua{
+local isodate = [[#1]]
+% conversione numerica della data
+local y = assert(math.tointeger(isodate:sub(1,4)))
+local m = assert(math.tointeger(isodate:sub(6,7)))
+local d = assert(math.tointeger(isodate:sub(9)))
+local month = {
+   "gennaio", "febbraio", "marzo", "aprile", "maggio",
+   "giugno", "luglio", "agosto", "settembre", "ottobre",
+   "novembre", "dicembre"
+}
+% stampa nel formato esteso giorno mese anno
+tex.print(d.." "..month[m].." "..y)
+}}
+\end{lines}
+
+\newcommand{\isodate}[1]{\directlua{
+local isodate = [[#1]]
+local y = assert(math.tointeger(isodate:sub(1,4)))
+local m = assert(math.tointeger(isodate:sub(6,7)))
+local d = assert(math.tointeger(isodate:sub(9)))
+local month = {
+   'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio',
+   'giugno', 'luglio', 'agosto', 'settembre', 'ottobre',
+   'novembre', 'dicembre'
+}
+tex.print(d..' '..month[m]..' '..y)
+}}
+
+Per esempio, la data di versione di questa guida nel formato ISO è
+\code{\guidaluadate} con la semplice macro \cs{isodate} diventa
+\isodate{\guidaluadate}. Altri sviluppi interessanti sono il controllo di
+validità della data e l'introduzione di più formati oltre a quello esteso.
 
 
-\section{Esempio, inclusione PDF}
+\section{Inclusione automatica di PDF}
 
-Ho una cartella di PDF e vorrei ottenerne un unico file.
+La macro d'esempio \cs{includePDFall} appoggiandosi al pacchetto
+\pack{pdfpages}, cerca nella directory corrente tutti i file PDF per unirli in
+un documento.
+
+Tra i file della directory corrente è necessario escludere non solo quelli che
+non hanno l'estensione cercata, ma anche lo stesso file PDF in compilazione.
+Questo il codice Lua della macro leggermente semplificato:
+
+\CLRmarginpar{\key{lfs}\\
+\gotosec{} \ref{iSecLuaTeXLibraries}}[true]% true option means +16pt of vspace
+%
+\CLRmarginpar{\fn{string.match}\\
+\gotosec{} \ref{iiSecPattern}}
+%
+\CLRmarginpar{\key{string.}\\
+\fn{format}\\
+\gotosec{} \ref{iiSecStringFormat}}
+%
+\begin{lines}
+#[indexfile=code/e0-004.tex]
+-- filename: code/e0-004.tex
+local path = assert(lfs.currentdir())
+local t = {}
+local incfmt = "\\includepdf[pages=-]{%s}"
+local extfmt = "%.%w+$"
+for filename in lfs.dir(path) do
+    if (filename:match(extfmt) or ""):lower() == ".pdf" and
+        filename ~= "\jobname.pdf" then
+        t[#t + 1] = string.format(incfmt, filename)
+    end
+end
+tex.print(t)
+\end{lines}
+
+Con la libreria \code{lfs}, Lua File System, si esaminano tutti i file della
+directory corrente, quella in cui si trova il sorgente. Per ciascuno di questi
+file si estrae l'estensione in minuscolo dal suo nome: se si tratta di un file
+PDF si esegue l'ulteriore controllo per escludere il file in compilazione.
+
+I nomi dei file così filtrati sono memorizzati in un array sottoforma di stringa
+del comando di inclusione. Al termine, tutti i comandi \cs{includepdf} sono
+inviati al flusso d'ingresso del compositore.
+
+Non sarebbe difficile rendere il codice ricorsivo perché cerchi file PDF anche
+nelle sotto directory o far in modo di associare a specifici file PDF
+particolari opzioni d'inclusione.
 
 
-\section{Direzioni di lettura}
+\section{Come proseguire da qui}
 
 Il prossimo capitolo~\ref{iChExplain} introduce i motori di composizione
 Lua-powered distinguendoli dal formato, spiegando come compilare con essi i
@@ -203,11 +307,13 @@ I capitoli dal~\ref{iiChAssignment} fino al~\ref{iiChOop} trattano delle basi
 del linguaggio Lua e sono il cuore della guida.
 
 % parte iii cose di luatex
+La parte~\ref{partLuaTeX}, Cose di \LuaTeX, tratta delle principali tecnologie
+Lua specifiche del compositore come i nodi, i mattoni tipografici che si possono
+assemblare in strutture complesse.
 
-I frutti si raccolgono nei capitoli finali dei tutorial applicativi in Lua: per
-esempio quello sulla \emph{calcolatrice} (capitolo~\ref{ivChCalcolatrice}) o il
-tutorial sulla costruzione automatica di una tabella numerica
-(capitolo~\ref{ivChTabellaPesi}).
-
+Nei capitoli finali della parte~\ref{partApp} dei tutorial applicativi in Lua
+mostrano come progettare moduli per gli utenti: per esempio quello sulla
+\emph{calcolatrice} (capitolo~\ref{ivChCalcolatrice}) o il tutorial sulla
+costruzione automatica di una tabella numerica (capitolo~\ref{ivChTabellaPesi}).
 
 % end of file

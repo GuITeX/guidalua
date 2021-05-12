@@ -1,35 +1,42 @@
 
 
-\chapter{Nodi}
+\chapter{Introduzione ai nodi}
 \label{iiiChNodi}
 
-I \emph{nodi} sono gli oggetti elementari che \TeX{} costruisce e assembla in
-liste di vari livelli come risultato finale della lettura e dell'esecuzione del
-codice del file sorgente.
+I \emph{nodi} sono gli oggetti tipografici elementari che \TeX{} costruisce e
+assembla in liste di più livelli come risultato della lettura e dell'esecuzione
+del codice del file sorgente.
 
 I nodi sono quindi i mattoni che intessuti uno sull'altro costruiscono la
 rappresentazione di ciò che poi sarà effettivamente scritto sulla pagina e che
-dipende solamente più dal formato di uscita, per esempio PDF o DVI.
+dipende solamente dal formato di uscita, per esempio PDF o DVI.
 
-Il linguaggio Lua è stato progettato tra le altre cose per offrire all'utente di
-un programma l'accesso a funzioni interne tramite codice di scripting, per
-configurare o per estendere in modo del tutto generale il nucleo originario.
+I nodi, le liste di nodi, e le liste di liste di nodi, sono il risultato
+intermedio di un processo per fasi inizialmente alimentato dal testo sorgente,
+byte per byte. Il compositore costruisce queste strutture complesse come dato di
+uscita in memoria in attesa di inviarle alla fase successiva come dato in
+ingresso. Può Lua interagire in modo diretto e nativo con le operazioni della
+fase dei nodi?
 
-\LuaTeX{} e gli altri motori che includono l'interprete Lua, grazie a questa
-fondamentale caratteristica di basso livello di questo linguaggio, implementano
-la libreria \code{node} che rende possibile la costruzione delle strutture
-tipografiche dei nodi in Lua.
 
-Grazie alla libreria \code{node} è possibile costruire ogni tipo di struttura
-tipografica pronta per il posizionamento sulla pagina. Queste strutture sono le
-stesse che il compositore costruirebbe leggendo il codice di un sorgente \TeX{}.
-Creandole con Lua ci sostituiamo a esso nell'eseguire le prime fasi di lettura
-dei token, espansione ed esecuzione, arrivando direttamente alla fase finale
-detta visuale.
+\section{Lua e i nodi}
 
-Nel presentare i nodi conviene lasciare i dettagli al manuale di \LuaTeX{}
-\cite{prg:luatex} per poter evidenziare i concetti essenziali e introdurre
-l'argomento con gradualità.
+Il linguaggio Lua è stato progettato tra le altre cose per poter offrire
+all'utente di un programma un linguaggio di scripting con l'accesso ai dati
+interni. Lua può quindi \emph{estendere} un programma lasciando che l'utente
+possa configurarne il comportamento o usufruire dei servizi di elaborazione in
+modo del tutto generale.
+
+\LuaTeX{} così come gli altri motori che includono l'interprete Lua, grazie a
+questa fondamentale caratteristica di questo linguaggio, implementa la libreria
+di basso livello \code{node} che rende possibile la costruzione delle strutture
+tipografiche dei nodi in Lua e l'interazione con il relativo processo interno.
+
+È così che con \code{node} è possibile costruire ogni tipo di struttura
+tipografica pronta per essere posizionata sulla pagina, le stesse che il
+compositore costruirebbe leggendo un sorgente \code{.tex}, saltando le prime
+fasi di lettura dei token, espansione ed esecuzione, per interagire direttamente
+con la fase finale detta visuale.
 
 
 \section{Ciclo di vita dei nodi}
@@ -45,26 +52,32 @@ questo:
 \item \emph{invio a unica destinazione oppure distruzione}.
 \end{compactenumerate}
 
-La destinazione deve essere unica. Riutilizzare un oggetto nodo già finalizzato
-comporta il rischio elevato, se non la certezza, del crash del programma. Essa
-può essere un registro di tipo scatola oppure il processo di uscita tramite la
-funzione \fn{node.write}\luastd{node.write}. L'importante è che lo stesso nodo
-non abbia più di un utilizzo.
+Riutilizzare un oggetto nodo già finalizzato comporta il rischio elevato, se non
+la certezza, del crash del programma. La destinazione deve essere unica
+intendendo che un nodo può essere inviato una sola volta alla fase successiva,
+per invio diretto con la funzione \fn{node.write}\luastd{node.write} oppure per
+invio indiretto con la memorizzazione in un registro di tipo scatola.
 
 Altri problemi derivano invece dal non eliminare esplicitamente nodi creati ma
-poi non finalizzati. Per esempio, se si deve costruire un oggetto formato da
-nodi tutti uguali si può creare il nodo prototipo per copiarlo più volte con la
+poi non destinati. Per esempio, se si deve costruire un oggetto formato da nodi
+tutti uguali si può creare il nodo prototipo per copiarlo più volte con la
 funzione \fn{node.copy}\luastd{node.copy}, ma alla fine ci si deve ricordare di
 destinarlo oppure eliminarlo dalla memoria con le apposite funzioni, per esempio
 con \fn{node.free}\luastd{node.free}.
 
 
-% alcuni singoli nodi/presentazione
 \section{Introduzione ai nodi principali}
 
 Come si crea un nodo? Ciascun nodo si crea sempre con lo stesso semplice schema:
 si chiama la funzione \fn{new} di \code{node}\luastd{node.new} con
 l'identificatore del tipo e si configurano i parametri dell'oggetto restituito.
+
+L'identificatore del tipo è una stringa oppure un numero e i numerosi parametri
+di un oggetto nodo funzionano come campi di una tabella Lua perciò è lecito
+usare la dot notation.
+
+Per meglio comprendere i concetti essenziali e introdurre l'argomento con
+gradualità, lascieremo i dettagli al manuale di \LuaTeX{} \cite{prg:luatex} 
 
 
 \subsection{Nodi glifo}
@@ -110,9 +123,9 @@ r.height = tex.sp "14pt"
 r.depth = tex.sp "4pt"
 \end{lines}
 
-Il nodo rule è l'equivalente della macro \cs{rule}. L'altezza totale è la somma
-del tratto discendente sotto la linea base chiamata profondità, e del tratto al
-di sopra di essa.
+Il nodo rule è il diretto equivalente della macro \cs{rule}. L'altezza totale è
+la somma del tratto discendente al di sotto dela linea base chiamato profondità,
+e del tratto ascendente al di sopra di essa.
 
 
 \subsection{Assemblaggio nodi in liste}
@@ -296,6 +309,11 @@ local hbox = node.hpack(head)
 tex.box["sptxt"] = hbox
 \end{lines}
 
+L'iteratore \fn{string.utfvalues}\luastd{string.utfvalues} è un'estensione della
+libreria standard di Lua presente in \LuaTeX{} molto utile per rendere il nostro
+codice compatibile con la codifica Unicode UTF-8, e gestire correttamente i
+caratteri accentati eccetera.
+
 La prossima operazione è assemblare nuovi nodi rule per le linee di chiusura
 delle caselle, quella sopra \key{'r1'} e quella sotto \key{'r2'}.
 
@@ -412,11 +430,5 @@ end
 % fine codice
 
 Eccone una dimostrazione: \spacedtext{18pt}{TESTO}.
-
-
-%\subsection{Nodi pdfliteral}
-
-
-
 
 % end of file

@@ -8,7 +8,7 @@ for row = 0, 8 do
     for e = row, 2, -1 do
        t[e] = t[e] + t[e-1]
     end
-    tex.print(table.concat(t, " "))
+    tex.print(t)
     tex.print(nl)
 end
 }

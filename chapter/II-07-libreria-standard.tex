@@ -352,6 +352,7 @@ end
 
 
 \subsection{Altre funzioni utili}
+\label{iiSecStringOther}
 
 Nominiamo per prima la funzione \fn{string.find}\luastd{string.find}. Essa
 restituisce la posizione della corrispondenza nella stringa di ricerca, nella
@@ -367,7 +368,24 @@ local i, j = string.find(s, "123") -- i = 11, j = 13
 print(string.find(s, "(%d+)", j+1))
 \end{lines}
 
-Conviene citare altre due funzioni utili per esempio per poter usare il simbolo
+La funzione \fn{string.sub}\luastd{string.sub} estrae la parte di stringa
+dell'intervallo tra due indici iniziale e finale forniti come argomento. Se il
+secondo indice non è definito l'intervallo si estende fino alla fine della
+stringa.
+
+Inoltre, gli indici d'intervallo possono essere negativi intendendo che la
+posizione sarà calcolata dalla fine della stringa. Sottolineo che per indice si
+intende la posizione del singolo byte perciò questa funzione non è compatibile
+con la codifica multibyte Unicode UTF-8. Vediamone qualche esempio:
+\begin{lines}
+#[run]
+-- string.sub (s, i [, j])
+local s = "abc123"
+print(string.sub(s, -2)) -- estrae le due ultime posizioni
+print(string.sub(s, 2, -2)) -- parte centrale
+\end{lines}
+ 
+Conviene citare altre due funzioni utili, per esempio per poter usare il simbolo
 di percentuale nel codice Lua interno a sorgenti \TeX{}. Sono
 \fn{string.byte}\luastd{string.byte} e \fn{string.char}\luastd{string.char}: la
 prima da una lista di interi positivi calcola la stringa codificata con essi e

@@ -204,7 +204,7 @@ La comunicazione dati bidirezionale tra \TeX{} e Lua può avvenire con la
 tecnologia dei nodi, come vedremo, certamente quella più avanzata e complessa
 ma non è l'unica: i dati possono arrivare a Lua tramite l'espansione, mentre
 nella direzione opposta è possibile scrivere del testo nella lista di input
-del compositore con le funzioni della famiglia \fn{tex.print}.
+del compositore con le funzioni della famiglia \fn{tex.print}\luastd{tex.print}.
 
 Interrompete la lettura della guida per provare a scrivere la funzione Lua
 \fn{fact} che calcola il fattoriale di un intero. La useremo per dimostrare come
@@ -332,6 +332,7 @@ funzionare.
 
 
 \section{Le librerie disponibili in \LuaTeX}
+\label{iSecLuaTeXLibraries}
 
 Agli usuali moduli della libreria standard di Lua, sono stati aggiunti in
 \LuaTeX{}, così come negli altri motori di composizione estesi, speciali
